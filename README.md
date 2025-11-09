@@ -1,0 +1,6 @@
+# Learning fpga
+
+for now, my implementation for chapter 3 of
+
+https://github.com/PacktPublishing/The-FPGA-Programming-Handbook-Second-Edition/tree/main
+
