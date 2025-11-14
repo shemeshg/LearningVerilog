@@ -5,10 +5,13 @@ package types_pkg;
 
   typedef logic [BITS-1:0] word_t;
 
-  typedef enum bit [1:0] {
-    ADD = 2'b00,
-    SUB = 2'b01,
-    MUL = 2'b10
+  typedef enum bit [2:0] {
+    RESET = 3'b000,
+    ADD = 3'b001,
+    SUB = 3'b010,
+    MUL = 3'b011,
+    LEADING_ONES = 3'b100,
+    COUNT_ONES = 3'b101
   } opr_mode_t;
 
 endpackage
