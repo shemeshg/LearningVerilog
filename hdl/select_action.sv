@@ -1,6 +1,5 @@
 `timescale 1ns / 100ps
 `include "types_pkg.sv"
-
 import types_pkg::*;
 
 module select_action #(
@@ -23,7 +22,7 @@ word_t      add_sub_mult_LED;
       .LED(add_sub_mult_LED)
   );
 
-word_t      count_ones_LED;
+word_log2_t      count_ones_LED;
 count_ones #(.BITS(BITS)) count_ones_inst(
     .clk(clk),
     .rst(rst),
@@ -31,13 +30,18 @@ count_ones #(.BITS(BITS)) count_ones_inst(
     .LED(count_ones_LED)
 );
 
-word_t      leading_ones_LED;
+word_log2_t      leading_ones_LED;
 leading_ones #(.BITS(BITS)) leading_ones_inst(
     .clk(clk),
     .rst(rst),
     .SW(SW),
     .LED(leading_ones_LED)
 );
+
+  word_half_t SW_LH;
+  word_half_t SW_RH;
+  assign SW_LH = SW[BITS/2-1:0]; 
+  assign SW_RH = SW[BITS-1:BITS/2]; 
 
   always_ff @(posedge clk or posedge rst) begin
     if (rst) begin

@@ -15,8 +15,8 @@ end
 
 localparam BITS         = 16;
 
-logic [$clog2(BITS+1)-1:0] count_ones_module;
-logic [BITS-1:0]       SW_TB;
+word_log2_t count_ones_module;
+word_t       SW_TB;
 count_ones #(.BITS(BITS)) count_ones_inst(
     .clk(clk),
     .rst(rst),
@@ -55,7 +55,7 @@ initial begin
     $finish;
 end
 
-logic [BITS-1:0] SW_TB_d;
+word_t SW_TB_d;
 always_ff @(posedge clk) begin
   SW_TB_d <= SW_TB;
 end

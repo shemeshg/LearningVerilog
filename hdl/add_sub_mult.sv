@@ -1,6 +1,5 @@
 `timescale 1ns / 100ps
 `include "types_pkg.sv"
-
 import types_pkg::*;
 
 module add_sub_mult #(
@@ -12,8 +11,8 @@ module add_sub_mult #(
     output word_t     LED
 );
 
-  logic [BITS/2-1:0] SW_LH;
-  logic [BITS/2-1:0] SW_RH;
+  word_half_t SW_LH;
+  word_half_t SW_RH;
 
   assign SW_LH = SW[BITS/2-1:0];
   assign SW_RH = SW[BITS-1:BITS/2];

@@ -16,8 +16,8 @@ module tb_add_sub_mult;
   logic      [BITS-1:0] LED_TB;
   logic      [BITS-1:0] SW_TB;
 
-  logic [BITS/2-1:0] SW_LH;
-  logic [BITS/2-1:0] SW_RH;
+  word_half_t SW_LH;
+  word_half_t SW_RH;
   assign SW_LH = SW_TB[BITS/2-1:0]; 
   assign SW_RH = SW_TB[BITS-1:BITS/2]; 
 
@@ -31,7 +31,7 @@ module tb_add_sub_mult;
   );
 
 
-  logic [BITS-1:0] expected_result_q;
+  word_t expected_result_q;
 
   always_ff @(posedge clk or posedge rst) begin
     if (rst) begin

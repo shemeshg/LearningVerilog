@@ -2,16 +2,18 @@
 import { exit } from 'process'
 import { $, cd, quiet } from 'zx'
 
-const tb_main_class="tb_add_sub_mult"
+const tb_main_class="tb_select_action"
 
 const xvlog_files = [
-  //"../../hdl/count_ones.sv", 
-  //"../../tb/tb_count_ones.sv",
-  //"../../hdl/leading_ones.sv", 
-  //"../../tb/tb_leading_ones.sv",
+  "../../hdl/count_ones.sv", 
+  "../../tb/tb_count_ones.sv",
+  "../../hdl/leading_ones.sv", 
+  "../../tb/tb_leading_ones.sv",
   "../../hdl/types_pkg.sv", 
   "../../hdl/add_sub_mult.sv", 
   "../../tb/tb_add_sub_mult.sv",
+  "../../hdl/select_action.sv", 
+  "../../tb/tb_select_action.sv",
 ]
 
 async function getVivadoEnv(){
