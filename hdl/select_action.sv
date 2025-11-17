@@ -43,26 +43,27 @@ leading_ones #(.BITS(BITS)) leading_ones_inst(
   assign SW_LH = SW[BITS/2-1:0]; 
   assign SW_RH = SW[BITS-1:BITS/2]; 
 
+  word_t result_comb;
+  always_comb begin
+    case (SELECTOR)
+      RESET: result_comb = '0;
+      ADD:   result_comb = add_sub_mult_LED;
+      SUB:   result_comb = add_sub_mult_LED;
+      MUL:   result_comb = add_sub_mult_LED;
+      // LEADING_ONES: result_comb = leading_ones_LED;
+      // COUNT_ONES: result_comb = count_ones_LED;
+      default: result_comb = '0;
+    endcase
+  end
+
+
   always_ff @(posedge clk or posedge rst) begin
     if (rst) begin
       LED <= 0;
-    end else begin
-      word_t result;
-
-      case (SELECTOR)
-        RESET: result = '0;
-        ADD: result = add_sub_mult_LED;
-        SUB: result = add_sub_mult_LED;
-        MUL: result = add_sub_mult_LED;
-        LEADING_ONES: result = leading_ones_LED;
-        COUNT_ONES: result = count_ones_LED;
-        default: result = '0;
-      endcase
-
-
-      LED <= result;
-      $display("DUT IS @%0t: SW = %h, RH = %0d, LH = %0d, computed = %0d", $time, SW, SW_RH, SW_LH,
-               result);
+    end else begin      
+      LED <= result_comb;
+      $display("DUT selection_action IS @%0t: SW = %h, RH = %0d, LH = %0d, computed = %0d", $time, SW, SW_RH, SW_LH,
+               result_comb);
     end
   end
 

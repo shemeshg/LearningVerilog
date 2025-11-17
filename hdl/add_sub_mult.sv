@@ -32,8 +32,8 @@ module add_sub_mult #(
 
 
       LED <= result;
-      $display("DUT IS @%0t: SW = %h, RH = %0d, LH = %0d, computed = %0d", $time, SW, SW_RH, SW_LH,
-               result);
+      $display("DUT add_sub_mult IS @%0t: SW = %h, RH = %0d, LH = %0d, computed = %0d, Selector: %s", $time, SW, SW_RH, SW_LH,
+               result, SELECTOR.name());
     end
   end
 

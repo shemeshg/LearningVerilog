@@ -31,40 +31,52 @@ module tb_select_action;
   assign SW_LH = SW_TB[BITS/2-1:0]; 
   assign SW_RH = SW_TB[BITS-1:BITS/2]; 
 
-/*
+
+
+  word_t expected_result_comb;
+  word_half_t SW_LH_q;
+  word_half_t SW_RH_q;
+  always_comb begin
+    case (SELECTOR_TB)
+      RESET: expected_result_comb = '0;
+      ADD:   expected_result_comb = SW_LH_q + SW_RH_q;
+      SUB:   expected_result_comb = SW_LH_q - SW_RH_q;
+      MUL:   expected_result_comb = SW_LH_q * SW_RH_q;
+      default: expected_result_comb = '0;
+    endcase
+  end
 
   word_t expected_result_q;
 
   always_ff @(posedge clk or posedge rst) begin
     if (rst) begin
       expected_result_q <= '0;
+      SW_LH_q <= '0;
+      SW_RH_q <= '0;
     end else begin
 
-      case (SELECTOR_TB)
-        ADD: expected_result_q <= SW_LH + SW_RH;
-        SUB: expected_result_q <= SW_LH - SW_RH;
-        MUL: expected_result_q <= SW_LH * SW_RH;
-        default: expected_result_q <= '0;
-      endcase
+      expected_result_q <=expected_result_comb;
+      SW_LH_q <= SW_LH;
+      SW_RH_q <= SW_RH;
     end
   end
 
   initial begin
     $dumpfile("wave.vcd");
     //$dumpvars(0, tb); // or use your top-level module name    
-    $dumpvars(0, tb_add_sub_mult.SW_LH);
-    $dumpvars(0, tb_add_sub_mult.SW_RH);
-    $dumpvars(0, tb_add_sub_mult.expected_result_q);  
-    $dumpvars(0, tb_add_sub_mult.LED_TB);
-    $printtimescale(tb_add_sub_mult);
+    $dumpvars(0, tb_select_action.SW_LH_q);
+    $dumpvars(0, tb_select_action.SW_RH_q);
+    $dumpvars(0, tb_select_action.expected_result_q);  
+    $dumpvars(0, tb_select_action.LED_TB);
+    $printtimescale(tb_select_action);
 
-    @(negedge rst); 
-    @(posedge clk); 
+    @(negedge rst);
+    @(negedge clk); 
 
     repeat (6) begin
       SW_TB = $urandom_range(0, (1 << BITS) - 1);
       SELECTOR_TB = ADD;
-      @(posedge clk);
+       @(negedge clk); 
     end
 
     @(posedge clk);
@@ -81,9 +93,9 @@ module tb_select_action;
     else begin
       $error("Time %0t: Test FAILED! Expected %0d, got %0d. LH: %0d, RH: %0d, Selector: %s", $time,
              expected_result_q, LED_TB, SW_LH, SW_RH, SELECTOR_TB.name());
-      $stop;
+      //$stop;
     end
 
   end
-  */
+
 endmodule  
