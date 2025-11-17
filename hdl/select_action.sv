@@ -50,8 +50,8 @@ leading_ones #(.BITS(BITS)) leading_ones_inst(
       ADD:   result_comb = add_sub_mult_LED;
       SUB:   result_comb = add_sub_mult_LED;
       MUL:   result_comb = add_sub_mult_LED;
-      // LEADING_ONES: result_comb = leading_ones_LED;
-      // COUNT_ONES: result_comb = count_ones_LED;
+      LEADING_ONES: result_comb = leading_ones_LED;
+      COUNT_ONES: result_comb = count_ones_LED;
       default: result_comb = '0;
     endcase
   end
