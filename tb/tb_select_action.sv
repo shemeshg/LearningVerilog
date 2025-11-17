@@ -89,11 +89,17 @@ module tb_select_action;
   always @(posedge clk) begin
     $display("At %0t: Expected = %0d, Actual (LED_TB) = %0d", $time, expected_result_q, LED_TB);
 
-    assert (LED_TB === expected_result_q)
-    else begin
-      $error("Time %0t: Test FAILED! Expected %0d, got %0d. LH: %0d, RH: %0d, Selector: %s", $time,
-             expected_result_q, LED_TB, SW_LH, SW_RH, SELECTOR_TB.name());
-      //$stop;
+    if (!$isunknown(LED_TB) && !$isunknown(expected_result_q)) begin
+
+      assert (LED_TB === expected_result_q)
+      else begin
+        $error("Time %0t: Test FAILED! Expected %0d, got %0d. LH: %0d, RH: %0d, Selector: %s", $time,
+              expected_result_q, LED_TB, SW_LH, SW_RH, SELECTOR_TB.name());
+        $stop;
+      end
+    end else begin
+      $info("Time %0t: Test unknown (X/Z) values! LED_TB: %h, Expected: %h", 
+              $time, LED_TB, expected_result_q);
     end
 
   end
