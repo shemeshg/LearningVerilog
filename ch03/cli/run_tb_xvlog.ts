@@ -1,6 +1,6 @@
 //npx tsx run_tb.ts
 import { exit } from 'process'
-import { $, cd, quiet } from 'zx'
+import { $, cd } from 'zx'
 
 const tb_main_class="tb_select_action"
 
@@ -37,7 +37,7 @@ async function getVivadoEnv(){
 const [$$, $$debug] = await getVivadoEnv()
 if (!$$ || !$$debug){throw new Error("Could not init Vivadeo Env.");}
 
-await $`[ -d build ] || mkdir build`
+await $`mkdir -p build`
 cd('build')
 
 await $$`echo $XILINX_VIVADO`

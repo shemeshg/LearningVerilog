@@ -1,5 +1,5 @@
 #!/bin/bash
-mkdir build
+mkdir  -p build
 cd build
 source /usr/local/Xilinx/2025.1/Vivado/settings64.sh
 xvlog -sv ../../hdl/count_ones.sv ../../tb/tb_count_ones.sv
