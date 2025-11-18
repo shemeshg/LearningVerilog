@@ -15,7 +15,6 @@ module hello;
   localparam BITS = 16;
 
   word_t     LED_TB;
-  word_t     LED_TB_comb;
   word_t     expected_result_comb;
   word_t     SW_TB;
   opr_mode_t SELECTOR_TB;
@@ -31,7 +30,6 @@ module hello;
   assign SW_LH = SW_TB[BITS/2-1:0];
   assign SW_RH = SW_TB[BITS-1:BITS/2];
   always_comb begin
-    LED_TB_comb = LED_TB;
     case (SELECTOR_TB)
       RESET: expected_result_comb = '0;
       ADD: expected_result_comb = SW_LH + SW_RH;
@@ -50,23 +48,41 @@ module hello;
   end
 
   task run_simulation;
-    $display("Hello, World parameter value is: %0d", types_pkg::BITS);
-    $display("LED_TB_comb: %0d", LED_TB_comb);
     $display("Time %0t: Expected %0d, got %0d. LH: %0d, RH: %0d, Selector: %s", $time,
              expected_result_comb, LED_TB, SW_LH, SW_RH, SELECTOR_TB.name());
+    assert (LED_TB === expected_result_comb)      
+    else begin
+      $error("Time %0t: Test FAILED! ",$time);
+      $finish;
+    
+    end  
   endtask
 
   initial begin
-    SELECTOR_TB = ADD;
+    SELECTOR_TB = RESET;
     SW_TB = '0;
     @(negedge rst);
 
     repeat (6) begin
+      SELECTOR_TB = ADD;
       SW_TB = $urandom_range(0, (1 << BITS) - 1);
       @(negedge clk);
       run_simulation;
     end
 
+    repeat (6) begin
+      SELECTOR_TB = SUB;
+      SW_TB = $urandom_range(0, (1 << BITS) - 1);
+      @(negedge clk);
+      run_simulation;
+    end
+
+    repeat (6) begin
+      SELECTOR_TB = MUL;
+      SW_TB = $urandom_range(0, (1 << BITS) - 1);
+      @(negedge clk);
+      run_simulation;
+    end
 
     $finish;
   end
