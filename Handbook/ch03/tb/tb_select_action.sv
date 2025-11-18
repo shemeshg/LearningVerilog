@@ -66,6 +66,8 @@ module tb_select_action;
     $dumpvars(0, tb_select_action.LED_TB);   
     $dumpvars(0, tb_select_action.SW_LH);   
     $dumpvars(0, tb_select_action.SW_RH);   
+    $dumpvars(0, tb_select_action.SELECTOR_TB);   
+
     $printtimescale(tb_select_action);
 
     SELECTOR_TB = RESET;
