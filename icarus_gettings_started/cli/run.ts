@@ -13,6 +13,7 @@ const inFiles=[
 ]
 await $`mkdir -p  ../build`
 cd('../build')
+await $$debug`rm -f ${binaryFile}`
 await $$debug`iverilog -g2012 -o ${binaryFile} -s ${topModule}  ${inFiles}`
 await $$debug`vvp ${binaryFile}`
 
