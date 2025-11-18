@@ -1,7 +1,6 @@
-`timescale 1ns / 100ps
-`include "../hdl/types_pkg.sv"
 
 module tb_select_action;
+  import types_pkg::*;
 
   logic clk = 0;
   always #0.5 clk = ~clk;
@@ -12,15 +11,15 @@ module tb_select_action;
     rst = 0;
   end
 
+
   localparam BITS = 16;
 
-  logic      [BITS-1:0] LED_TB;
-  logic      [BITS-1:0] SW_TB;
-  opr_mode_t            SELECTOR_TB;
+  word_t     LED_TB;
+  word_t     expected_result_comb;
+  word_t     SW_TB;
+  opr_mode_t SELECTOR_TB;
 
   select_action #() select_action_inst (
-      .clk(clk),
-      .rst(rst),
       .SELECTOR(SELECTOR_TB),
       .SW(SW_TB),
       .LED(LED_TB)
@@ -30,121 +29,88 @@ module tb_select_action;
   word_half_t SW_RH;
   assign SW_LH = SW_TB[BITS/2-1:0];
   assign SW_RH = SW_TB[BITS-1:BITS/2];
-
-
-
-  word_t expected_result_comb;
-  word_half_t SW_LH_q;
-  word_half_t SW_RH_q;
-  word_t SW_TB_q;
   always_comb begin
-    automatic int expected_count = 0;
-    automatic int expected_leading_ones = 0;
-    for (int i = 0; i < BITS; i++) begin
-      expected_count += SW_TB_q[i];
-    end
-
-    
-    for (int i = 0; i < BITS; i++) begin
-      if (SW_TB_q[i] == 1) begin
-        expected_leading_ones = i;
-      end
-    end
-
     case (SELECTOR_TB)
       RESET: expected_result_comb = '0;
-      ADD: expected_result_comb = SW_LH_q + SW_RH_q;
-      SUB: expected_result_comb = SW_LH_q - SW_RH_q;
-      MUL: expected_result_comb = SW_LH_q * SW_RH_q;
-      LEADING_ONES: expected_result_comb = expected_leading_ones;
-      COUNT_ONES: expected_result_comb = expected_count;
+      ADD: expected_result_comb = SW_LH + SW_RH;
+      SUB: expected_result_comb = SW_LH - SW_RH;
+      MUL: expected_result_comb = SW_LH * SW_RH;
+      LEADING_ONES: expected_result_comb = leading_ones_fn(SW_TB);
+      COUNT_ONES: expected_result_comb = count_ones_fn(SW_TB);
       default: expected_result_comb = '0;
     endcase
   end
 
-  word_t expected_result_q;
-
   always_ff @(posedge clk or posedge rst) begin
     if (rst) begin
-      expected_result_q <= '0;
-      SW_LH_q <= '0;
-      SW_RH_q <= '0;
-      SW_TB_q <= '0;
     end else begin
-
-      expected_result_q <= expected_result_comb;
-      SW_LH_q <= SW_LH;
-      SW_RH_q <= SW_RH;
-      SW_TB_q <= SW_TB;
     end
   end
 
+  task run_simulation;
+    $display("Time %0t , sw: %b: Expected %0d, got %0d. LH: %0d, RH: %0d, Selector: %s", $time, SW_TB,
+             expected_result_comb, LED_TB, SW_LH, SW_RH, SELECTOR_TB.name());
+    assert (LED_TB === expected_result_comb)
+    else begin
+      $error("Time %0t: Test FAILED! ", $time);
+      $finish;
+
+    end
+  endtask
+
+  integer pos=0;
   initial begin
-    $dumpfile("wave.vcd");
-    //$dumpvars(0, tb); // or use your top-level module name    
-    $dumpvars(0, tb_select_action.SW_LH_q);
-    $dumpvars(0, tb_select_action.SW_RH_q);
-    $dumpvars(0, tb_select_action.expected_result_q);
-    $dumpvars(0, tb_select_action.LED_TB);
-    $printtimescale(tb_select_action);
-
+    SELECTOR_TB = RESET;
+    SW_TB = '0;
+    
     @(negedge rst);
-    @(negedge clk);
 
-    SELECTOR_TB = ADD;
     repeat (6) begin
+      SELECTOR_TB = ADD;
       SW_TB = $urandom_range(0, (1 << BITS) - 1);
       @(negedge clk);
+      run_simulation;
     end
 
-
-    SELECTOR_TB = SUB;
     repeat (6) begin
+      SELECTOR_TB = SUB;
       SW_TB = $urandom_range(0, (1 << BITS) - 1);
       @(negedge clk);
+      run_simulation;
     end
 
-    SELECTOR_TB = MUL;
     repeat (6) begin
+      SELECTOR_TB = MUL;
       SW_TB = $urandom_range(0, (1 << BITS) - 1);
       @(negedge clk);
+      run_simulation;
     end
 
-    SELECTOR_TB = COUNT_ONES;
+    
     repeat (6) begin
+      SELECTOR_TB = LEADING_ONES;
+       pos = $urandom_range(0, BITS - 1);
+      SW_TB = 0;
+      while (pos >= 0) begin
+        SW_TB = SW_TB | (1 << pos);
+        if (pos == 0) begin
+          pos = -1;  // force exit instead of disable/break
+        end else begin
+          pos = $urandom_range(0, pos - 1);
+        end
+      end
+
+      @(negedge clk);
+      run_simulation;
+    end
+
+    repeat (6) begin
+      SELECTOR_TB = COUNT_ONES;
       SW_TB = $urandom_range(0, (1 << BITS) - 1);
       @(negedge clk);
+      run_simulation;
     end
 
-    SELECTOR_TB = LEADING_ONES;
-    repeat (6) begin
-      SW_TB = $urandom_range(0, (1 << BITS) - 1);
-      @(negedge clk);
-    end
-
-    @(posedge clk);
-    SW_TB = 0;
-    $display("Time now: %0t", $time);
-    $display("PASS: logic_ex test PASSED!");
     $finish;
   end
-
-  always @(posedge clk) begin
-    $display("At %0t: Expected = %0d, Actual (LED_TB) = %0d", $time, expected_result_q, LED_TB);
-
-    if (!$isunknown(LED_TB) && !$isunknown(expected_result_q)) begin
-
-      assert (LED_TB === expected_result_q)
-      else begin
-        $error("Time %0t: Test FAILED! Expected %0d, got %0d. LH: %0d, RH: %0d, Selector: %s",
-               $time, expected_result_q, LED_TB, SW_LH, SW_RH, SELECTOR_TB.name());
-        //$stop;
-      end
-    end else begin
-      $info("Time %0t: Test unknown (X/Z) values! LED_TB: %h, Expected: %h", $time, LED_TB,
-            expected_result_q);
-    end
-
-  end
-
 endmodule
