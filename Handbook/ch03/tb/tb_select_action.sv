@@ -1,4 +1,4 @@
-
+`timescale 1ns/10ps
 module tb_select_action;
   import types_pkg::*;
 
@@ -60,6 +60,14 @@ module tb_select_action;
 
   integer pos=0;
   initial begin
+    $dumpfile("wave.vcd");
+    //$dumpvars(0, tb); // or use your top-level module name    
+    $dumpvars(0, tb_select_action.SW_TB);    
+    $dumpvars(0, tb_select_action.LED_TB);   
+    $dumpvars(0, tb_select_action.SW_LH);   
+    $dumpvars(0, tb_select_action.SW_RH);   
+    $printtimescale(tb_select_action);
+
     SELECTOR_TB = RESET;
     SW_TB = '0;
     
