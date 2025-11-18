@@ -1,5 +1,6 @@
 `timescale 1ns / 100ps
 `include "../hdl/types_pkg.sv"
+import types_pkg::*;
 
 module tb_select_action;
 
