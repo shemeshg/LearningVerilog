@@ -1,16 +1,21 @@
 #!/usr/bin/env tsx
 import { exit } from 'process'
 import { $, cd } from 'zx'
-import { topModule, inFiles } from './params.ts';  
-const $$debug = $({ verbose: true, env: process.env })
+import { topModule, inFiles } from './params.ts';
+async function run_icarus() {
+    const $$debug = $({ verbose: true, env: process.env })
+    const binaryFile = "out"
 
-const binaryFile = "out"
+    await $`mkdir -p  ../build`
+    cd('../build')
+    await $$debug`rm -f ${binaryFile}`
+    await $$debug`iverilog -g2012 -o ${binaryFile} -s ${topModule}  ${inFiles}`
+    await $$debug`vvp ${binaryFile}`
+}
+
+async function run_xvlog(){
 
 
-await $`mkdir -p  ../build`
-cd('../build')
-await $$debug`rm -f ${binaryFile}`
-await $$debug`iverilog -g2012 -o ${binaryFile} -s ${topModule}  ${inFiles}`
-await $$debug`vvp ${binaryFile}`
-
+} 
+await run_icarus();
 exit(0)
