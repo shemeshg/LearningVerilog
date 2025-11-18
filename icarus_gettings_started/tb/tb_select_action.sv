@@ -1,5 +1,5 @@
 
-module hello;
+module tb_select_action;
   import types_pkg::*;
 
   logic clk = 0;
@@ -35,8 +35,8 @@ module hello;
       ADD: expected_result_comb = SW_LH + SW_RH;
       SUB: expected_result_comb = SW_LH - SW_RH;
       MUL: expected_result_comb = SW_LH * SW_RH;
-      //LEADING_ONES: expected_result_comb = expected_leading_ones;
-      //COUNT_ONES: expected_result_comb = expected_count;
+      LEADING_ONES: expected_result_comb = leading_ones_fn(SW_TB);
+      COUNT_ONES: expected_result_comb = count_ones_fn(SW_TB);
       default: expected_result_comb = '0;
     endcase
   end
@@ -48,19 +48,21 @@ module hello;
   end
 
   task run_simulation;
-    $display("Time %0t: Expected %0d, got %0d. LH: %0d, RH: %0d, Selector: %s", $time,
+    $display("Time %0t , sw: %b: Expected %0d, got %0d. LH: %0d, RH: %0d, Selector: %s", $time, SW_TB,
              expected_result_comb, LED_TB, SW_LH, SW_RH, SELECTOR_TB.name());
-    assert (LED_TB === expected_result_comb)      
+    assert (LED_TB === expected_result_comb)
     else begin
-      $error("Time %0t: Test FAILED! ",$time);
+      $error("Time %0t: Test FAILED! ", $time);
       $finish;
-    
-    end  
+
+    end
   endtask
 
+  integer pos=0;
   initial begin
     SELECTOR_TB = RESET;
     SW_TB = '0;
+    
     @(negedge rst);
 
     repeat (6) begin
@@ -79,6 +81,31 @@ module hello;
 
     repeat (6) begin
       SELECTOR_TB = MUL;
+      SW_TB = $urandom_range(0, (1 << BITS) - 1);
+      @(negedge clk);
+      run_simulation;
+    end
+
+    
+    repeat (6) begin
+      SELECTOR_TB = LEADING_ONES;
+       pos = $urandom_range(0, BITS - 1);
+      SW_TB = 0;
+      while (pos >= 0) begin
+        SW_TB = SW_TB | (1 << pos);
+        if (pos == 0) begin
+          pos = -1;  // force exit instead of disable/break
+        end else begin
+          pos = $urandom_range(0, pos - 1);
+        end
+      end
+
+      @(negedge clk);
+      run_simulation;
+    end
+
+    repeat (6) begin
+      SELECTOR_TB = COUNT_ONES;
       SW_TB = $urandom_range(0, (1 << BITS) - 1);
       @(negedge clk);
       run_simulation;

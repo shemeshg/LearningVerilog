@@ -1,19 +1,12 @@
 #!/usr/bin/env tsx
 import { exit } from 'process'
 import { $, cd } from 'zx'
-
+import { topModule, inFiles } from './params.ts';  
 const $$debug = $({ verbose: true, env: process.env })
 
 const binaryFile = "out"
 
-const topModule = "hello"
-const inFiles=[
-    "../hdl/types_pkg.sv",
-    "../hdl/add_sub_mult.sv",
-    "../hdl/select_action.sv",
 
-    "../hdl/hello.sv"            
-]
 await $`mkdir -p  ../build`
 cd('../build')
 await $$debug`rm -f ${binaryFile}`

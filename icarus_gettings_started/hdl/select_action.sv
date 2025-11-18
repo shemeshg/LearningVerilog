@@ -20,8 +20,8 @@ module select_action (
       ADD:          LED = add_sub_mult_LED;
       SUB:          LED = add_sub_mult_LED;
       MUL:          LED = add_sub_mult_LED;
-      LEADING_ONES: LED = SW + 5;
-      COUNT_ONES:   LED = SW + 6;
+      LEADING_ONES: LED = leading_ones_fn(SW);
+      COUNT_ONES:   LED = count_ones_fn(SW);
       default:      LED = '0;
     endcase
 
