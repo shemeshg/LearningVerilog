@@ -8,7 +8,7 @@ const binaryFile = "out"
 
 const topModule = "hello"
 const inFiles=[
-    "../hdl/my_package.sv",
+    "../hdl/types_pkg.sv",
     "../hdl/hello.sv"            
 ]
 await $`mkdir -p  ../build`
