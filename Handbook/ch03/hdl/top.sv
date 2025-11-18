@@ -18,31 +18,8 @@ module top (
   wire rst;
   assign rst = ~CPU_RESETN;
 
-  /*
-    wire [4:0] count;
-
-    count_ones #(.BITS(16)) u_count_ones (
-        .clk(CLK100MHZ),
-        .rst(rst),
-        .SW(SW),
-        .LED(count)
-    );
-
-    assign LED = count[3:0];
-
-
-    count_ones #(.BITS(16)) u_count_ones (
-        .clk(CLK100MHZ),
-        .rst(rst),
-        .SW(SW),
-        .LED(LED)
-    );
-    */
-
   opr_mode_t  SELECTOR_TB;
   select_action #() select_action_inst (
-      .clk(CLK100MHZ),
-      .rst(rst),
       .SELECTOR(SELECTOR_TB),
       .SW(SW),
       .LED(LED)
