@@ -54,6 +54,11 @@ async function run_xvlog() {
 
     await $$debug`xsim tb_sim --runall`
 }
-//await run_icarus();
-await run_xvlog();
+  if (process.platform === "darwin") {
+    await run_icarus();
+  } else if (process.platform === "linux") {
+    await run_xvlog();
+  } else {
+    console.log("Unsupported platform:", process.platform);
+  }
 exit(0)
