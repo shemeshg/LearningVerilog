@@ -13,9 +13,47 @@ async function run_icarus() {
     await $$debug`vvp ${binaryFile}`
 }
 
-async function run_xvlog(){
+async function getVivadoEnv() {
+    const result = await $`bash -c "set +u && source /usr/local/Xilinx/2025.1/Vivado/settings64.sh && env"`
 
+    const envVars = Object.fromEntries(
+        result.stdout
+            .split('\n')
+            .map(line => line.split('='))
+            .filter(([key, val]) => key && val)
+    )
 
-} 
-await run_icarus();
+    Object.assign(process.env, envVars)
+
+    const $$ = $({ verbose: false, env: process.env })
+    const $$debug = $({ verbose: true, env: process.env })
+
+    return [$$, $$debug]
+}
+
+async function run_xvlog() {
+
+    const [$$, $$debug] = await getVivadoEnv()
+    if (!$$ || !$$debug) { throw new Error("Could not init Vivadeo Env."); }
+
+    await $`mkdir -p ../build`
+    cd('../build')
+
+    await $$`echo $XILINX_VIVADO`
+    await $$`xvlog -sv ${inFiles}`
+    const xelab = await $$`xelab ${topModule} -debug typical -s tb_sim`
+
+    let errorsAndWarnings = xelab.stdout
+        .split('\n')
+        .filter(line => line.startsWith('WARNING: ') || line.startsWith('ERROR'))
+        .filter(line => !line.includes('XSIM 43-3431'))
+    if (errorsAndWarnings.length > 0) {
+        console.log(errorsAndWarnings)
+        throw new Error("Fix Linter Errors")
+    }
+
+    await $$debug`xsim tb_sim --runall`
+}
+//await run_icarus();
+await run_xvlog();
 exit(0)
