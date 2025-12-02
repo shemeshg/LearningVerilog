@@ -20,4 +20,6 @@ Switch {
     palette.windowText : CoreSystemPalette.windowText
 
     font: CoreSystemPalette.font
+
+
 }

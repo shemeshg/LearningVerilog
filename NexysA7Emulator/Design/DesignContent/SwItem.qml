@@ -9,8 +9,12 @@ import Playground
 ColumnLayout {
     id: swItem
     property bool ledEnabled: false
+    property bool swEnabled: false
+    property string name : "SW"
+    signal swChanged(bool value)
+
     CoreLabel {
-        text: "SW0"
+        text: name
     }
     CoreLabel {
         text: ledEnabled ? "<*>" : "."
@@ -18,6 +22,9 @@ ColumnLayout {
     }
     CoreSwitch {
         id: verticalSwitch
+
+        checked: swEnabled
+
         
         transform: Rotation {            
             angle: 270
@@ -25,8 +32,8 @@ ColumnLayout {
             origin.y: verticalSwitch.height / 2
         }
         
-        onClicked: {
-            ledEnabled = checked;
+        onToggled:  {
+            swItem.swChanged(checked);
         }
     }
 }

@@ -28,12 +28,16 @@ ColumnLayout {
 
     RowLayout {
 
-        SwItem {
-            ledEnabled: true
-        }
-        SwItem {
-            Layout.alignment: Qt.AlignHCenter
-            ledEnabled: false
+        Repeater {
+                    model: 16
+            SwItem {
+                ledEnabled: false
+                swEnabled: false
+                name: "SW" + (15 - index)
+                onSwChanged: (val)=>{
+                                 console.log(name + " " + val)
+                             }
+            }
         }
     }
 
