@@ -1,9 +1,8 @@
-// SevenSegmentDigit.qml
 import QtQuick
 
 Item {
     id: root
-    property int digit: 0              // 0..9
+
     property color onColor: "#ff2d2d"  // lit segment color
     property color offColor: "#330000" // unlit segment color
     property int thickness: 4         // segment thickness
@@ -16,27 +15,9 @@ Item {
 
     // Segment enable map for digits 0..9 (A,B,C,D,E,F,G)
     // A=0, B=1, C=2, D=3, E=4, F=5, G=6
-    readonly property var segmentMap: [
-        // 0: A B C D E F
-        [true,  true,  true,  true,  true,  true,  false],
-        // 1: B C
-        [false, true,  true,  false, false, false, false],
-        // 2: A B D E G
-        [true,  true,  false, true,  true,  false, true ],
-        // 3: A B C D G
-        [true,  true,  true,  true,  false, false, true ],
-        // 4: B C F G
-        [false, true,  true,  false, false, true,  true ],
-        // 5: A C D F G
-        [true,  false, true,  true,  false, true,  true ],
-        // 6: A C D E F G
-        [true,  false, true,  true,  true,  true,  true ],
-        // 7: A B C
-        [true,  true,  true,  false, false, false, false],
-        // 8: all
-        [true,  true,  true,  true,  true,  true,  true ],
-        // 9: A B C D F G
-        [true,  true,  true,  true,  false, true,  true ]
+    property var segmentMap: [
+        // 0: A B C D E F DOT
+        true,  true,  true,  true,  true,  true,  false, false
     ]
 
     // Helpers for sizing
@@ -50,7 +31,7 @@ Item {
         width: w - 2 * (pad + thickness)
         height: thickness
         radius: cornerRadius
-        color: segmentMap[root.digit][0] ? onColor : offColor
+        color: segmentMap[0] ? onColor : offColor
         anchors.top: parent.top
         anchors.topMargin: pad
         anchors.horizontalCenter: parent.horizontalCenter
@@ -62,7 +43,7 @@ Item {
         width: thickness
         height: (h - 4 * pad - 3 * thickness) / 2
         radius: cornerRadius
-        color: segmentMap[root.digit][1] ? onColor : offColor
+        color: segmentMap[1] ? onColor : offColor
         anchors.top: segA.bottom
         anchors.topMargin: pad
         anchors.right: parent.right
@@ -75,7 +56,7 @@ Item {
         width: thickness
         height: (h - 4 * pad - 3 * thickness) / 2
         radius: cornerRadius
-        color: segmentMap[root.digit][2] ? onColor : offColor
+        color: segmentMap[2] ? onColor : offColor
         anchors.top: segG.bottom
         anchors.topMargin: pad
         anchors.right: parent.right
@@ -88,7 +69,7 @@ Item {
         width: w - 2 * (pad + thickness)
         height: thickness
         radius: cornerRadius
-        color: segmentMap[root.digit][3] ? onColor : offColor
+        color: segmentMap[3] ? onColor : offColor
         anchors.bottom: parent.bottom
         anchors.bottomMargin: pad
         anchors.horizontalCenter: parent.horizontalCenter
@@ -100,7 +81,7 @@ Item {
         width: thickness
         height: (h - 4 * pad - 3 * thickness) / 2
         radius: cornerRadius
-        color: segmentMap[root.digit][4] ? onColor : offColor
+        color: segmentMap[4] ? onColor : offColor
         anchors.top: segG.bottom
         anchors.topMargin: pad
         anchors.left: parent.left
@@ -113,7 +94,7 @@ Item {
         width: thickness
         height: (h - 4 * pad - 3 * thickness) / 2
         radius: cornerRadius
-        color: segmentMap[root.digit][5] ? onColor : offColor
+        color: segmentMap[5] ? onColor : offColor
         anchors.top: segA.bottom
         anchors.topMargin: pad
         anchors.left: parent.left
@@ -126,7 +107,7 @@ Item {
         width: w - 2 * (pad + thickness)
         height: thickness
         radius: cornerRadius
-        color: segmentMap[root.digit][6] ? onColor : offColor
+        color: segmentMap[6] ? onColor : offColor
         anchors.verticalCenter: parent.verticalCenter
         anchors.horizontalCenter: parent.horizontalCenter
     }
@@ -140,6 +121,6 @@ Item {
         anchors.bottom: parent.bottom
         anchors.rightMargin: thickness * 0.5
         anchors.bottomMargin: thickness * 0.5
-        color: root.anOn ? root.onColor : root.offColor
+        color: segmentMap[7]  ? root.onColor : root.offColor
     }
 }
