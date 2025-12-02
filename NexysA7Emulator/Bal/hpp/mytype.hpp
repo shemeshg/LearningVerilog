@@ -17,8 +17,7 @@
 
 //- {include-header}
 #include "../prptHpp/MyTypePrivate.hpp" //- #include "../prptHpp/MyTypePrivate.h"
-//- {include-header}
-#include "SerialMngr.hpp" //- #include "SerialMngr.h"
+
 
 //-only-file header
 //-var {PRE} "MyType::"mytype

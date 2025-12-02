@@ -26,6 +26,17 @@ ColumnLayout {
         text: Constants.mytype.statusText
     }
 
+    RowLayout {
+
+        SwItem {
+            ledEnabled: true
+        }
+        SwItem {
+            Layout.alignment: Qt.AlignHCenter
+            ledEnabled: false
+        }
+    }
+
     Item {
         Layout.fillWidth: true
         Layout.fillHeight: true

@@ -23,7 +23,8 @@ QtObject {
 
     readonly property color backgroundColor: "#EAEAEA"
 
-    property MyType mytype: MyType {}
+    property MyType mytype: MyType {
+    }
 
     /*
     property StudioApplication application: StudioApplication {
