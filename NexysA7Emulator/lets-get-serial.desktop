@@ -1,0 +1,11 @@
+[Desktop Entry]
+Type=Application
+Name=lets-get-serial
+Version=1.0
+GenericName=lets get serial
+Comment=lets get serial
+Exec=/opt/lets-get-serial/bin/lets-get-serial.sh
+Icon=/usr/share/icons/hicolor/256x256/apps/lets-get-serial.png
+Terminal=false
+Categories=Music;Utility;
+Keywords=Midi;QT;

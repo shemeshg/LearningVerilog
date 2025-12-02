@@ -1,6 +1,6 @@
 # Learning fpga
 
-- Chapter 3:
+- The FPGA Programming Handbook Second Edition
 
 https://github.com/PacktPublishing/The-FPGA-Programming-Handbook-Second-Edition/tree/main
 
