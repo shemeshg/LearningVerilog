@@ -135,7 +135,7 @@ Item {
         id: anDot
         width: thickness
         height: thickness
-        radius: width / 2          // makes it a circle
+        radius: width / 2
         anchors.right: parent.right
         anchors.bottom: parent.bottom
         anchors.rightMargin: thickness * 0.5

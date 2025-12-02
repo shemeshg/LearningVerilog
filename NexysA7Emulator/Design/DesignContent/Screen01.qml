@@ -35,6 +35,7 @@ ColumnLayout {
                 swEnabled: false
                 name: "SW" + (15 - index)
                 onSwChanged: (val)=>{
+                                 ledEnabled = val
                                  console.log(name + " " + val)
                              }
             }
@@ -48,8 +49,8 @@ ColumnLayout {
 
                 digit: 7 - index
                 anOn: false
-                onColor: "#00ff66"
-                offColor: "#003322"
+                //onColor: "#00ff66"
+                //offColor: "#003322"
 
             }
         }
