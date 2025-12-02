@@ -2,3 +2,5 @@ Module DesignContent
 App 1.0 App.qml
 HeaderComponent 1.0 HeaderComponent.qml
 Screen01 1.0 Screen01.qml
+SevenSegmentDigit 1.0 SevenSegmentDigit.qml
+SwItem 1.0 SwItem.qml

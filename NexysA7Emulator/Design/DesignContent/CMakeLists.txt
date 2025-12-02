@@ -8,12 +8,13 @@
             App.qml
 HeaderComponent.qml
 Screen01.qml
+SevenSegmentDigit.qml
+SwItem.qml
         RESOURCES
             icons/application-exit.png
 icons/clear.png
 icons/connect.png
 icons/disconnect.png
 icons/settings.png
-QML_FILES SwItem.qml
         )
     

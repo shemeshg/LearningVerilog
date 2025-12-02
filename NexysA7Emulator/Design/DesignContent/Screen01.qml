@@ -41,6 +41,20 @@ ColumnLayout {
         }
     }
 
+    RowLayout {
+        Repeater {
+                    model: 8
+            SevenSegmentDigit {
+
+                digit: 7 - index
+                anOn: false
+                onColor: "#00ff66"
+                offColor: "#003322"
+
+            }
+        }
+
+    }
     Item {
         Layout.fillWidth: true
         Layout.fillHeight: true
