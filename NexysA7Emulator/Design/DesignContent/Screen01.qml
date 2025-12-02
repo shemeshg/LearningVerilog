@@ -76,6 +76,49 @@ ColumnLayout {
         }
 
     }
+
+
+    GridLayout {
+        columns: 4
+        rowSpacing: 8
+        columnSpacing: 8
+
+        // Row 0
+        CoreButton {
+            text: "CPU_RESETN"
+            Layout.row: 0
+            Layout.column: 0
+        }
+        CoreButton {
+            text: "BTNU"
+            Layout.row: 0
+            Layout.column: 2   // directly above BTNC
+        }
+
+        // Row 1
+        CoreButton {
+            text: "BTNL"
+            Layout.row: 1
+            Layout.column: 1
+        }
+        CoreButton {
+            text: "BTNC"
+            Layout.row: 1
+            Layout.column: 2
+        }
+        CoreButton {
+            text: "BTNR"
+            Layout.row: 1
+            Layout.column: 3
+        }
+
+        // Row 2
+        CoreButton {
+            text: "BTND"
+            Layout.row: 2
+            Layout.column: 2   // centered below BTNC
+        }
+    }
     Item {
         Layout.fillWidth: true
         Layout.fillHeight: true
