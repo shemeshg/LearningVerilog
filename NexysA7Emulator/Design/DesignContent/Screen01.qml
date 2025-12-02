@@ -69,12 +69,9 @@ ColumnLayout {
         Repeater {
             model: 8
             SevenSegmentDigit {
-
-
                 segmentMap: segmentNumberMap[7 - index]
                 //onColor: "#00ff66"
                 //offColor: "#003322"
-
             }
         }
 
