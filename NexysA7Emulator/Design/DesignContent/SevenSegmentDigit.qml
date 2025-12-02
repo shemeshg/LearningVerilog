@@ -112,6 +112,7 @@ Item {
         anchors.horizontalCenter: parent.horizontalCenter
     }
 
+     // Segment DOT
     Rectangle {
         id: anDot
         width: thickness

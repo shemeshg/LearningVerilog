@@ -20,7 +20,7 @@ ColumnLayout {
     height: parent.height
     Layout.fillWidth: true
 
-    // Segment enable map for digits 0..9 (A,B,C,D,E,F,G)
+    // Segment enable map for digits 0..9 (A,B,C,D,E,F,G, DOT)
     // A=0, B=1, C=2, D=3, E=4, F=5, G=6
     readonly property var segmentNumberMap: [
         // 0: A B C D E F
@@ -28,7 +28,7 @@ ColumnLayout {
         // 1: B C
         [false, true,  true,  false, false, false, false],
         // 2: A B D E G
-        [true,  true,  false, true,  true,  false, true, true ],
+        [true,  true,  false, true,  true,  false, true ],
         // 3: A B C D G
         [true,  true,  true,  true,  false, false, true ],
         // 4: B C F G
