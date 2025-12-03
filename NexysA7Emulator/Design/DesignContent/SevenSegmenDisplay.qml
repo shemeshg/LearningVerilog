@@ -37,7 +37,6 @@ RowLayout {
         model: displayState
 
 
-
         SevenSegmentDigit {
             //index
             segmentMap: displayState[7-index]
