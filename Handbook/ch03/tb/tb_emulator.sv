@@ -26,15 +26,21 @@ module tb_emulator;
   );
 
 
-
+int fd;
   always @(posedge clk or posedge rst) begin
     if (rst) begin
     end else begin
       #1000000000;
       #10ns;
-      $display("Time: %0t | SW_TB: %b | Selector: %s | LED_TB: %b", $time, SW_TB,
-               SELECTOR_TB.name(), LED_TB);
-      $fflush(32'h80000001);
+      
+    fd = $fopen("/Volumes/RAM_Disk_4G/tmpFifo/myLeds", "w");
+    if (fd) begin
+        $fwrite(fd, "Time: %0t | SW_TB: %b | Selector: %s | LED_TB: %b\n",
+                $time, SW_TB, SELECTOR_TB.name(), LED_TB);
+        $fclose(fd);  
+    end else begin
+        $display("ERROR: Could not open file!");
+    end
 
     end
   end

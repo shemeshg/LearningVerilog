@@ -31,10 +31,59 @@ public:
         //-only-file body
         : MyTypePrivate(parent){
 
+        QObject::connect(&timer, &QTimer::timeout, [this](){
+            getShalom();
+        });
+
     }
 
     //-only-file header
 public slots:
+
+
+    //- {fn}
+    void startShalom()
+    //-only-file body
+    {
+        timer.start(500);
+
+    }
+
+    //- {fn}
+    void stopShalom()
+    //-only-file body
+    {
+        timer.stop();
+
+    }
+
+//-only-file header
+signals:
+
+
+private slots:
+
+    
+private:
+
+    QTimer timer;
+
+    template <typename T>
+    void makeAsync(const QJSValue &callback, std::function<T()> func) {
+        auto *watcher = new QFutureWatcher<T>(this);
+        QObject::connect(watcher, &QFutureWatcher<T>::finished, this,
+                         [this, watcher, callback]() {
+            T returnValue = watcher->result();
+            QJSValue cbCopy(callback);
+            QJSEngine *engine = qjsEngine(this);
+            cbCopy.call(
+                QJSValueList{engine->toScriptValue(returnValue)});
+            watcher->deleteLater();
+        });
+        watcher->setFuture(QtConcurrent::run([=]() { return func(); }));
+    }
+
+
     //- {fn}
     bool getShalom()
     //-only-file body
@@ -57,38 +106,6 @@ public slots:
         return true;
     }
 
-    //- {fn}
-    void asyncGetShalom(const QJSValue &callback)
-    //-only-file body
-    {
-        makeAsync<bool>(callback, [=]() {
-            return getShalom();
-        });
 
-    }
-
-//-only-file header
-signals:
-
-
-private slots:
-
-    
-private:
-
-
-    template <typename T>
-    void makeAsync(const QJSValue &callback, std::function<T()> func) {
-        auto *watcher = new QFutureWatcher<T>(this);
-        QObject::connect(watcher, &QFutureWatcher<T>::finished, this,
-                         [this, watcher, callback]() {
-            T returnValue = watcher->result();
-            QJSValue cbCopy(callback);
-            QJSEngine *engine = qjsEngine(this);
-            cbCopy.call(
-                QJSValueList{engine->toScriptValue(returnValue)});
-            watcher->deleteLater();
-        });
-        watcher->setFuture(QtConcurrent::run([=]() { return func(); }));
-    }
+    //-only-file header
 };

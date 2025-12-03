@@ -106,9 +106,7 @@ ColumnLayout {
             Layout.row: 0
             Layout.column: 0
             onClicked: {
-                Constants.mytype.asyncGetShalom((val)=>{
-                                                console.log(val)
-                                                })
+                Constants.mytype.startShalom()
             }
         }
         CoreButton {
