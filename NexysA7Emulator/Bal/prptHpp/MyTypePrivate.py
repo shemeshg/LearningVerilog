@@ -21,7 +21,12 @@ ary = [
                 is_notify = True,
                 is_list = False
                 ),
-
+    create_prpt("QString", 'swStr',
+                init_val = '{"0000000000000000"}',
+                is_writable  = True,
+                is_notify = True,
+                is_list = False
+                ),
 
 ]
 

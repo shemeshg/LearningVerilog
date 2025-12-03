@@ -25,6 +25,7 @@ class MyTypePrivate : public QObject
     Q_PROPERTY(QString statusText READ statusText WRITE setStatusText NOTIFY statusTextChanged )
     Q_PROPERTY(QString timeStr READ timeStr WRITE setTimeStr NOTIFY timeStrChanged )
     Q_PROPERTY(QString ledStr READ ledStr WRITE setLedStr NOTIFY ledStrChanged )
+    Q_PROPERTY(QString swStr READ swStr WRITE setSwStr NOTIFY swStrChanged )
     
     QML_ELEMENT
 public:
@@ -73,12 +74,25 @@ void setLedStr(const QString &newLedStr)
 
 
     
+    QString swStr() const{return m_swStr;} 
+    
+void setSwStr(const QString &newSwStr)
+    {
+        if (m_swStr == newSwStr)
+            return;
+        m_swStr = newSwStr;
+        emit swStrChanged();
+    }
+
+
+    
     
     
 signals:
     void statusTextChanged();
     void timeStrChanged();
     void ledStrChanged();
+    void swStrChanged();
     
 
 protected:
@@ -88,6 +102,7 @@ private:
     QString m_statusText {"Not connected"};
     QString m_timeStr {};
     QString m_ledStr {"0000000000000000"};
+    QString m_swStr {"0000000000000000"};
     
 };
 //-only-file null

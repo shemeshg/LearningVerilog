@@ -51,9 +51,22 @@ ColumnLayout {
     CoreLabel {
         text: "Time code: " + Constants.mytype.timeStr
     }
-    CoreLabel {
-        text: "Led str " + Constants.mytype.ledStr
+
+    function formatBinStr(s){
+        return s + " " +
+                      parseInt(s, 2) + " lh " +
+                      parseInt(s.slice(0, 8), 2) + " rh " +
+                      parseInt(s.slice(8), 2)
     }
+
+    CoreLabel {
+        text: "Led str " + formatBinStr(Constants.mytype.ledStr)
+    }
+
+    CoreLabel {
+        text: "Sq str " + formatBinStr(Constants.mytype.swStr)
+    }
+
 
     RowLayout {
 
@@ -64,7 +77,9 @@ ColumnLayout {
                 swEnabled: false
                 name: "SW" + (15 - index)
                 onSwChanged: (val)=>{                      
-                                 console.log(name + " " + val)
+                                 let arr = Constants.mytype.swStr.split("");
+                                 arr[index] = val ? "1" : "0";
+                                 Constants.mytype.swStr = arr.join("");
                              }
             }
         }
