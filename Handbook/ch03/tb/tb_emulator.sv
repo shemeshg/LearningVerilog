@@ -19,6 +19,13 @@ module tb_emulator;
   word_t     SW_TB;
   opr_mode_t SELECTOR_TB;
 
+
+  logic  BTNC_TB;
+  logic BTNU_TB;
+  logic  BTNL_TB;
+  logic BTNR_TB;
+  logic BTND_TB;  
+
   select_action #() select_action_inst (
       .SELECTOR(SELECTOR_TB),
       .SW(SW_TB),
@@ -26,8 +33,8 @@ module tb_emulator;
   );
 
 
-  int fdw;
-  int fdr;
+  int fdw_led;
+  int fdr_sw;
   integer ret;
   always @(posedge clk or posedge rst) begin
     if (rst) begin
@@ -36,28 +43,26 @@ module tb_emulator;
       #100000000;
       #10ns;
 
-      fdw = $fopen("/Volumes/RAM_Disk_4G/tmpFifo/myLeds", "w");
-      if (fdw) begin
-        $fwrite(fdw, "Time: %0t | SW_TB: %b | Selector: %s | LED_TB: %b\n", $time, SW_TB,
+      fdw_led = $fopen("/Volumes/RAM_Disk_4G/tmpFifo/myLeds", "w");
+      if (fdw_led) begin
+        $fwrite(fdw_led, "Time: %0t | SW_TB: %b | Selector: %s | LED_TB: %b\n", $time, SW_TB,
                 SELECTOR_TB.name(), LED_TB);
-        $fclose(fdw);
+        $fclose(fdw_led);
       end else begin
         $display("ERROR: Could not open file!");
       end
 
-        fdr = $fopen("/Volumes/RAM_Disk_4G/tmpFifo/mySw", "r");
-        if (fdr == 0) begin
+        fdr_sw = $fopen("/Volumes/RAM_Disk_4G/tmpFifo/mySw", "r");
+        if (fdr_sw == 0) begin
           $display("ERROR: could not open file");
         end else begin
-          while (!$feof(fdr)) begin
-            ret = $fscanf(fdr, "%b", SW_TB);
+          while (!$feof(fdr_sw)) begin
+            ret = $fscanf(fdr_sw, "%b", SW_TB);
             if (ret == 1) begin
               //$display("Yes %b ", SW_TB );
-              //$display("and %b ", LED_TB );
-              //#10;  // apply for 10 cycles
             end
           end
-          $fclose(fdr);
+          $fclose(fdr_sw);
         end
 
     end
@@ -70,7 +75,12 @@ module tb_emulator;
     // Set a default mode
     SELECTOR_TB = ADD;
     SW_TB = 16'd0;
-    //SW_TB = 5;
+
+    BTNC_TB = 0;
+    BTNU_TB = 0;
+    BTNL_TB = 0;
+    BTNR_TB = 0;
+    BTND_TB = 0;  
 
   end
 
