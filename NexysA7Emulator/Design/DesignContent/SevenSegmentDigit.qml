@@ -31,7 +31,7 @@ Item {
         width: w - 2 * (pad + thickness)
         height: thickness
         radius: cornerRadius
-        color: segmentMap[0] ? onColor : offColor
+        color: segmentMap[0] ? offColor: onColor
         anchors.top: parent.top
         anchors.topMargin: pad
         anchors.horizontalCenter: parent.horizontalCenter
@@ -43,7 +43,7 @@ Item {
         width: thickness
         height: (h - 4 * pad - 3 * thickness) / 2
         radius: cornerRadius
-        color: segmentMap[1] ? onColor : offColor
+        color: segmentMap[1] ? offColor: onColor
         anchors.top: segA.bottom
         anchors.topMargin: pad
         anchors.right: parent.right
@@ -56,7 +56,7 @@ Item {
         width: thickness
         height: (h - 4 * pad - 3 * thickness) / 2
         radius: cornerRadius
-        color: segmentMap[2] ? onColor : offColor
+        color: segmentMap[2] ? offColor: onColor
         anchors.top: segG.bottom
         anchors.topMargin: pad
         anchors.right: parent.right
@@ -69,7 +69,7 @@ Item {
         width: w - 2 * (pad + thickness)
         height: thickness
         radius: cornerRadius
-        color: segmentMap[3] ? onColor : offColor
+        color: segmentMap[3] ? offColor: onColor
         anchors.bottom: parent.bottom
         anchors.bottomMargin: pad
         anchors.horizontalCenter: parent.horizontalCenter
@@ -81,7 +81,7 @@ Item {
         width: thickness
         height: (h - 4 * pad - 3 * thickness) / 2
         radius: cornerRadius
-        color: segmentMap[4] ? onColor : offColor
+        color: segmentMap[4] ? offColor: onColor
         anchors.top: segG.bottom
         anchors.topMargin: pad
         anchors.left: parent.left
@@ -94,7 +94,7 @@ Item {
         width: thickness
         height: (h - 4 * pad - 3 * thickness) / 2
         radius: cornerRadius
-        color: segmentMap[5] ? onColor : offColor
+        color: segmentMap[5] ? offColor: onColor
         anchors.top: segA.bottom
         anchors.topMargin: pad
         anchors.left: parent.left
@@ -107,7 +107,7 @@ Item {
         width: w - 2 * (pad + thickness)
         height: thickness
         radius: cornerRadius
-        color: segmentMap[6] ? onColor : offColor
+        color: segmentMap[6] ? offColor: onColor
         anchors.verticalCenter: parent.verticalCenter
         anchors.horizontalCenter: parent.horizontalCenter
     }
@@ -122,6 +122,6 @@ Item {
         anchors.bottom: parent.bottom
         anchors.rightMargin: thickness * 0.5
         anchors.bottomMargin: thickness * 0.5
-        color: segmentMap[7]  ? root.onColor : root.offColor
+        color: segmentMap[7]  ? offColor: onColor
     }
 }

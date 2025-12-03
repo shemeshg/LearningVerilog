@@ -20,30 +20,33 @@ ColumnLayout {
     height: parent.height
     Layout.fillWidth: true
 
+
+
     // Segment enable map for digits 0..9 (A,B,C,D,E,F,G, DOT)
     // A=0, B=1, C=2, D=3, E=4, F=5, G=6
     readonly property var segmentNumberMap: [
         // 0: A B C D E F
-        [true,  true,  true,  true,  true,  true,  false],
+        [false, false, false, false, false, false, true, true ],
         // 1: B C
-        [false, true,  true,  false, false, false, false],
+        [true,  false, false, true,  true,  true,  true , true],
         // 2: A B D E G
-        [true,  true,  false, true,  true,  false, true ],
+        [false, false, true,  false, false, true,  false, true],
         // 3: A B C D G
-        [true,  true,  true,  true,  false, false, true ],
+        [false, false, false, false, true,  true,  false, true],
         // 4: B C F G
-        [false, true,  true,  false, false, true,  true ],
+        [true,  false, false, true,  true,  false, false, true],
         // 5: A C D F G
-        [true,  false, true,  true,  false, true,  true ],
+        [false, true,  false, false, true,  false, false, true],
         // 6: A C D E F G
-        [true,  false, true,  true,  true,  true,  true ],
+        [false, true,  false, false, false, false, false, true],
         // 7: A B C
-        [true,  true,  true,  false, false, false, false],
+        [false, false, false, true,  true,  true,  true, true ],
         // 8: all
-        [true,  true,  true,  true,  true,  true,  true ],
+        [false, false, false, false, false, false, false, true],
         // 9: A B C D F G
-        [true,  true,  true,  true,  false, true,  true ]
+        [false, false, false, false, true,  false, false, true]
     ]
+
 
     CoreLabel {
         text: Constants.mytype.statusText
@@ -65,15 +68,29 @@ ColumnLayout {
         }
     }
 
-    RowLayout {
-        Repeater {
-            model: 8
-            SevenSegmentDigit {
-                segmentMap: segmentNumberMap[7 - index]
-                //onColor: "#00ff66"
-                //offColor: "#003322"
-            }
-        }
+
+    Timer {
+        property int i: 0
+             id: updateTimer
+
+             interval: 500 // 1 second
+             running: true
+             repeat: true
+             onTriggered: {
+                 i++;
+                 if (i%2){
+                     ssd.segments = segmentNumberMap[5]
+                     ssd.an = [false, false,false,false,false,false,false,true]
+                 } else {
+                     ssd.segments = segmentNumberMap[8]
+                     ssd.an = [false, false,false,false,false,false,true,false]
+                 }
+
+             }
+         }
+
+    SevenSegmenDisplay {
+        id: ssd
 
     }
 
