@@ -3,6 +3,7 @@ import { exit } from 'process'
 import { $, cd } from 'zx'
 import { topModule, inFiles } from './params.ts';
 async function run_icarus() {
+    //killall vvp
     const $$debug = $({ verbose: true, env: process.env })
     const binaryFile = "out"
 

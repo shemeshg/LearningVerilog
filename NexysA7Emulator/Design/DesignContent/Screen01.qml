@@ -52,7 +52,7 @@ ColumnLayout {
         text: "Time code: " + Constants.mytype.timeStr
     }
     CoreLabel {
-        text: "Led str " + Constants.mytype.ledStr.length
+        text: "Led str " + Constants.mytype.ledStr
     }
 
     RowLayout {
@@ -63,8 +63,7 @@ ColumnLayout {
                 ledEnabled: Number( Constants.mytype.ledStr[index])
                 swEnabled: false
                 name: "SW" + (15 - index)
-                onSwChanged: (val)=>{
-                                 ledEnabled = val
+                onSwChanged: (val)=>{                      
                                  console.log(name + " " + val)
                              }
             }

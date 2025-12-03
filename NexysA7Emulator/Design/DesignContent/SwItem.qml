@@ -8,6 +8,9 @@ import Playground
 
 ColumnLayout {
     id: swItem
+    property string onColor: "#00ff66"
+    property string offColor : "#003322"
+
     property bool ledEnabled: false
     property bool swEnabled: false
     property string name : "SW"
@@ -16,10 +19,13 @@ ColumnLayout {
     CoreLabel {
         text: name
     }
-    CoreLabel {
-        text: ledEnabled ? "<*>" : "."
-
+    Rectangle {
+        width: 10
+        height: 10
+        color: ledEnabled ? onColor : offColor
     }
+
+
     CoreSwitch {
         id: verticalSwitch
 
