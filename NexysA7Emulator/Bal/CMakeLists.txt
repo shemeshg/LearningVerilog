@@ -36,8 +36,8 @@ ${CMAKE_CURRENT_SOURCE_DIR}/prptHpp/MyTypePrivate.hpp
 endif()
                      
 
-find_package(QT NAMES Qt6 Qt5 COMPONENTS SerialPort Concurrent Gui REQUIRED)
-find_package(Qt${QT_VERSION_MAJOR} COMPONENTS SerialPort Concurrent Gui REQUIRED)
+find_package(QT NAMES Qt6 Qt5 COMPONENTS Concurrent Gui REQUIRED)
+find_package(Qt${QT_VERSION_MAJOR} COMPONENTS Concurrent Gui REQUIRED)
 
 
 add_library(Bal STATIC
@@ -57,8 +57,7 @@ qt6_add_qml_module(Bal
 target_include_directories(Bal PRIVATE ${CMAKE_CURRENT_BINARY_DIR}/hpp
 ${CMAKE_CURRENT_BINARY_DIR}/prptHpp)                     
         
-target_link_libraries(Bal PRIVATE Qt${QT_VERSION_MAJOR}::SerialPort
-Qt${QT_VERSION_MAJOR}::Concurrent
+target_link_libraries(Bal PRIVATE Qt${QT_VERSION_MAJOR}::Concurrent
 Qt${QT_VERSION_MAJOR}::Gui) 
 
 if(GEN_HPP)

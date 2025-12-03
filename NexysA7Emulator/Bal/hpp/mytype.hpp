@@ -98,11 +98,14 @@ private:
         QTextStream in(&file);
         while (!in.atEnd()) {
             QString line = in.readLine();
-            qDebug() << line;
+            auto s = line.split("|");
+            setTimeStr(s.at(0).split(":").at(1).trimmed());
+            setLedStr(s.at(3).split(":").at(1).trimmed());
+            qDebug()<<ledStr();
+
         }
 
         file.close();
-        qDebug() << "Finished!!";
         return true;
     }
 

@@ -52,7 +52,8 @@ int fd;
 
     // Set a default mode
     SELECTOR_TB = ADD;
-    SW_TB = 16'd0;
+    //SW_TB = 16'd0;
+    SW_TB = 5;
 
   end
 

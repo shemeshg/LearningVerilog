@@ -49,15 +49,18 @@ ColumnLayout {
 
 
     CoreLabel {
-        text: Constants.mytype.statusText
+        text: "Time code: " + Constants.mytype.timeStr
+    }
+    CoreLabel {
+        text: "Led str " + Constants.mytype.ledStr.length
     }
 
     RowLayout {
 
         Repeater {
-            model: 16
+            model: Constants.mytype.ledStr.length
             SwItem {
-                ledEnabled: false
+                ledEnabled: Number( Constants.mytype.ledStr[index])
                 swEnabled: false
                 name: "SW" + (15 - index)
                 onSwChanged: (val)=>{

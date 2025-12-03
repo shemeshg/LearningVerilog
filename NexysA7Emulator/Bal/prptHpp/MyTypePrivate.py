@@ -8,7 +8,21 @@ ary = [
                 is_writable  = True,
                 is_notify = True, 
                 is_list = False
-                )
+                ),
+    create_prpt("QString", 'timeStr',
+                init_val = '{}',
+                is_writable  = True,
+                is_notify = True,
+                is_list = False
+                ),
+    create_prpt("QString", 'ledStr',
+                init_val = '{"0000000000000000"}',
+                is_writable  = True,
+                is_notify = True,
+                is_list = False
+                ),
+
+
 ]
 
 enumClasss = []
