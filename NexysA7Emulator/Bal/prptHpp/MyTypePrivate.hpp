@@ -23,20 +23,20 @@ class MyTypePrivate : public QObject
 {
     Q_OBJECT
     Q_PROPERTY(QString statusText READ statusText WRITE setStatusText NOTIFY statusTextChanged )
-    
+
     QML_ELEMENT
 public:
-    
+
     MyTypePrivate(QObject *parent):QObject(parent){}
 
     virtual ~MyTypePrivate() {
-        
+
     }
 
-    
-    
-    QString statusText() const{return m_statusText;} 
-    
+
+
+    QString statusText() const{return m_statusText;}
+
 void setStatusText(const QString &newStatusText)
     {
         if (m_statusText == newStatusText)
@@ -46,19 +46,19 @@ void setStatusText(const QString &newStatusText)
     }
 
 
-    
-    
-    
+
+
+
 signals:
     void statusTextChanged();
-    
+
 
 protected:
-    
+
 
 private:
     QString m_statusText {"Not connected"};
-    
+
 };
 //-only-file null
 

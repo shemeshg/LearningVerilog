@@ -32,7 +32,7 @@ module tb_emulator;
     end else begin
       #1000000000;
       #10ns;
-      $display("Time %0t | SW_TB: %b | Selector: %s | LED_TB: %0d", $time, SW_TB,
+      $display("Time: %0t | SW_TB: %b | Selector: %s | LED_TB: %b", $time, SW_TB,
                SELECTOR_TB.name(), LED_TB);
       $fflush(32'h80000001);
 

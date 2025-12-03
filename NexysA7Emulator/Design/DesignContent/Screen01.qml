@@ -105,6 +105,11 @@ ColumnLayout {
             text: "CPU_RESETN"
             Layout.row: 0
             Layout.column: 0
+            onClicked: {
+                Constants.mytype.asyncGetShalom((val)=>{
+                                                console.log(val)
+                                                })
+            }
         }
         CoreButton {
             text: "BTNU"

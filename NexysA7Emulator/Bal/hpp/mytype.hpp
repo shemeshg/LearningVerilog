@@ -36,13 +36,36 @@ public:
     //-only-file header
 public slots:
     //- {fn}
-    QString getShalom()
+    bool getShalom()
     //-only-file body
     {
 
-        return "shalom";
+        QFile file("/Volumes/RAM_Disk_4G/tmpFifo/myLeds");
+        if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
+            qDebug() << "Could not open file!";
+            return false;
+        }
+
+        QTextStream in(&file);
+        while (!in.atEnd()) {
+            QString line = in.readLine();
+            qDebug() << line;
+        }
+
+        file.close();
+        qDebug() << "Finished!!";
+        return true;
     }
 
+    //- {fn}
+    void asyncGetShalom(const QJSValue &callback)
+    //-only-file body
+    {
+        makeAsync<bool>(callback, [=]() {
+            return getShalom();
+        });
+
+    }
 
 //-only-file header
 signals:
