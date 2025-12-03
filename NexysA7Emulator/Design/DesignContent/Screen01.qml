@@ -73,13 +73,13 @@ ColumnLayout {
         property int i: 0
              id: updateTimer
 
-             interval: 500 // 1 second
+             interval: 1000 // 1 second
              running: true
              repeat: true
              onTriggered: {
                  i++;
                  if (i%2){
-                     ssd.segments = segmentNumberMap[5]
+                     ssd.segments = segmentNumberMap[i%10]
                      ssd.an = [false, false,false,false,false,false,false,true]
                  } else {
                      ssd.segments = segmentNumberMap[8]

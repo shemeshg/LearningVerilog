@@ -48,6 +48,7 @@ Item {
         anchors.topMargin: pad
         anchors.right: parent.right
         anchors.rightMargin: pad + thickness
+
     }
 
     // Segment C (bottom-right)
@@ -61,6 +62,7 @@ Item {
         anchors.topMargin: pad
         anchors.right: parent.right
         anchors.rightMargin: pad + thickness
+
     }
 
     // Segment D (bottom)
@@ -73,6 +75,7 @@ Item {
         anchors.bottom: parent.bottom
         anchors.bottomMargin: pad
         anchors.horizontalCenter: parent.horizontalCenter
+
     }
 
     // Segment E (bottom-left)
@@ -86,6 +89,7 @@ Item {
         anchors.topMargin: pad
         anchors.left: parent.left
         anchors.leftMargin: pad + thickness
+
     }
 
     // Segment F (top-left)
@@ -99,6 +103,7 @@ Item {
         anchors.topMargin: pad
         anchors.left: parent.left
         anchors.leftMargin: pad + thickness
+
     }
 
     // Segment G (middle)
@@ -110,11 +115,12 @@ Item {
         color: segmentMap[6] ? offColor: onColor
         anchors.verticalCenter: parent.verticalCenter
         anchors.horizontalCenter: parent.horizontalCenter
+
     }
 
      // Segment DOT
     Rectangle {
-        id: anDot
+        id: segDot
         width: thickness
         height: thickness
         radius: width / 2
@@ -123,5 +129,6 @@ Item {
         anchors.rightMargin: thickness * 0.5
         anchors.bottomMargin: thickness * 0.5
         color: segmentMap[7]  ? offColor: onColor
+
     }
 }

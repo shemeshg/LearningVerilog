@@ -12,15 +12,39 @@ RowLayout {
     property var segments: [false,  false,  false,  false,  false,  false,  false]
     property string onColor: "#00ff66"
     property string offColor : "#003322"
+
+    property var displayState: [
+        [true,  true,  true,  true,  true,  true,  true, true],
+        [true,  true,  true,  true,  true,  true,  true, true],
+        [true,  true,  true,  true,  true,  true,  true, true],
+        [true,  true,  true,  true,  true,  true,  true, true],
+        [true,  true,  true,  true,  true,  true,  true, true],
+        [true,  true,  true,  true,  true,  true,  true, true],
+        [true,  true,  true,  true,  true,  true,  true, true],
+        [true,  true,  true,  true,  true,  true,  true, true]
+    ]
+    onAnChanged: {
+        an.forEach(function(currentValue, index, array) {
+            if(currentValue){
+                displayState[7- index] = segments
+                displayState = [...displayState]
+
+            }
+        });
+                 }
+
     Repeater {
-        model: 8
+        model: displayState
+
+
+
         SevenSegmentDigit {
             //index
-            segmentMap: an[index] ? segments :
-                                    [true,  true,  true,  true,  true,  true,  true, true]
+            segmentMap: displayState[7-index]
             onColor: componentId.onColor
             offColor: componentId.offColor
         }
+
         
     }
     
