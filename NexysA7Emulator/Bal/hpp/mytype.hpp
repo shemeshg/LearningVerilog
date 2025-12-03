@@ -32,20 +32,37 @@ public:
         : MyTypePrivate(parent){
 
         QObject::connect(&timer, &QTimer::timeout, [this](){
-            getShalom();
+            getLedStatus();
         });
+        writeSwStatus();
 
     }
 
     //-only-file header
 public slots:
 
+    //- {fn}
+    void writeSwStatus()
+    //-only-file body
+    {
+        QFile file("/Volumes/RAM_Disk_4G/tmpFifo/mySw");
+
+        if (!file.open(QIODevice::WriteOnly | QIODevice::Text)) {
+            qDebug() << "Could not open file for writing!";
+            return;
+        }
+
+        QTextStream out(&file);
+        out << swStr() <<"\n";
+
+        file.close();
+    }
 
     //- {fn}
     void startShalom()
     //-only-file body
     {
-        timer.start(500);
+        timer.start(100);
 
     }
 
@@ -85,7 +102,7 @@ private:
 
 
     //- {fn}
-    bool getShalom()
+    bool getLedStatus()
     //-only-file body
     {
 
@@ -101,8 +118,6 @@ private:
             auto s = line.split("|");
             setTimeStr(s.at(0).split(":").at(1).trimmed());
             setLedStr(s.at(3).split(":").at(1).trimmed());
-            qDebug()<<ledStr();
-
         }
 
         file.close();

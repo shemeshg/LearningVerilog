@@ -80,6 +80,7 @@ ColumnLayout {
                                  let arr = Constants.mytype.swStr.split("");
                                  arr[index] = val ? "1" : "0";
                                  Constants.mytype.swStr = arr.join("");
+                                 Constants.mytype.writeSwStatus();
                              }
             }
         }

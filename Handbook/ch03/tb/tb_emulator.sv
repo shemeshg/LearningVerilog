@@ -26,34 +26,51 @@ module tb_emulator;
   );
 
 
-int fd;
+  int fdw;
+  int fdr;
+  integer ret;
   always @(posedge clk or posedge rst) begin
     if (rst) begin
     end else begin
-      #1000000000;
+      //#1000000000;
+      #100000000;
       #10ns;
-      
-    fd = $fopen("/Volumes/RAM_Disk_4G/tmpFifo/myLeds", "w");
-    if (fd) begin
-        $fwrite(fd, "Time: %0t | SW_TB: %b | Selector: %s | LED_TB: %b\n",
-                $time, SW_TB, SELECTOR_TB.name(), LED_TB);
-        $fclose(fd);  
-    end else begin
+
+      fdw = $fopen("/Volumes/RAM_Disk_4G/tmpFifo/myLeds", "w");
+      if (fdw) begin
+        $fwrite(fdw, "Time: %0t | SW_TB: %b | Selector: %s | LED_TB: %b\n", $time, SW_TB,
+                SELECTOR_TB.name(), LED_TB);
+        $fclose(fdw);
+      end else begin
         $display("ERROR: Could not open file!");
-    end
+      end
+
+        fdr = $fopen("/Volumes/RAM_Disk_4G/tmpFifo/mySw", "r");
+        if (fdr == 0) begin
+          $display("ERROR: could not open file");
+        end else begin
+          while (!$feof(fdr)) begin
+            ret = $fscanf(fdr, "%b", SW_TB);
+            if (ret == 1) begin
+              //$display("Yes %b ", SW_TB );
+              //$display("and %b ", LED_TB );
+              //#10;  // apply for 10 cycles
+            end
+          end
+          $fclose(fdr);
+        end
 
     end
   end
 
-  // Stimulus Generation Block (Runs once to set initial state, then finishes its own execution)
   initial begin
 
     @(negedge rst);
 
     // Set a default mode
     SELECTOR_TB = ADD;
-    //SW_TB = 16'd0;
-    SW_TB = 5;
+    SW_TB = 16'd0;
+    //SW_TB = 5;
 
   end
 
