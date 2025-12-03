@@ -1,4 +1,6 @@
-import types_pkg::*;
+
+
+
 
 module select_action (
     input  opr_mode_t SELECTOR,
@@ -6,7 +8,8 @@ module select_action (
     output word_t     LED
 );
 
-
+  import types_pkg::*;
+  
   word_t add_sub_mult_LED;
   add_sub_mult #() add_sub_mult_inst (
       .SELECTOR(SELECTOR),
