@@ -66,6 +66,20 @@ module tb_emulator;
         $fclose(fdr_sw);
       end
 
+      fdr_sw = $fopen("/Volumes/RAM_Disk_4G/tmpFifo/myBtns", "r");
+      if (fdr_sw == 0) begin
+        $display("ERROR: could not open file");
+      end else begin
+        while (!$feof(
+            fdr_sw
+        )) begin
+          ret = $fscanf(fdr_sw, "%b %b %b %b %b %b", rst, BTNU_TB, BTNL_TB, BTNC_TB, BTNR_TB, BTND_TB);
+          if (ret == 1) begin
+          end
+        end
+        $fclose(fdr_sw);
+      end
+
     end
   end
 
