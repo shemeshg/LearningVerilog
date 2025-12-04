@@ -83,6 +83,18 @@ module tb_emulator;
     end
   end
 
+
+  always_comb begin
+    case (1'b1)
+      BTNC_TB: SELECTOR_TB  = MUL;
+      BTNU_TB: SELECTOR_TB  = LEADING_ONES;
+      BTND_TB: SELECTOR_TB  = COUNT_ONES;
+      BTNL_TB: SELECTOR_TB  = ADD;
+      BTNR_TB: SELECTOR_TB  = SUB;
+      default: SELECTOR_TB = RESET;
+    endcase
+  end
+
   initial begin
 
     @(negedge rst);

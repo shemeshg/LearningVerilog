@@ -30,6 +30,8 @@ public:
 
         QObject::connect(&timer, &QTimer::timeout, [this]() { getLedStatus(); });
         writeSwStatus();
+
+        timer.start(100);
     }
 
     //-only-file header
