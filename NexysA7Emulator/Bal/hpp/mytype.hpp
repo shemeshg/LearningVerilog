@@ -8,16 +8,13 @@
 #include <QJSEngine>
 #include <QtConcurrent>
 
-
 //-only-file body //-
 //- #include "mytype.h"
-#include <QGuiApplication>
 #include <QClipboard>
-
+#include <QGuiApplication>
 
 //- {include-header}
 #include "../prptHpp/MyTypePrivate.hpp" //- #include "../prptHpp/MyTypePrivate.h"
-
 
 //-only-file header
 //-var {PRE} "MyType::"mytype
@@ -29,13 +26,10 @@ public:
     //- {function} 1 1
     explicit MyType(QObject *parent = nullptr)
         //-only-file body
-        : MyTypePrivate(parent){
+        : MyTypePrivate(parent) {
 
-        QObject::connect(&timer, &QTimer::timeout, [this](){
-            getLedStatus();
-        });
+        QObject::connect(&timer, &QTimer::timeout, [this]() { getLedStatus(); });
         writeSwStatus();
-
     }
 
     //-only-file header
@@ -51,38 +45,35 @@ public slots:
             qDebug() << "Could not open file for writing!";
             return;
         }
-
         QTextStream out(&file);
-        out << swStr() <<"\n";
-
+        out << swStr() << "\n";
         file.close();
     }
 
     //- {fn}
-    void startShalom()
+    void writeBtnStatus(QString cpuResetn, QString btnu, QString btnl,
+                        QString btnc, QString btnr, QString btnd)
     //-only-file body
     {
-        timer.start(100);
 
+        QFile file("/Volumes/RAM_Disk_4G/tmpFifo/myBtns");
+
+        if (!file.open(QIODevice::WriteOnly | QIODevice::Text)) {
+            qDebug() << "Could not open file for writing!";
+            return;
+        }
+        QTextStream out(&file);
+        out << cpuResetn << " " << btnu << " " << btnl << " " << btnc << " " << btnr
+            << " " << btnd << "\n";
+        file.close();
     }
 
-    //- {fn}
-    void stopShalom()
-    //-only-file body
-    {
-        timer.stop();
-
-    }
-
-//-only-file header
+    //-only-file header
 signals:
-
 
 private slots:
 
-    
 private:
-
     QTimer timer;
 
     template <typename T>
@@ -99,7 +90,6 @@ private:
         });
         watcher->setFuture(QtConcurrent::run([=]() { return func(); }));
     }
-
 
     //- {fn}
     bool getLedStatus()
@@ -123,7 +113,6 @@ private:
         file.close();
         return true;
     }
-
 
     //-only-file header
 };

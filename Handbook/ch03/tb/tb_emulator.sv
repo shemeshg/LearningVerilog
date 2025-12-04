@@ -20,11 +20,11 @@ module tb_emulator;
   opr_mode_t SELECTOR_TB;
 
 
-  logic  BTNC_TB;
-  logic BTNU_TB;
-  logic  BTNL_TB;
-  logic BTNR_TB;
-  logic BTND_TB;  
+  logic      BTNC_TB;
+  logic      BTNU_TB;
+  logic      BTNL_TB;
+  logic      BTNR_TB;
+  logic      BTND_TB;
 
   select_action #() select_action_inst (
       .SELECTOR(SELECTOR_TB),
@@ -52,18 +52,19 @@ module tb_emulator;
         $display("ERROR: Could not open file!");
       end
 
-        fdr_sw = $fopen("/Volumes/RAM_Disk_4G/tmpFifo/mySw", "r");
-        if (fdr_sw == 0) begin
-          $display("ERROR: could not open file");
-        end else begin
-          while (!$feof(fdr_sw)) begin
-            ret = $fscanf(fdr_sw, "%b", SW_TB);
-            if (ret == 1) begin
-              //$display("Yes %b ", SW_TB );
-            end
+      fdr_sw = $fopen("/Volumes/RAM_Disk_4G/tmpFifo/mySw", "r");
+      if (fdr_sw == 0) begin
+        $display("ERROR: could not open file");
+      end else begin
+        while (!$feof(
+            fdr_sw
+        )) begin
+          ret = $fscanf(fdr_sw, "%b", SW_TB);
+          if (ret == 1) begin
           end
-          $fclose(fdr_sw);
         end
+        $fclose(fdr_sw);
+      end
 
     end
   end
@@ -80,7 +81,7 @@ module tb_emulator;
     BTNU_TB = 0;
     BTNL_TB = 0;
     BTNR_TB = 0;
-    BTND_TB = 0;  
+    BTND_TB = 0;
 
   end
 

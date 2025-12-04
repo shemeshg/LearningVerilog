@@ -54,9 +54,9 @@ ColumnLayout {
 
     function formatBinStr(s){
         return s + " " +
-                      parseInt(s, 2) + " lh " +
-                      parseInt(s.slice(0, 8), 2) + " rh " +
-                      parseInt(s.slice(8), 2)
+                parseInt(s, 2) + " lh " +
+                parseInt(s.slice(0, 8), 2) + " rh " +
+                parseInt(s.slice(8), 2)
     }
 
     CoreLabel {
@@ -76,7 +76,7 @@ ColumnLayout {
                 ledEnabled: Number( Constants.mytype.ledStr[index])
                 swEnabled: false
                 name: "SW" + (15 - index)
-                onSwChanged: (val)=>{                      
+                onSwChanged: (val)=>{
                                  let arr = Constants.mytype.swStr.split("");
                                  arr[index] = val ? "1" : "0";
                                  Constants.mytype.swStr = arr.join("");
@@ -112,6 +112,20 @@ ColumnLayout {
         id: ssd
     }
 
+    function bl2Str(bl){
+        return bl ? "1": "0"
+    }
+
+    function writeBtnStatus(){
+        Constants.mytype.writeBtnStatus(
+                    bl2Str(cpuResetn.pressed) ,
+                    bl2Str(btnu.pressed) ,
+                    bl2Str(btnl.pressed) ,
+                    bl2Str(btnc.pressed) ,
+                    bl2Str(btnr.pressed) ,
+                    bl2Str(btnd.pressed)
+                    );
+    }
 
     GridLayout {
         columns: 4
@@ -120,41 +134,62 @@ ColumnLayout {
 
         // Row 0
         CoreButton {
+            id:cpuResetn
             text: "CPU_RESETN"
             Layout.row: 0
             Layout.column: 0
-            onClicked: {
-                Constants.mytype.startShalom()
+            onPressedChanged:   {
+                writeBtnStatus();
             }
         }
         CoreButton {
+            id: btnu
             text: "BTNU"
             Layout.row: 0
             Layout.column: 2   // directly above BTNC
+            onPressedChanged:   {
+                writeBtnStatus();
+            }
         }
 
         // Row 1
         CoreButton {
+            id: btnl
             text: "BTNL"
             Layout.row: 1
             Layout.column: 1
+            onPressedChanged:   {
+                writeBtnStatus();
+            }
         }
         CoreButton {
+            id: btnc
             text: "BTNC"
             Layout.row: 1
             Layout.column: 2
+            onPressedChanged:   {
+                writeBtnStatus();
+            }
         }
         CoreButton {
+            id: btnr
             text: "BTNR"
             Layout.row: 1
             Layout.column: 3
+            onPressedChanged:   {
+                writeBtnStatus();
+            }
         }
 
         // Row 2
         CoreButton {
+            id: btnd
             text: "BTND"
             Layout.row: 2
             Layout.column: 2   // centered below BTNC
+            onPressedChanged:   {
+                writeBtnStatus();
+            }
         }
     }
     Item {
