@@ -28,7 +28,7 @@ module tb_emulator;
   integer ret;
   select_btn_action #() select_btn_action_inst (
       .SW(SW_TB),
-      .LED(LED_TB)
+      .LED(LED_TB),
       .CPU_RESETN(rst),
       .BTNC(BTNC_TB),
       .BTNU(BTNU_TB),

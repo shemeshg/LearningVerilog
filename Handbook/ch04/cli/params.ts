@@ -1,5 +1,5 @@
 
-const isEmulator = false;
+const isEmulator = true;
 export const topModule = isEmulator ? "tb_emulator": "tb_select_action"
 export const inFiles=[
     "../hdl/types_pkg.sv",

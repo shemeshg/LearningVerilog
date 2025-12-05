@@ -45,8 +45,7 @@ module tb_emulator;
 
       fdw_led = $fopen("/Volumes/RAM_Disk_4G/tmpFifo/myLeds", "w");
       if (fdw_led) begin
-        $fwrite(fdw_led, "Time: %0t | SW_TB: %b | Selector: %s | LED_TB: %b\n", $time, SW_TB,
-                SELECTOR_TB.name(), LED_TB);
+        $fwrite(fdw_led, "Time: %0t | SW_TB: %b | LED_TB: %b\n", $time, SW_TB, LED_TB);
         $fclose(fdw_led);
       end else begin
         $display("ERROR: Could not open file!");
