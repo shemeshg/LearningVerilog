@@ -1,9 +1,10 @@
-export const topModule = "tb_emulator" //"tb_select_action"
+
+const isEmulator = false;
+export const topModule = isEmulator ? "tb_emulator": "tb_select_action"
 export const inFiles=[
     "../hdl/types_pkg.sv",
     "../hdl/add_sub_mult.sv",
     "../hdl/select_action.sv",
-
-    //"../tb/tb_select_action.sv"            
-    "../tb/tb_emulator.sv"
+    "../hdl/select_btn_action.sv",
+    isEmulator ? "../tb/tb_emulator.sv" : "../tb/tb_select_action.sv" 
 ]

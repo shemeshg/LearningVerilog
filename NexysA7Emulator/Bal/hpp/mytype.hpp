@@ -109,7 +109,7 @@ private:
             QString line = in.readLine();
             auto s = line.split("|");
             setTimeStr(s.at(0).split(":").at(1).trimmed());
-            setLedStr(s.at(3).split(":").at(1).trimmed());
+            setLedStr(s.at(2).split(":").at(1).trimmed());
         }
 
         file.close();

@@ -17,7 +17,6 @@ module tb_emulator;
 
   word_t     LED_TB;
   word_t     SW_TB;
-  opr_mode_t SELECTOR_TB;
 
 
   logic      BTNC_TB;
@@ -26,16 +25,22 @@ module tb_emulator;
   logic      BTNR_TB;
   logic      BTND_TB;
 
-  select_action #() select_action_inst (
-      .SELECTOR(SELECTOR_TB),
+  integer ret;
+  select_btn_action #() select_btn_action_inst (
       .SW(SW_TB),
       .LED(LED_TB)
+      .CPU_RESETN(rst),
+      .BTNC(BTNC_TB),
+      .BTNU(BTNU_TB),
+      .BTNL(BTNL_TB),
+      .BTNR(BTNR_TB),
+      .BTND(BTND_TB)     
   );
 
 
   int fdw_led;
   int fdr_sw;
-  integer ret;
+  
   always @(posedge clk or posedge rst) begin
     if (rst) begin
     end else begin
@@ -45,8 +50,7 @@ module tb_emulator;
 
       fdw_led = $fopen("/Volumes/RAM_Disk_4G/tmpFifo/myLeds", "w");
       if (fdw_led) begin
-        $fwrite(fdw_led, "Time: %0t | SW_TB: %b | Selector: %s | LED_TB: %b\n", $time, SW_TB,
-                SELECTOR_TB.name(), LED_TB);
+        $fwrite(fdw_led, "Time: %0t | SW_TB: %b | LED_TB: %b\n", $time, SW_TB,LED_TB);
         $fclose(fdw_led);
       end else begin
         $display("ERROR: Could not open file!");
@@ -84,23 +88,12 @@ module tb_emulator;
   end
 
 
-  always_comb begin
-    case (1'b1)
-      BTNC_TB: SELECTOR_TB  = MUL;
-      BTNU_TB: SELECTOR_TB  = LEADING_ONES;
-      BTND_TB: SELECTOR_TB  = COUNT_ONES;
-      BTNL_TB: SELECTOR_TB  = ADD;
-      BTNR_TB: SELECTOR_TB  = SUB;
-      default: SELECTOR_TB = RESET;
-    endcase
-  end
+
 
   initial begin
 
     @(negedge rst);
 
-    // Set a default mode
-    SELECTOR_TB = ADD;
     SW_TB = 16'd0;
 
     BTNC_TB = 0;
