@@ -11,17 +11,17 @@ module select_btn_action (
 );
   import types_pkg::*;
 
-  opr_mode_t SELECTOR_TB;
-  select_action #() select_action_inst (
-      .SELECTOR(SELECTOR_TB),
-      .SW(SW),
-      .LED(LED)
-  );
 
   opr_mode_t rememberd_selected;
   initial begin
     rememberd_selected = RESET;
   end
+
+  select_action #() select_action_inst (
+      .SELECTOR(rememberd_selected),
+      .SW(SW),
+      .LED(LED)
+  );
 
   always_ff @(posedge CLOCK or posedge CPU_RESETN) begin
     if (CPU_RESETN) begin
@@ -34,14 +34,11 @@ module select_btn_action (
         BTNL: rememberd_selected <= ADD;
         BTNR: rememberd_selected <= SUB;
         RESET: rememberd_selected <= RESET;
-        //default: rememberd_selected <= RESET;
       endcase
-      //$display("Time: %0t  shalom %b %b", $time,rememberd_selected, SELECTOR_TB);
     end
   end
 
   always_comb begin
-    SELECTOR_TB = rememberd_selected;
   end
 
 endmodule
