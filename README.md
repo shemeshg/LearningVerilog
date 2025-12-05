@@ -1,10 +1,19 @@
 # Learning FPGA
 
-This project provides an emulator for the **Nexys A7** board, written in **Qt/QML**, along with Verilog code located in the `./Handbook` folder.  
-Additionally, the `./Youtube` folder contains tutorial material that is roughly equivalent to the examples from *The FPGA Programming Handbook – Second Edition*.  
+This repository is my personal journey into learning FPGA development, guided by the excellent *FPGA Programming Handbook – Second Edition*.  
 
-The emulator works by having the testbench write temporary files that represent the status of LEDs and the screen buffer.  
-In turn, the emulator writes the switch states and button press states for the Verilog code to read.
+To support my learning, I built an emulator for the **Nexys A7** board using **Qt/QML**.  
+The emulator helps ease the effort of testing and synthesis by simulating hardware behavior.  
+
+- The Verilog code examples are located in the `./Handbook` folder, following the structure of the book.  
+- The `./Youtube` folder contains tutorial material that parallels the examples, serving as an additional learning resource.  
+
+The emulator operates by having the testbench generate temporary files that represent the status of LEDs and the screen buffer.  
+It then provides switch states and button press states for the Verilog code to read, making experimentation smoother and more accessible.
+
+
+<img width="992" height="352" alt="image" src="https://github.com/user-attachments/assets/8ffea46a-af87-4ca0-b3e9-0d8588f6da84" />
+
 
 ## Getting Started
 
