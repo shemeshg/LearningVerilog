@@ -6,7 +6,7 @@ async function run_icarus() {
     const $$debug = $({ verbose: true, env: process.env })
     const binaryFile = "out"
 
-    await $`killall vvp || true`
+    await $$debug`killall vvp || true`
     await $`mkdir -p  ../build`
     cd('../build')
     await $$debug`rm -f ${binaryFile}`
