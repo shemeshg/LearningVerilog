@@ -38,7 +38,6 @@ module select_btn_action (
     end
   end
 
-  always_comb begin
-  end
+
 
 endmodule
