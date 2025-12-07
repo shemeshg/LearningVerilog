@@ -17,25 +17,74 @@ module tb_emulator;
 
   word_t  LED_TB;
   word_t  SW_TB;
-
-
+  
   logic   BTNC_TB;
   logic   BTNU_TB;
   logic   BTNL_TB;
   logic   BTNR_TB;
   logic   BTND_TB;
 
+  logic   BTNC_DEB;
+  logic   BTNU_DEB;
+  logic   BTNL_DEB;
+  logic   BTNR_DEB;
+  logic   BTND_DEB;
+
+
+  word_t SW_DEB; 
+  unbounce_array debouncer (
+    .CPU_RESET(rst),
+    .CLOCK(clk),
+    .BTN_IN(SW_TB),
+    .BTN_OUT(SW_DEB)
+  );
+
+  unbounce_btn #(.WAIT_COUNT(3)) deb_btnC (
+    .CPU_RESET(CPU_RESET),
+    .CLOCK(CLOCK),
+    .BTN_IN(BTNC_TB),
+    .BTN_OUT(BTNC_DEB)
+  );
+
+  unbounce_btn #(.WAIT_COUNT(3)) deb_btnU (
+    .CPU_RESET(CPU_RESET),
+    .CLOCK(CLOCK),
+    .BTN_IN(BTNU_TB),
+    .BTN_OUT(BTNU_DEB)
+  );
+
+  unbounce_btn #(.WAIT_COUNT(3)) deb_btnL (
+    .CPU_RESET(CPU_RESET),
+    .CLOCK(CLOCK),
+    .BTN_IN(BTNL_TB),
+    .BTN_OUT(BTNL_DEB)
+  );
+
+  unbounce_btn #(.WAIT_COUNT(3)) deb_btnR (
+    .CPU_RESET(CPU_RESET),
+    .CLOCK(CLOCK),
+    .BTN_IN(BTNR_TB),
+    .BTN_OUT(BTNR_DEB)
+  );
+
+  unbounce_btn #(.WAIT_COUNT(3)) deb_btnD (
+    .CPU_RESET(CPU_RESET),
+    .CLOCK(CLOCK),
+    .BTN_IN(BTND_TB),
+    .BTN_OUT(BTND_DEB)
+  );
+
   integer ret;
   select_btn_action #() select_btn_action_inst (
-      .SW(SW_TB),
+      .SW(SW_DEB),
       .LED(LED_TB),
       .CPU_RESETN(rst),
       .CLOCK(clk),
-      .BTNC(BTNC_TB),
-      .BTNU(BTNU_TB),
-      .BTNL(BTNL_TB),
-      .BTNR(BTNR_TB),
-      .BTND(BTND_TB)
+      .BTNC(BTNC_DEB),
+      .BTNU(BTNU_DEB),
+      .BTNL(BTNL_DEB),
+      .BTNR(BTNR_DEB),
+      .BTND(BTND_DEB)
   );
 
 

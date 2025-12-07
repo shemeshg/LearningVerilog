@@ -42,8 +42,8 @@ module unbounce_btn (
         btn_status <= BTN_BEFORE_OFF;
       end else begin
         // stable fallback: recover if an edge was missed
-        if (btn_status == BTN_ON && !button_sync[1]) btn_status <= BTN_BEFORE_OFF;
-        else if (btn_status == BTN_OFF && button_sync[1]) btn_status <= BTN_BEFORE_ON;
+        if (btn_status == BTN_ON && button_sync == 2'b00) btn_status <= BTN_BEFORE_OFF;
+        else if (btn_status == BTN_OFF && button_sync == 2'b11) btn_status <= BTN_BEFORE_ON;
       end
 
       // debounce counter logic
@@ -62,9 +62,4 @@ module unbounce_btn (
 
 
 
-  // Debug prints (simulation only)
-  always_ff @(posedge CLOCK) begin
-    $display("time=%0t | count=%0d | btn_status=%s | BTN_IN=%b | BTN_OUT=%b", $time, count,
-             btn_status.name(), BTN_IN, BTN_OUT);
-  end
 endmodule
