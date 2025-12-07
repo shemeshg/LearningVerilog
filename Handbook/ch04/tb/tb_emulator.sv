@@ -17,7 +17,8 @@ module tb_emulator;
 
   word_t  LED_TB;
   word_t  SW_TB;
-  
+
+
   logic   BTNC_TB;
   logic   BTNU_TB;
   logic   BTNL_TB;
@@ -30,6 +31,41 @@ module tb_emulator;
   logic   BTNR_DEB;
   logic   BTND_DEB;
 
+    unbounce_btn #(.WAIT_COUNT(3)) deb_btnC (
+    .CPU_RESET(rst),
+    .CLOCK(clk),
+    .BTN_IN(BTNC_TB),
+    .BTN_OUT(BTNC_DEB)
+  );
+
+  unbounce_btn #(.WAIT_COUNT(3)) deb_btnU (
+    .CPU_RESET(rst),
+    .CLOCK(clk),
+    .BTN_IN(BTNU_TB),
+    .BTN_OUT(BTNU_DEB)
+  );
+
+  unbounce_btn #(.WAIT_COUNT(3)) deb_btnL (
+    .CPU_RESET(rst),
+    .CLOCK(clk),
+    .BTN_IN(BTNL_TB),
+    .BTN_OUT(BTNL_DEB)
+  );
+
+  unbounce_btn #(.WAIT_COUNT(3)) deb_btnR (
+    .CPU_RESET(rst),
+    .CLOCK(clk),
+    .BTN_IN(BTNR_TB),
+    .BTN_OUT(BTNR_DEB)
+  );
+
+  unbounce_btn #(.WAIT_COUNT(3)) deb_btnD (
+    .CPU_RESET(rst),
+    .CLOCK(clk),
+    .BTN_IN(BTND_TB),
+    .BTN_OUT(BTND_DEB)
+  );
+
 
   word_t SW_DEB; 
   unbounce_array debouncer (
@@ -37,41 +73,6 @@ module tb_emulator;
     .CLOCK(clk),
     .BTN_IN(SW_TB),
     .BTN_OUT(SW_DEB)
-  );
-
-  unbounce_btn #(.WAIT_COUNT(3)) deb_btnC (
-    .CPU_RESET(CPU_RESET),
-    .CLOCK(CLOCK),
-    .BTN_IN(BTNC_TB),
-    .BTN_OUT(BTNC_DEB)
-  );
-
-  unbounce_btn #(.WAIT_COUNT(3)) deb_btnU (
-    .CPU_RESET(CPU_RESET),
-    .CLOCK(CLOCK),
-    .BTN_IN(BTNU_TB),
-    .BTN_OUT(BTNU_DEB)
-  );
-
-  unbounce_btn #(.WAIT_COUNT(3)) deb_btnL (
-    .CPU_RESET(CPU_RESET),
-    .CLOCK(CLOCK),
-    .BTN_IN(BTNL_TB),
-    .BTN_OUT(BTNL_DEB)
-  );
-
-  unbounce_btn #(.WAIT_COUNT(3)) deb_btnR (
-    .CPU_RESET(CPU_RESET),
-    .CLOCK(CLOCK),
-    .BTN_IN(BTNR_TB),
-    .BTN_OUT(BTNR_DEB)
-  );
-
-  unbounce_btn #(.WAIT_COUNT(3)) deb_btnD (
-    .CPU_RESET(CPU_RESET),
-    .CLOCK(CLOCK),
-    .BTN_IN(BTND_TB),
-    .BTN_OUT(BTND_DEB)
   );
 
   integer ret;
@@ -94,7 +95,7 @@ module tb_emulator;
   always @(posedge clk) begin
 
     //#1000000000;
-    #10000000;
+    #1000000;
     #10ns;
 
     fdw_led = $fopen("/Volumes/RAM_Disk_4G/tmpFifo/myLeds", "w");
