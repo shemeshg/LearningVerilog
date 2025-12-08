@@ -19,10 +19,4 @@ always @(posedge clk) begin
 end
 ```
 
-2. Detect when the button has been pressed for N cycles.
-
-3. Detect when the button has been released for N cycles.
-
-4. Wrap the logic in a module with an input wire and an output wire.
-
-5. Display the result on the 7-segment display.
+1. Display the result on the 7-segment display.
