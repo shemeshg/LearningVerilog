@@ -27,6 +27,18 @@ ary = [
                 is_notify = True,
                 is_list = False
                 ),
+    create_prpt("QString", 'segCat',
+                init_val = '{"00000000"}',
+                is_writable  = True,
+                is_notify = True,
+                is_list = False
+                ),
+    create_prpt("QString", 'segAn',
+                init_val = '{"00000000"}',
+                is_writable  = True,
+                is_notify = True,
+                is_list = False
+                ),
 
 ]
 

@@ -28,7 +28,10 @@ public:
         //-only-file body
         : MyTypePrivate(parent) {
 
-        QObject::connect(&timer, &QTimer::timeout, [this]() { getLedStatus(); });
+        QObject::connect(&timer, &QTimer::timeout, [this]() {
+            getLedStatus();
+            get7SegStatus();
+        });
         writeSwStatus();
 
         timer.start(100);
@@ -91,6 +94,30 @@ private:
             watcher->deleteLater();
         });
         watcher->setFuture(QtConcurrent::run([=]() { return func(); }));
+    }
+
+
+    //- {fn}
+    bool get7SegStatus()
+    //-only-file body
+    {
+
+        QFile file("/Volumes/RAM_Disk_4G/tmpFifo/my7SegDispllay");
+        if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
+            qDebug() << "Could not open file!";
+            return false;
+        }
+
+        QTextStream in(&file);
+        while (!in.atEnd()) {
+            QString line = in.readLine();
+            auto s = line.split(" ");
+            setSegAn(s.at(0).trimmed());
+            setSegCat(s.at(1).trimmed());
+        }
+
+        file.close();
+        return true;
     }
 
     //- {fn}

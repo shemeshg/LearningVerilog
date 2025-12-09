@@ -26,7 +26,7 @@ RowLayout {
     onAnChanged: {
         an.forEach(function(currentValue, index, array) {
             if(currentValue){
-                displayState[7- index] = segments
+                displayState[7- (index + 1)] = segments
                 displayState = [...displayState]
 
             }

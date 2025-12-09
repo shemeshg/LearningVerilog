@@ -31,6 +31,8 @@ module tb_emulator;
   logic   BTNR_DEB;
   logic   BTND_DEB;
 
+  display_t display;
+
     unbounce_btn #(.WAIT_COUNT(3)) deb_btnC (
     .CPU_RESET(rst),
     .CLOCK(clk),
@@ -106,6 +108,18 @@ module tb_emulator;
       $display("ERROR: Could not open file!");
     end
 
+    fdw_led = $fopen("/Volumes/RAM_Disk_4G/tmpFifo/my7SegDispllay", "w");
+    if (fdw_led) begin
+      foreach (display[i]) begin
+        $fwrite(fdw_led,"%08b %b \n", 8'b1 << i, display[i]);
+      end
+      
+      $fclose(fdw_led);
+    end else begin
+      $display("ERROR: Could not open file!");
+    end
+
+
     fdr_sw = $fopen("/Volumes/RAM_Disk_4G/tmpFifo/mySw", "r");
     if (fdr_sw == 0) begin
       $display("ERROR: could not open file");
@@ -152,6 +166,9 @@ module tb_emulator;
     BTNR_TB = 0;
     BTND_TB = 0;
 
+    foreach (display[i]) begin
+      display[i] = 8'hFF;  // 11111111
+    end
   end
 
 

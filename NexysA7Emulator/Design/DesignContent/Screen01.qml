@@ -87,29 +87,15 @@ ColumnLayout {
     }
 
 
-    /*
-    Timer {
-        property int i: 0
-        id: updateTimer
 
-        interval: 1000 // 1 second
-        running: true
-        repeat: true
-        onTriggered: {
-            i++;
-            if (i%2){
-                ssd.segments = segmentNumberMap[i%10]
-                ssd.an = [false, false,false,false,false,false,false,true]
-            } else {
-                ssd.segments = segmentNumberMap[8]
-                ssd.an = [false, false,false,false,false,false,true,false]
-            }
-        }
+
+    function stringToBoolArray(str) {
+      return str.split("").map( (c) => c === "1");
     }
-    */
 
     SevenSegmenDisplay {
-        id: ssd
+        segments: stringToBoolArray(Constants.mytype.segCat)
+        an: stringToBoolArray(Constants.mytype.segAn)
     }
 
     function bl2Str(bl){

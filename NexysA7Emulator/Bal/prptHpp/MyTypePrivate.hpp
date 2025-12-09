@@ -26,6 +26,8 @@ class MyTypePrivate : public QObject
     Q_PROPERTY(QString timeStr READ timeStr WRITE setTimeStr NOTIFY timeStrChanged )
     Q_PROPERTY(QString ledStr READ ledStr WRITE setLedStr NOTIFY ledStrChanged )
     Q_PROPERTY(QString swStr READ swStr WRITE setSwStr NOTIFY swStrChanged )
+    Q_PROPERTY(QString segCat READ segCat WRITE setSegCat NOTIFY segCatChanged )
+    Q_PROPERTY(QString segAn READ segAn WRITE setSegAn NOTIFY segAnChanged )
     
     QML_ELEMENT
 public:
@@ -86,6 +88,30 @@ void setSwStr(const QString &newSwStr)
 
 
     
+    QString segCat() const{return m_segCat;} 
+    
+void setSegCat(const QString &newSegCat)
+    {
+        if (m_segCat == newSegCat)
+            return;
+        m_segCat = newSegCat;
+        emit segCatChanged();
+    }
+
+
+    
+    QString segAn() const{return m_segAn;} 
+    
+void setSegAn(const QString &newSegAn)
+    {
+        if (m_segAn == newSegAn)
+            return;
+        m_segAn = newSegAn;
+        emit segAnChanged();
+    }
+
+
+    
     
     
 signals:
@@ -93,6 +119,8 @@ signals:
     void timeStrChanged();
     void ledStrChanged();
     void swStrChanged();
+    void segCatChanged();
+    void segAnChanged();
     
 
 protected:
@@ -103,6 +131,8 @@ private:
     QString m_timeStr {};
     QString m_ledStr {"0000000000000000"};
     QString m_swStr {"0000000000000000"};
+    QString m_segCat {"00000000"};
+    QString m_segAn {"00000000"};
     
 };
 //-only-file null
