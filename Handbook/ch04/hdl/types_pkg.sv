@@ -6,6 +6,7 @@ package types_pkg;
   typedef logic [BITS/2-1:0] word_half_t;
 
   typedef logic [7:0] byte_t;
+  //byte_t is the PACKED dimention, means 8 items of 8bit
   typedef byte_t display_t [7:0];
 
   typedef enum bit [2:0] {
