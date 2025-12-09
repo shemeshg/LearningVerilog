@@ -5,6 +5,9 @@ package types_pkg;
   typedef logic [$clog2(BITS+1)-1:0] word_log2_t;
   typedef logic [BITS/2-1:0] word_half_t;
 
+  typedef logic [7:0] byte_t;
+  typedef byte_t display_t [7:0];
+
   typedef enum bit [2:0] {
     RESET = 3'b000,
     ADD = 3'b001,
