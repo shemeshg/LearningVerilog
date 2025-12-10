@@ -18,7 +18,7 @@ module tb_seg_display;
   display_t display;
 
   initial begin
-    bin = 16'd2091;
+    bin = 16'd0;
 
     #1000
     for (int i = 0; i < DIGITS; i++) begin

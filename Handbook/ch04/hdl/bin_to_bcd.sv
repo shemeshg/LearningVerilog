@@ -35,21 +35,28 @@ module bin_to_bcd (
     // Assign result
     bcd = temp;
 
-
-
     first_used = DIGITS;
-
     found = 0;
 
-    for (j = 0; j < DIGITS; j++) begin
-      if (!found && bcd[(DIGITS*4-1)-j*4-:4] != 0) begin
-        first_used = j;
+    for (j = DIGITS - 1; j >= 0; j--) begin
+      if (!found && bcd[j*4+:4] != 0) begin
+        first_used = j + 1;
         found = 1;
       end
     end
-    // Overwrite unused upper digits with 10
-    for (j = first_used; j < DIGITS; j++) begin
-      bcd[j*4+:4] = 4'd10;
+
+    if (!found) begin
+      // special case: number is zero
+      bcd[0+:4] = 4'd128;  // keep one zero digit
+      for (j = 1; j < DIGITS; j++) begin
+        bcd[j*4+:4] = 4'd10;  // mark the rest unused
+      end
+    end else begin
+      // normal case: overwrite unused upper digits
+      for (j = first_used; j < DIGITS; j++) begin
+        bcd[j*4+:4] = 4'd10;
+      end
     end
+
   end
 endmodule
