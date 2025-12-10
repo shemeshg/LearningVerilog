@@ -12,6 +12,7 @@ export const inFiles=[
     "../hdl/unbounce_btn.sv",
     "../hdl/unbounce_array.sv",
     //macos only
-    "../tb/tb_macos_only.sv",
+    process.platform === "darwin" ? "../tb/tb_macos_only.sv" : 
+                        "../tb/tb_ubuntu_only.sv",
     isEmulator ? "../tb/tb_emulator.sv" : "../tb/tb_seg_display.sv" 
 ]
