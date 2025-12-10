@@ -28,12 +28,16 @@ public:
         //-only-file body
         : MyTypePrivate(parent) {
 
+
+
+
         QObject::connect(&timer, &QTimer::timeout, [this]() {
             getLedStatus();
             get7SegStatus();
         });
-        writeSwStatus();
 
+        setSettings();
+        writeSwStatus();                
         timer.start(100);
     }
 
@@ -44,10 +48,10 @@ public slots:
     void writeSwStatus()
     //-only-file body
     {
-        QFile file("/Volumes/RAM_Disk_4G/tmpFifo/mySw");
+        QFile file(mySw);
 
         if (!file.open(QIODevice::WriteOnly | QIODevice::Text)) {
-            qDebug() << "Could not open file for writing!";
+            qDebug() << "Could not open file for writing!"<<mySw;
             return;
         }
         QTextStream out(&file);
@@ -61,10 +65,10 @@ public slots:
     //-only-file body
     {
 
-        QFile file("/Volumes/RAM_Disk_4G/tmpFifo/myBtns");
+        QFile file(myBtns);
 
         if (!file.open(QIODevice::WriteOnly | QIODevice::Text)) {
-            qDebug() << "Could not open file for writing!";
+            qDebug() << "Could not open file for writing!"<<myBtns;
             return;
         }
         QTextStream out(&file);
@@ -80,6 +84,7 @@ private slots:
 
 private:
     QTimer timer;
+    QString myLeds, mySegDispllay, mySw, myBtns;
 
     template <typename T>
     void makeAsync(const QJSValue &callback, std::function<T()> func) {
@@ -102,9 +107,9 @@ private:
     //-only-file body
     {
 
-        QFile file("/Volumes/RAM_Disk_4G/tmpFifo/my7SegDispllay");
+        QFile file(mySegDispllay);
         if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
-            qDebug() << "Could not open file!";
+            qDebug() << "Could not open file!"<<mySegDispllay<<QSysInfo::productType() ;
             return false;
         }
 
@@ -112,8 +117,13 @@ private:
         while (!in.atEnd()) {
             QString line = in.readLine();
             auto s = line.split(" ");
-            setSegAn(s.at(0).trimmed());
-            setSegCat(s.at(1).trimmed());
+            if (s.size() >= 2)  {
+                setSegAn(s.at(0).trimmed());
+                setSegCat(s.at(1).trimmed());
+            } else {
+                qDebug() << "Could not parse file!"<<mySegDispllay<<QSysInfo::productType() ;
+            }
+
         }
 
         file.close();
@@ -125,9 +135,9 @@ private:
     //-only-file body
     {
 
-        QFile file("/Volumes/RAM_Disk_4G/tmpFifo/myLeds");
+        QFile file(myLeds);
         if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
-            qDebug() << "Could not open file!";
+            qDebug() << "Could not open file!"<<myLeds;
             return false;
         }
 
@@ -135,13 +145,42 @@ private:
         while (!in.atEnd()) {
             QString line = in.readLine();
             auto s = line.split("|");
-            setTimeStr(s.at(0).split(":").at(1).trimmed());
-            setLedStr(s.at(2).split(":").at(1).trimmed());
+            if (s.size() >= 2)  {
+                setTimeStr(s.at(0).split(":").at(1).trimmed());
+                setLedStr(s.at(2).split(":").at(1).trimmed());
+            } else {
+                qDebug() << "Could not parse file!"<<myLeds;
+            }
+
         }
 
         file.close();
         return true;
     }
 
+    //- {fn}
+    void setSettings()
+    //-only-file body
+    {
+        QSettings settings;
+
+        myLeds = QSysInfo::productType() == "macos" ?
+                     "/Volumes/RAM_Disk_4G/tmpFifo/myLeds" : "/dev/shm/myLeds";
+        myLeds = settings.value("myLeds",myLeds).toString();
+
+        mySegDispllay = QSysInfo::productType() == "macos" ?
+                     "/Volumes/RAM_Disk_4G/tmpFifo/my7SegDispllay" : "/dev/shm/my7SegDispllay";
+        mySegDispllay = settings.value("mySegDispllay",myLeds).toString();
+
+
+        mySw = QSysInfo::productType() == "macos" ?
+                            "/Volumes/RAM_Disk_4G/tmpFifo/mySw" : "/dev/shm/mySw";;
+        mySw = settings.value("mySw",mySw).toString();
+
+        myBtns = QSysInfo::productType() == "macos" ?
+                   "/Volumes/RAM_Disk_4G/tmpFifo/myBtns" : "/dev/shm/myBtns";;
+        myBtns = settings.value("myBtns",myBtns).toString();
+
+    }
     //-only-file header
 };

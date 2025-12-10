@@ -6,7 +6,7 @@ int main(int argc, char *argv[])
     QApplication app(argc, argv);
 
     app.setOrganizationName("shemeshg");
-    app.setApplicationName("Nexys A7 Emulator");
+    app.setApplicationName("NexysA7Emulator");
 
     QQmlApplicationEngine engine;
 

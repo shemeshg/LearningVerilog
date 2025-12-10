@@ -13,6 +13,7 @@ import Design
 import Core
 import Bal
 import Playground
+import QtCore
 
 ColumnLayout {
     id: screenId
@@ -178,6 +179,59 @@ ColumnLayout {
             }
         }
     }
+
+    Settings {
+        id: settings
+
+        property string myLeds: Qt.platform.os === "osx" ? "/Volumes/RAM_Disk_4G/tmpFifo/myLeds" : "/dev/shm/myLeds";
+        property string mySegDispllay: Qt.platform.os === "osx" ? "/Volumes/RAM_Disk_4G/tmpFifo/my7SegDispllay" : "/dev/shm/my7SegDispllay";
+        property string mySw: Qt.platform.os === "osx" ? "/Volumes/RAM_Disk_4G/tmpFifo/mySw" : "/dev/shm/mySw";
+        property string myBtns: Qt.platform.os === "osx" ? "/Volumes/RAM_Disk_4G/tmpFifo/myBtns" : "/dev/shm/myBtns";
+    }
+
+    ColumnLayout {
+        RowLayout {
+            CoreLabel {
+                text: "myLeds " + Qt.platform.os
+            }
+            CoreTextField {
+                text: settings.myLeds
+                onTextChanged: settings.myLeds = text
+                Layout.fillWidth: true
+            }
+        }
+        RowLayout {
+            CoreLabel {
+                text: "my7SegDispllay"
+            }
+            CoreTextField {
+                text: settings.mySegDispllay
+                onTextChanged: settings.mySegDispllay = text
+                Layout.fillWidth: true
+            }
+        }
+        RowLayout {
+            CoreLabel {
+                text: "mySw"
+            }
+            CoreTextField {
+                text: settings.mySw
+                onTextChanged: settings.mySw = text
+                Layout.fillWidth: true
+            }
+        }
+        RowLayout {
+            CoreLabel {
+                text: "myBtns"
+            }
+            CoreTextField {
+                text: settings.myBtns
+                onTextChanged: settings.myBtns = text
+                Layout.fillWidth: true
+            }
+        }
+    }
+
     Item {
         Layout.fillWidth: true
         Layout.fillHeight: true
