@@ -83,6 +83,8 @@ ColumnLayout {
                                  Constants.mytype.swStr = arr.join("");
                                  Constants.mytype.writeSwStatus();
                              }
+                onColor: CoreSystemPalette.isDarkTheme ? "#00ff66" : "#ff2d2d"
+                offColor : CoreSystemPalette.isDarkTheme ?"#003322" : "#CCCCCC"
             }
         }
     }
@@ -97,6 +99,8 @@ ColumnLayout {
     SevenSegmenDisplay {
         segments: stringToBoolArray(Constants.mytype.segCat).reverse()
         an: stringToBoolArray(Constants.mytype.segAn)
+        property string onColor: CoreSystemPalette.isDarkTheme ? "#00ff66" : "#ff2d2d"
+        property string offColor : CoreSystemPalette.isDarkTheme ?"#003322" : "#CCCCCC"
     }
 
     function bl2Str(bl){
@@ -192,7 +196,7 @@ ColumnLayout {
     ColumnLayout {
         RowLayout {
             CoreLabel {
-                text: "myLeds " + Qt.platform.os
+                text: "myLeds "
             }
             CoreTextField {
                 text: settings.myLeds

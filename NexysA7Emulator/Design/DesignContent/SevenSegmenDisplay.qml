@@ -10,8 +10,8 @@ RowLayout {
     id: componentId
     property var an: [false, false,false,false,false,false,false,false]
     property var segments: [false,  false,  false,  false,  false,  false,  false]
-    property string onColor: "#00ff66"
-    property string offColor : "#003322"
+    property string onColor: CoreSystemPalette.isDarkTheme ? "#00ff66" : "#ff2d2d"
+    property string offColor : CoreSystemPalette.isDarkTheme ?"#003322" : "#330000"
 
     property var displayState: [
         [true,  true,  true,  true,  true,  true,  true, true],
