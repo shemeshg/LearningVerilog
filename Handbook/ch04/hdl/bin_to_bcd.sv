@@ -47,15 +47,16 @@ module bin_to_bcd (
 
     if (!found) begin
       // special case: number is zero
-      bcd[0+:4] = 4'd128;  // keep one zero digit
+      bcd[0+:4] = 4'd00;  // keep one zero digit
       for (j = 1; j < DIGITS; j++) begin
         bcd[j*4+:4] = 4'd10;  // mark the rest unused
       end
     end else begin
       // normal case: overwrite unused upper digits
-      for (j = first_used; j < DIGITS; j++) begin
-        bcd[j*4+:4] = 4'd10;
+      for (j = 0; j < DIGITS; j++) begin
+        if (j >= first_used) bcd[j*4+:4] = 4'd10;
       end
+
     end
 
   end

@@ -31,7 +31,7 @@ module tb_emulator;
   logic BTNR_DEB;
   logic BTND_DEB;
 
-  display_t display;
+   
 
 // START unbounce
   unbounce_btn #(
@@ -89,12 +89,13 @@ module tb_emulator;
   );
 // END of unbounce
 
-
-  select_btn_action #() select_btn_action_inst (
-      .SW(SW_DEB),
-      .LED(LED_TB),
-      .CPU_RESETN(rst),
-      .CLOCK(clk),
+  output logic [DIGITS*8-1:0]  display ;
+  seg_display seg_display_inst (
+    .display(display),
+    .clk(clk),
+    .rst(rst),
+    .SW(SW_DEB),
+    .LED(LED_TB),
       .BTNC(BTNC_DEB),
       .BTNU(BTNU_DEB),
       .BTNL(BTNL_DEB),
@@ -102,18 +103,9 @@ module tb_emulator;
       .BTND(BTND_DEB)
   );
 
+  
 
-  logic [DIGITS*4-1:0] bcd;
-  bin_to_bcd bin_to_bcd_module (
-      .bin(LED_TB),
-      .bcd(bcd)
-  );
-  logic [3:0] encoded;
-  byte_t cathode;
-  dec_cat_map dec_cat_map_module (
-      .encoded(encoded),
-      .cathode(cathode)
-  );
+
 
   int fdw_led;
   int fdr_sw;
@@ -134,21 +126,19 @@ module tb_emulator;
       $display("ERROR: Could not open file!");
     end
 
+
+ 
     fdw_led = $fopen("/Volumes/RAM_Disk_4G/tmpFifo/my7SegDispllay", "w");
     if (fdw_led) begin
-      foreach (display[i]) begin
-
-        encoded = bcd[i*4+:4];
-        #1;  // wait one timestep for cathode to update
-        display[i] = cathode;
-
-        $fwrite(fdw_led, "%08b %b \n", 8'b1 << i, display[i]);
+      for (i = 0; i < DIGITS; i++) begin
+        $fwrite(fdw_led, "%08b %b \n", 8'b1 << i, display[i*8 +: 8]);
       end
 
       $fclose(fdw_led);
     end else begin
       $display("ERROR: Could not open file!");
     end
+
 
 
     fdr_sw = $fopen("/Volumes/RAM_Disk_4G/tmpFifo/mySw", "r");
@@ -184,12 +174,14 @@ module tb_emulator;
 
 
 
-
+integer i;
   initial begin
-
-    @(negedge rst);
+    rst = 1;
+    repeat (2) @(posedge clk);
+    rst = 0;
 
     SW_TB   = 16'd0;
+    #1000
 
     BTNC_TB = 0;
     BTNU_TB = 0;
@@ -197,9 +189,6 @@ module tb_emulator;
     BTNR_TB = 0;
     BTND_TB = 0;
 
-    foreach (display[i]) begin
-      display[i] = 8'hFF;  // 11111111
-    end
   end
 
 
