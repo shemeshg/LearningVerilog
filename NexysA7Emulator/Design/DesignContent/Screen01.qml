@@ -94,7 +94,7 @@ ColumnLayout {
     }
 
     SevenSegmenDisplay {
-        segments: stringToBoolArray(Constants.mytype.segCat)
+        segments: stringToBoolArray(Constants.mytype.segCat).reverse()
         an: stringToBoolArray(Constants.mytype.segAn)
     }
 

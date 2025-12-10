@@ -91,6 +91,18 @@ module tb_emulator;
   );
 
 
+  logic [DIGITS*4-1:0] bcd;
+  bin_to_bcd bin_to_bcd_module (
+      .bin(LED_TB),
+      .bcd(bcd)
+  );
+  logic [3:0] encoded;
+  byte_t cathode;
+  dec_cat_map dec_cat_map_module (
+      .encoded(encoded),
+      .cathode(cathode)
+  );
+
   int fdw_led;
   int fdr_sw;
 
@@ -111,6 +123,11 @@ module tb_emulator;
     fdw_led = $fopen("/Volumes/RAM_Disk_4G/tmpFifo/my7SegDispllay", "w");
     if (fdw_led) begin
       foreach (display[i]) begin
+        
+        encoded = bcd[i*4+:4];
+        #1;  // wait one timestep for cathode to update
+        display[i] = cathode;
+
         $fwrite(fdw_led,"%08b %b \n", 8'b1 << i, display[i]);
       end
       
