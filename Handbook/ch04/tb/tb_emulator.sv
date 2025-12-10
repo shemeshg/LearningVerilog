@@ -15,69 +15,81 @@ module tb_emulator;
 
   localparam BITS = 16;
 
-  word_t  LED_TB;
-  word_t  SW_TB;
+  word_t LED_TB;
+  word_t SW_TB;
 
 
-  logic   BTNC_TB;
-  logic   BTNU_TB;
-  logic   BTNL_TB;
-  logic   BTNR_TB;
-  logic   BTND_TB;
+  logic BTNC_TB;
+  logic BTNU_TB;
+  logic BTNL_TB;
+  logic BTNR_TB;
+  logic BTND_TB;
 
-  logic   BTNC_DEB;
-  logic   BTNU_DEB;
-  logic   BTNL_DEB;
-  logic   BTNR_DEB;
-  logic   BTND_DEB;
+  logic BTNC_DEB;
+  logic BTNU_DEB;
+  logic BTNL_DEB;
+  logic BTNR_DEB;
+  logic BTND_DEB;
 
   display_t display;
 
-    unbounce_btn #(.WAIT_COUNT(3)) deb_btnC (
-    .CPU_RESET(rst),
-    .CLOCK(clk),
-    .BTN_IN(BTNC_TB),
-    .BTN_OUT(BTNC_DEB)
+// START unbounce
+  unbounce_btn #(
+      .WAIT_COUNT(3)
+  ) deb_btnC (
+      .CPU_RESET(rst),
+      .CLOCK(clk),
+      .BTN_IN(BTNC_TB),
+      .BTN_OUT(BTNC_DEB)
   );
 
-  unbounce_btn #(.WAIT_COUNT(3)) deb_btnU (
-    .CPU_RESET(rst),
-    .CLOCK(clk),
-    .BTN_IN(BTNU_TB),
-    .BTN_OUT(BTNU_DEB)
+  unbounce_btn #(
+      .WAIT_COUNT(3)
+  ) deb_btnU (
+      .CPU_RESET(rst),
+      .CLOCK(clk),
+      .BTN_IN(BTNU_TB),
+      .BTN_OUT(BTNU_DEB)
   );
 
-  unbounce_btn #(.WAIT_COUNT(3)) deb_btnL (
-    .CPU_RESET(rst),
-    .CLOCK(clk),
-    .BTN_IN(BTNL_TB),
-    .BTN_OUT(BTNL_DEB)
+  unbounce_btn #(
+      .WAIT_COUNT(3)
+  ) deb_btnL (
+      .CPU_RESET(rst),
+      .CLOCK(clk),
+      .BTN_IN(BTNL_TB),
+      .BTN_OUT(BTNL_DEB)
   );
 
-  unbounce_btn #(.WAIT_COUNT(3)) deb_btnR (
-    .CPU_RESET(rst),
-    .CLOCK(clk),
-    .BTN_IN(BTNR_TB),
-    .BTN_OUT(BTNR_DEB)
+  unbounce_btn #(
+      .WAIT_COUNT(3)
+  ) deb_btnR (
+      .CPU_RESET(rst),
+      .CLOCK(clk),
+      .BTN_IN(BTNR_TB),
+      .BTN_OUT(BTNR_DEB)
   );
 
-  unbounce_btn #(.WAIT_COUNT(3)) deb_btnD (
-    .CPU_RESET(rst),
-    .CLOCK(clk),
-    .BTN_IN(BTND_TB),
-    .BTN_OUT(BTND_DEB)
+  unbounce_btn #(
+      .WAIT_COUNT(3)
+  ) deb_btnD (
+      .CPU_RESET(rst),
+      .CLOCK(clk),
+      .BTN_IN(BTND_TB),
+      .BTN_OUT(BTND_DEB)
   );
 
 
-  word_t SW_DEB; 
+  word_t SW_DEB;
   unbounce_array debouncer (
-    .CPU_RESET(rst),
-    .CLOCK(clk),
-    .BTN_IN(SW_TB),
-    .BTN_OUT(SW_DEB)
+      .CPU_RESET(rst),
+      .CLOCK(clk),
+      .BTN_IN(SW_TB),
+      .BTN_OUT(SW_DEB)
   );
+// END of unbounce
 
-  integer ret;
+
   select_btn_action #() select_btn_action_inst (
       .SW(SW_DEB),
       .LED(LED_TB),
@@ -106,6 +118,8 @@ module tb_emulator;
   int fdw_led;
   int fdr_sw;
 
+  integer ret;
+
   always @(posedge clk) begin
 
     //#1000000000;
@@ -123,14 +137,14 @@ module tb_emulator;
     fdw_led = $fopen("/Volumes/RAM_Disk_4G/tmpFifo/my7SegDispllay", "w");
     if (fdw_led) begin
       foreach (display[i]) begin
-        
+
         encoded = bcd[i*4+:4];
         #1;  // wait one timestep for cathode to update
         display[i] = cathode;
 
-        $fwrite(fdw_led,"%08b %b \n", 8'b1 << i, display[i]);
+        $fwrite(fdw_led, "%08b %b \n", 8'b1 << i, display[i]);
       end
-      
+
       $fclose(fdw_led);
     end else begin
       $display("ERROR: Could not open file!");
