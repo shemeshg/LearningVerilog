@@ -1,16 +1,16 @@
 import types_pkg::*;
 
 module seg_display (
-    output logic [DIGITS*8-1:0] display,  // flattened: 8 bits per digit
-    input  wire                 clk,
-    input  wire                 rst,
-    input  word_t               SW,
-    output word_t               LED,
-    input  wire                 BTNC,
-    input  wire                 BTNU,
-    input  wire                 BTNL,
-    input  wire                 BTNR,
-    input  wire                 BTND
+    output logic  [DIGITS*8-1:0] display,  // flattened: 8 bits per digit
+    input  wire                  clk,
+    input  wire                  rst,
+    input  word_t                SW,
+    output word_t                LED,
+    input  wire                  BTNC,
+    input  wire                  BTNU,
+    input  wire                  BTNL,
+    input  wire                  BTNR,
+    input  wire                  BTND
 );
 
   // Button action logic
@@ -34,8 +34,8 @@ module seg_display (
   );
 
   // Per-digit encoded nibble and cathode pattern
-  logic  [3:0] encoded [DIGITS];
-  byte_t       cathode [DIGITS];
+  logic  [3:0] encoded[DIGITS];
+  byte_t       cathode[DIGITS];
 
   // Instantiate a decoder per digit
   genvar i;

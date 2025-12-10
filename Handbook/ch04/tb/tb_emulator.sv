@@ -19,21 +19,21 @@ module tb_emulator;
   word_t SW_TB;
 
 
-  logic BTNC_TB;
-  logic BTNU_TB;
-  logic BTNL_TB;
-  logic BTNR_TB;
-  logic BTND_TB;
+  logic  BTNC_TB;
+  logic  BTNU_TB;
+  logic  BTNL_TB;
+  logic  BTNR_TB;
+  logic  BTND_TB;
 
-  logic BTNC_DEB;
-  logic BTNU_DEB;
-  logic BTNL_DEB;
-  logic BTNR_DEB;
-  logic BTND_DEB;
+  logic  BTNC_DEB;
+  logic  BTNU_DEB;
+  logic  BTNL_DEB;
+  logic  BTNR_DEB;
+  logic  BTND_DEB;
 
-   
 
-// START unbounce
+
+  // START unbounce
   unbounce_btn #(
       .WAIT_COUNT(3)
   ) deb_btnC (
@@ -87,15 +87,16 @@ module tb_emulator;
       .BTN_IN(SW_TB),
       .BTN_OUT(SW_DEB)
   );
-// END of unbounce
+  // END of unbounce
 
-  output logic [DIGITS*8-1:0]  display ;
+  //output logic [7:0] display [DIGITS];
+  output logic [DIGITS*8-1:0] display;
   seg_display seg_display_inst (
-    .display(display),
-    .clk(clk),
-    .rst(rst),
-    .SW(SW_DEB),
-    .LED(LED_TB),
+      .display(display),
+      .clk(clk),
+      .rst(rst),
+      .SW(SW_DEB),
+      .LED(LED_TB),
       .BTNC(BTNC_DEB),
       .BTNU(BTNU_DEB),
       .BTNL(BTNL_DEB),
@@ -103,7 +104,7 @@ module tb_emulator;
       .BTND(BTND_DEB)
   );
 
-  
+
 
 
 
@@ -127,11 +128,11 @@ module tb_emulator;
     end
 
 
- 
+
     fdw_led = $fopen("/Volumes/RAM_Disk_4G/tmpFifo/my7SegDispllay", "w");
     if (fdw_led) begin
       for (i = 0; i < DIGITS; i++) begin
-        $fwrite(fdw_led, "%08b %b \n", 8'b1 << i, display[i*8 +: 8]);
+        $fwrite(fdw_led, "%08b %b \n", 8'b1 << i, display[i*8+:8]);
       end
 
       $fclose(fdw_led);
@@ -174,16 +175,14 @@ module tb_emulator;
 
 
 
-integer i;
+  integer i;
   initial begin
     rst = 1;
     repeat (2) @(posedge clk);
-    rst = 0;
+    rst   = 0;
 
-    SW_TB   = 16'd0;
-    #1000
-
-    BTNC_TB = 0;
+    SW_TB = 16'd0;
+    #1000 BTNC_TB = 0;
     BTNU_TB = 0;
     BTNL_TB = 0;
     BTNR_TB = 0;
