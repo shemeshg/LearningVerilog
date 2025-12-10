@@ -1,6 +1,6 @@
 import types_pkg::*;
 
-module seg_display (
+module seg_display_calc (
     output logic  [DIGITS*8-1:0] display,  // flattened: 8 bits per digit
     input  wire                  clk,
     input  wire                  rst,

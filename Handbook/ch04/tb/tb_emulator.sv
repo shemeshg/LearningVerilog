@@ -1,6 +1,8 @@
 `timescale 1ns / 10ps
+ 
 module tb_emulator;
   import types_pkg::*;
+  import tb_os_specific_only::*;
 
   logic clk = 0;
   // Clock generator runs forever
@@ -91,7 +93,7 @@ module tb_emulator;
 
   //output logic [7:0] display [DIGITS];
   output logic [DIGITS*8-1:0] display;
-  seg_display seg_display_inst (
+  seg_display_calc seg_display_calc_inst (
       .display(display),
       .clk(clk),
       .rst(rst),
@@ -119,7 +121,7 @@ module tb_emulator;
     #1000000;
     #10ns;
 
-    fdw_led = $fopen("/Volumes/RAM_Disk_4G/tmpFifo/myLeds", "w");
+    fdw_led = $fopen(myLeds, "w");
     if (fdw_led) begin
       $fwrite(fdw_led, "Time: %0t | SW_TB: %b | LED_TB: %b\n", $time, SW_TB, LED_TB);
       $fclose(fdw_led);
@@ -129,7 +131,7 @@ module tb_emulator;
 
 
 
-    fdw_led = $fopen("/Volumes/RAM_Disk_4G/tmpFifo/my7SegDispllay", "w");
+    fdw_led = $fopen(mySegDispllay, "w");
     if (fdw_led) begin
       for (i = 0; i < DIGITS; i++) begin
         $fwrite(fdw_led, "%08b %b \n", 8'b1 << i, display[i*8+:8]);
@@ -142,7 +144,7 @@ module tb_emulator;
 
 
 
-    fdr_sw = $fopen("/Volumes/RAM_Disk_4G/tmpFifo/mySw", "r");
+    fdr_sw = $fopen(mySw, "r");
     if (fdr_sw == 0) begin
       $display("ERROR: could not open file");
     end else begin
@@ -156,7 +158,7 @@ module tb_emulator;
       $fclose(fdr_sw);
     end
 
-    fdr_sw = $fopen("/Volumes/RAM_Disk_4G/tmpFifo/myBtns", "r");
+    fdr_sw = $fopen(myBtns, "r");
     if (fdr_sw == 0) begin
       $display("ERROR: could not open file");
     end else begin
