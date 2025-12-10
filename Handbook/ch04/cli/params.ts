@@ -1,8 +1,9 @@
 
-const isEmulator = true;
+const isEmulator = false;
 export const topModule = isEmulator ? "tb_emulator": "tb_seg_display"
 export const inFiles=[
     "../hdl/types_pkg.sv",
+    "../hdl/bin_to_bcd.sv",
     "../hdl/seg_display.sv",
     "../hdl/add_sub_mult.sv",
     "../hdl/select_action.sv",
