@@ -1,3 +1,4 @@
+`timescale 1ns / 10ps
 package types_pkg;
   parameter int BITS = 16;
   parameter int DIGITS = 8;

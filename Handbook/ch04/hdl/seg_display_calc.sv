@@ -1,3 +1,4 @@
+`timescale 1ns / 10ps
 import types_pkg::*;
 
 module seg_display_calc (

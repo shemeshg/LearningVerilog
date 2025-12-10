@@ -1,3 +1,4 @@
+`timescale 1ns / 10ps
 import types_pkg::*;
 module  dec_cat_map (
     input  [3:0] encoded,

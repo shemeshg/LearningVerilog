@@ -92,7 +92,7 @@ module tb_emulator;
   // END of unbounce
 
   //output logic [7:0] display [DIGITS];
-  output logic [DIGITS*8-1:0] display;
+  logic [DIGITS*8-1:0] display;
   seg_display_calc seg_display_calc_inst (
       .display(display),
       .clk(clk),
@@ -115,6 +115,7 @@ module tb_emulator;
 
   integer ret;
 
+  integer i;
   always @(posedge clk) begin
 
     //#1000000000;
@@ -177,7 +178,7 @@ module tb_emulator;
 
 
 
-  integer i;
+  
   initial begin
     rst = 1;
     repeat (2) @(posedge clk);

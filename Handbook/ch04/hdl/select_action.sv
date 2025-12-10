@@ -1,6 +1,4 @@
-
-
-
+`timescale 1ns / 10ps
 
 module select_action (
     input  opr_mode_t SELECTOR,

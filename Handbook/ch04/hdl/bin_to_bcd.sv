@@ -1,3 +1,4 @@
+`timescale 1ns / 10ps
 import types_pkg::*;
 module bin_to_bcd (
     input word_t bin,

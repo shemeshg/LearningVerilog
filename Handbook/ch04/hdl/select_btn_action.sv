@@ -1,3 +1,4 @@
+`timescale 1ns / 10ps
 module select_btn_action (
     input  word_t SW,
     output word_t LED,
@@ -13,9 +14,7 @@ module select_btn_action (
 
 
   opr_mode_t rememberd_selected;
-  initial begin
-    rememberd_selected = RESET;
-  end
+
 
   select_action #() select_action_inst (
       .SELECTOR(rememberd_selected),

@@ -1,3 +1,4 @@
+`timescale 1ns / 10ps
 module unbounce_btn (
     input  logic CPU_RESET,  // active-high reset
     input  logic CLOCK,

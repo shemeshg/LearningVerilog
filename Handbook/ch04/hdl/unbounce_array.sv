@@ -1,3 +1,4 @@
+`timescale 1ns / 10ps
 module unbounce_array #(
     parameter int BITS       = 16,  // number of buttons
     parameter int WAIT_COUNT = 3    // debounce length
