@@ -9,25 +9,37 @@ module tb_seg_display;
       .bcd(bcd)
   );
 
+  logic [3:0] encoded;
+  logic [7:0] cathode;
+  dec_cat_map dec_cat_map_module (
+      .encoded(encoded),
+      .cathode(cathode)
+  );
   display_t display;
 
   initial begin
     bin = 16'd2091;
 
+    #1000
+    for (int i = 0; i < DIGITS; i++) begin
+      encoded = bcd[i*4+:4];
+      #1;  // wait one timestep for cathode to update
+      display[i] = cathode;
+      $display("digit[%0d] = %0d", i, bcd[i*4+:4]);
+    end
+
+    /*
     foreach (display[i]) begin
       display[i] = 8'hFF;  // 11111111
     end
-
+    */
+    #1000
 
     foreach (display[i]) begin
       $display("%08b %b", 8'b1 << i, display[i]);
     end
 
-    #1000
-    for (int i = 0; i < DIGITS; i++) begin
-      // slice out 4 bits for digit i
-      $display("digit[%0d] = %0d", i, bcd[i*4+:4]);
-    end
+
   end
 
 endmodule
