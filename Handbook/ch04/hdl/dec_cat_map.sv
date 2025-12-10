@@ -1,6 +1,7 @@
+import types_pkg::*;
 module  dec_cat_map (
     input  [3:0] encoded,
-    output reg [7:0] cathode
+    output byte_t cathode
 );
 
 always @* begin

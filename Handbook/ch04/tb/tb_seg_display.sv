@@ -10,7 +10,7 @@ module tb_seg_display;
   );
 
   logic [3:0] encoded;
-  logic [7:0] cathode;
+  byte_t cathode;
   dec_cat_map dec_cat_map_module (
       .encoded(encoded),
       .cathode(cathode)
