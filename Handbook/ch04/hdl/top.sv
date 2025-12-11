@@ -7,36 +7,105 @@ module top (
     input wire CLK100MHZ,
     input wire CPU_RESETN,
     input wire [15:0] SW,
+    input wire [7:0] AN,
     output logic signed [BITS-1:0]  LED,
     input wire                     BTNC,
     input wire                     BTNU,
     input wire                     BTNL,
     input wire                     BTNR,
-    input wire                     BTND    
+    input wire                     BTND,
+    input wire  CA,
+    input wire  CB,
+    input wire  CC,
+    input wire  CD,
+    input wire  CE,
+    input wire  CF,
+    input wire  CG,
+    input wire  DP    
 );
 
   wire rst;
   assign rst = ~CPU_RESETN;
+  wire clk;
+  assign clk = CLK100MHZ;
 
-  opr_mode_t  SELECTOR_TB;
-  select_action #() select_action_inst (
-      .SELECTOR(SELECTOR_TB),
-      .SW(SW),
-      .LED(LED)
+  logic  BTNC_DEB;
+  logic  BTNU_DEB;
+  logic  BTNL_DEB;
+  logic  BTNR_DEB;
+  logic  BTND_DEB;
+  word_t SW_DEB;
+
+  // START unbounce
+  unbounce_btn #(
+      .WAIT_COUNT(3)
+  ) deb_btnC (
+      .CPU_RESET(rst),
+      .CLOCK(clk),
+      .BTN_IN(BTNC),
+      .BTN_OUT(BTNC_DEB)
+  );
+
+  unbounce_btn #(
+      .WAIT_COUNT(3)
+  ) deb_btnU (
+      .CPU_RESET(rst),
+      .CLOCK(clk),
+      .BTN_IN(BTNU),
+      .BTN_OUT(BTNU_DEB)
+  );
+
+  unbounce_btn #(
+      .WAIT_COUNT(3)
+  ) deb_btnL (
+      .CPU_RESET(rst),
+      .CLOCK(clk),
+      .BTN_IN(BTNL),
+      .BTN_OUT(BTNL_DEB)
+  );
+
+  unbounce_btn #(
+      .WAIT_COUNT(3)
+  ) deb_btnR (
+      .CPU_RESET(rst),
+      .CLOCK(clk),
+      .BTN_IN(BTNR),
+      .BTN_OUT(BTNR_DEB)
+  );
+
+  unbounce_btn #(
+      .WAIT_COUNT(3)
+  ) deb_btnD (
+      .CPU_RESET(rst),
+      .CLOCK(clk),
+      .BTN_IN(BTND),
+      .BTN_OUT(BTND_DEB)
   );
 
 
-  
-  always_comb begin
-    case (1'b1)
-      BTNC: SELECTOR_TB  = MUL;
-      BTNU: SELECTOR_TB  = LEADING_ONES;
-      BTND: SELECTOR_TB  = COUNT_ONES;
-      BTNL: SELECTOR_TB  = ADD;
-      BTNR: SELECTOR_TB  = SUB;
-      default: SELECTOR_TB = RESET;
-    endcase
-  end
+  unbounce_array debouncer (
+      .CPU_RESET(rst),
+      .CLOCK(clk),
+      .BTN_IN(SW),
+      .BTN_OUT(SW_DEB)
+  );
+  // END of unbounce
+
+  //output logic [7:0] display [DIGITS];
+  logic [DIGITS*8-1:0] display;
+  seg_display_calc seg_display_calc_inst (
+      .display(display),
+      .clk(clk),
+      .rst(rst),
+      .SW(SW_DEB),
+      .LED(LED),
+      .BTNC(BTNC_DEB),
+      .BTNU(BTNU_DEB),
+      .BTNL(BTNL_DEB),
+      .BTNR(BTNR_DEB),
+      .BTND(BTND_DEB)
+  );
+
   
 
 endmodule

@@ -6,17 +6,8 @@ Repository link:
 ## Tasks
 
 
-1. Detect when the button is pressed.
+1. Connect real device
 
-```verilog
-logic [2:0] button_sync;
-always @(posedge clk) begin
-  button_sync <= button_sync << 1 | BTNC;
-  if (button_sync[2:1] == 2'b01) 
-    button_down <= '1;
-  else 
-    button_down <= '0;
-end
-```
+https://github.com/PacktPublishing/The-FPGA-Programming-Handbook-Second-Edition/blob/main/CH4/SystemVerilog/counting_buttons/hdl/seven_segment.sv
 
-1. Display the result on the 7-segment display.
+
