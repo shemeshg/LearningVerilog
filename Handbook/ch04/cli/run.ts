@@ -1,11 +1,45 @@
 #!/usr/bin/env tsx
 import { exit } from 'process'
 import { $, cd } from 'zx'
-import { topModule, inFiles } from './params.ts';
+import { topModule, inFiles, use_verilator } from './params.ts';
+
+import { writeFile } from "fs/promises";
+import path from "path";
+import { fileURLToPath } from "url";
+
+// ✅ Recreate __dirname in ESM
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+async function run_verilator() {
+  const makefileText = `
+TOP_NAME := ${topModule}
+
+SRC_FILE := \\
+\t${inFiles.map(f => `${f}`).join("\\\n\t")}
+
+.PHONY: run clean
+
+obj_dir/V$(TOP_NAME): $(SRC_FILE)
+\tverilator -cc --exe --trace --trace-structs --build --timing \\
+\t\tsrc/sim_main.cpp $(SRC_FILE) --top $(TOP_NAME)
+
+run: obj_dir/V$(TOP_NAME)
+\t./obj_dir/V$(TOP_NAME)
+
+clean:
+\trm -rf obj_dir V$(TOP_NAME)
+  `;
+
+  const outPath = path.join(__dirname, "..", "verilateWb", "Makefile");
+
+  await writeFile(outPath, makefileText, { encoding: "utf8" });
+  cd('../verilateWb')
+  const $$debug = $({ verbose: true, env: process.env })
+  await $$debug`make`;
+  await $$debug`make run`;
+}
 async function run_icarus() {
-
-
-
 
   const $$debug = $({ verbose: true, env: process.env })
   process.on("SIGTERM", async () => {
@@ -72,7 +106,10 @@ async function run_xvlog() {
 
   await $$debug`xsim tb_sim --runall`
 }
-if (process.platform === "darwin") {
+
+if (use_verilator) {
+  await run_verilator();
+} else if (process.platform === "darwin") {
   await run_icarus();
 } else if (process.platform === "linux") {
   await run_xvlog();

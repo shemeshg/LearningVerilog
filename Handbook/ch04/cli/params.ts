@@ -4,6 +4,8 @@ export enum Mode {
   Deploy = "Deploy"
 }
 
+export const use_verilator = true;
+
 const currentMode: Mode = Mode.Emulator; // change as needed
 
 // Top module selection
