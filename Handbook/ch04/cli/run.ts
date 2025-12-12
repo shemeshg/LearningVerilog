@@ -1,7 +1,7 @@
 #!/usr/bin/env tsx
 import { exit } from 'process'
 import { $, cd } from 'zx'
-import { topModule, inFiles, use_verilator } from './params.ts';
+import { topModule, inFiles, use_verilator, verilog_sim_main_cpp } from './params.ts';
 
 import { writeFile } from "fs/promises";
 import path from "path";
@@ -22,7 +22,7 @@ SRC_FILE := \\
 
 obj_dir/V$(TOP_NAME): $(SRC_FILE)
 \tverilator -cc --exe --trace --trace-structs --build --timing \\
-\t\tsrc/sim_main.cpp $(SRC_FILE) --top $(TOP_NAME)
+\t\tsrc/${verilog_sim_main_cpp} $(SRC_FILE) --top $(TOP_NAME)
 
 run: obj_dir/V$(TOP_NAME)
 \t./obj_dir/V$(TOP_NAME)

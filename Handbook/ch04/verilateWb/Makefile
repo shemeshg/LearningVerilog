@@ -18,7 +18,7 @@ SRC_FILE := \
 
 obj_dir/V$(TOP_NAME): $(SRC_FILE)
 	verilator -cc --exe --trace --trace-structs --build --timing \
-		src/sim_main.cpp $(SRC_FILE) --top $(TOP_NAME)
+		src/sim_main_tb.cpp $(SRC_FILE) --top $(TOP_NAME)
 
 run: obj_dir/V$(TOP_NAME)
 	./obj_dir/V$(TOP_NAME)

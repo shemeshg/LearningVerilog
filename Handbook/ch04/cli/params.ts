@@ -6,7 +6,9 @@ export enum Mode {
 
 export const use_verilator = true;
 
-const currentMode: Mode = Mode.Emulator; // change as needed
+
+const currentMode: Mode = Mode.Testbench; // change as needed
+export const verilog_sim_main_cpp = Mode.Testbench ? "sim_main_tb.cpp" : "sim_main_top.cpp";
 
 // Top module selection
 let topModule: string;
@@ -14,11 +16,8 @@ let topModule: string;
 
 
 switch (currentMode) {
-  case Mode.Emulator:
-    topModule = "tb_emulator";
-    break;
   case Mode.Testbench:
-    topModule = "tb_seg_display";
+    topModule = "tb_emulator";
     break;
   case Mode.Deploy:
     topModule = "top"; // placeholder for Deploy
@@ -44,7 +43,7 @@ export const inFiles: string[] = [
 ];
 
 // Append OS‑specific file only for Emulator/Testbench
-if (currentMode === Mode.Emulator || currentMode === Mode.Testbench) {
+if (currentMode === Mode.Testbench) {
   inFiles.push(
     process.platform === "darwin"
       ? "../tb/tb_macos_only.sv"
@@ -53,10 +52,8 @@ if (currentMode === Mode.Emulator || currentMode === Mode.Testbench) {
 }
 
 // Append mode‑specific file
-if (currentMode === Mode.Emulator) {
-  inFiles.push("../tb/tb_emulator.sv");
-} else if (currentMode === Mode.Testbench) {
-  inFiles.push("../tb/tb_seg_display.sv");
+if (currentMode === Mode.Testbench) {
+  inFiles.push(`../tb/${topModule}.sv`);
 } else if (currentMode === Mode.Deploy) {
   inFiles.push("../hdl/top.sv"); // placeholder for Deploy
 }
