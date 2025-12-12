@@ -17,7 +17,7 @@ SRC_FILE := \
 .PHONY: run clean
 
 obj_dir/V$(TOP_NAME): $(SRC_FILE)
-	verilator -cc --exe --trace --trace-structs --build --timing \
+	verilator -cc --exe --trace --trace-structs --build -j 0 --timing \
 		src/sim_main_tb.cpp $(SRC_FILE) --top $(TOP_NAME)
 
 run: obj_dir/V$(TOP_NAME)

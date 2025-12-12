@@ -21,7 +21,7 @@ SRC_FILE := \\
 .PHONY: run clean
 
 obj_dir/V$(TOP_NAME): $(SRC_FILE)
-\tverilator -cc --exe --trace --trace-structs --build --timing \\
+\tverilator -cc --exe --trace --trace-structs --build -j 0 --timing \\
 \t\tsrc/${verilog_sim_main_cpp} $(SRC_FILE) --top $(TOP_NAME)
 
 run: obj_dir/V$(TOP_NAME)
