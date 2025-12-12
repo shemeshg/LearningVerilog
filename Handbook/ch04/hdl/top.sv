@@ -1,5 +1,4 @@
 `timescale 1ns / 100ps
-`include "types_pkg.sv"
 import types_pkg::*;
 
 
@@ -127,7 +126,7 @@ module top #(
       refresh_count <= '0;
       anode_count   <= '0;
     end
-    if (refresh_count == INTERVAL) begin
+    if (refresh_count == 14'(INTERVAL)) begin
       refresh_count <= '0;
       anode_count   <= anode_count + 1'b1;
     end else refresh_count <= refresh_count + 1'b1;

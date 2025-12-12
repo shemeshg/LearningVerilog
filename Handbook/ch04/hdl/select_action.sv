@@ -21,8 +21,8 @@ module select_action (
       ADD:          LED = add_sub_mult_LED;
       SUB:          LED = add_sub_mult_LED;
       MUL:          LED = add_sub_mult_LED;
-      LEADING_ONES: LED = leading_ones_fn(SW);
-      COUNT_ONES:   LED = count_ones_fn(SW);
+      LEADING_ONES: LED = word_t'(leading_ones_fn(SW));
+      COUNT_ONES:   LED = word_t'(count_ones_fn(SW));
       default:      LED = '0;
     endcase
 

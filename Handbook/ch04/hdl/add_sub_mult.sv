@@ -15,9 +15,9 @@ module add_sub_mult (
 
   always_comb begin
     case (SELECTOR)
-      ADD:     result_comb = SW_LH + SW_RH;
-      SUB:     result_comb = SW_LH - SW_RH;
-      MUL:     result_comb = SW_LH * SW_RH;
+      ADD:     result_comb = word_t'(SW_LH) + word_t'(SW_RH);
+      SUB:     result_comb = word_t'(SW_LH) - word_t'(SW_RH);
+      MUL:     result_comb = word_t'(SW_LH) * word_t'(SW_RH);
       default: result_comb = '0;
     endcase
     LED = result_comb;

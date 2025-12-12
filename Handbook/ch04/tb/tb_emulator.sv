@@ -119,11 +119,12 @@ module tb_emulator;
   always @(posedge clk) begin
 
     //#1000000000;
-    #1000000;
+    //ICARUS // #1000000;
+    #10000; //Verilator
     #10ns;
-
+    $display("DEBUG CLICK");
     fdw_led = $fopen(myLeds, "w");
-    if (fdw_led) begin
+    if (fdw_led != 0) begin
       $fwrite(fdw_led, "Time: %0t | SW_TB: %b | LED_TB: %b\n", $time, SW_TB, LED_TB);
       $fclose(fdw_led);
     end else begin
@@ -133,7 +134,7 @@ module tb_emulator;
 
 
     fdw_led = $fopen(mySegDispllay, "w");
-    if (fdw_led) begin
+    if (fdw_led != 0) begin
       for (i = 0; i < DIGITS; i++) begin
         $fwrite(fdw_led, "%08b %b \n", 8'b1 << i, display[i*8+:8]);
       end
@@ -180,6 +181,7 @@ module tb_emulator;
 
   
   initial begin
+    $display("DEBUG INIT");
     rst = 1;
     repeat (2) @(posedge clk);
     rst   = 0;

@@ -4,7 +4,7 @@ export enum Mode {
   Deploy = "Deploy"
 }
 
-const currentMode: Mode = Mode.Deploy; // change as needed
+const currentMode: Mode = Mode.Emulator; // change as needed
 
 // Top module selection
 let topModule: string;

@@ -30,7 +30,7 @@ package types_pkg;
   function automatic word_log2_t count_ones_fn(input word_t vec);
     word_log2_t count = 0;
     for (int i = 0; i < BITS; i++) begin
-      count = count + vec[i];
+      count = count + word_log2_t'(vec[i]);
     end
     return count;
   endfunction
@@ -38,7 +38,7 @@ package types_pkg;
   function automatic word_log2_t leading_ones_fn(input word_t vec);
     for (int i = $high(vec); i >= $low(vec); i--) begin
       if (vec[i]) begin
-        return i;
+        return word_log2_t'(i);
       end
     end
     return 0;

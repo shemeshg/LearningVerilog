@@ -26,14 +26,20 @@ module select_btn_action (
     if (CPU_RESETN) begin
       rememberd_selected <= RESET;
     end else begin
-      case (1'b1)
-        BTNC: rememberd_selected <= MUL;
-        BTNU: rememberd_selected <= LEADING_ONES;
-        BTND: rememberd_selected <= COUNT_ONES;
-        BTNL: rememberd_selected <= ADD;
-        BTNR: rememberd_selected <= SUB;
-        RESET: rememberd_selected <= RESET;
-      endcase
+      if (BTNC) begin
+        rememberd_selected <= MUL;
+      end else if (BTNU) begin
+        rememberd_selected <= LEADING_ONES;
+      end else if (BTND) begin
+        rememberd_selected <= COUNT_ONES;
+      end else if (BTNL) begin
+        rememberd_selected <= ADD;
+      end else if (BTNR) begin
+        rememberd_selected <= SUB;
+      end else if (1'(RESET)) begin
+        rememberd_selected <= RESET;
+      end
+
     end
   end
 
