@@ -1,4 +1,3 @@
-## START VERILATOR
 add_library(HdlLib STATIC) # or SHARED for a shared library
 set_target_properties(HdlLib PROPERTIES AUTOMOC OFF AUTOUIC OFF AUTORCC OFF)
 target_compile_features(HdlLib PUBLIC cxx_std_14)
@@ -23,7 +22,3 @@ verilate(
     # Add any extra Verilator flags here as arguments
     VERILATOR_ARGS -cc --trace --trace-structs --timing
 )
-
-
-## END_VERILATOR
-
