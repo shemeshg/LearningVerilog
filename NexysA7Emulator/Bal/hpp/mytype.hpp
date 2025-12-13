@@ -8,7 +8,6 @@
 #include <QJSEngine>
 #include <QtConcurrent>
 
-
 //-only-file body //-
 //- #include "mytype.h"
 #include <QClipboard>
@@ -21,7 +20,8 @@
 
 //-only-file header
 //-var {PRE} "MyType::"
-class MyType : public MyTypePrivate {
+class MyType : public MyTypePrivate
+{
     Q_OBJECT
     QML_ELEMENT
 
@@ -29,7 +29,8 @@ public:
     //- {function} 1 1
     explicit MyType(QObject *parent = nullptr)
         //-only-file body
-        : MyTypePrivate(parent) {
+        : MyTypePrivate(parent)
+    {
 
         emulatorWorker = new EmulatorWorker();
         thread = new QThread();
@@ -48,7 +49,6 @@ public:
 
         connect(thread, &QThread::finished, emulatorWorker, &QObject::deleteLater);
         thread->start();
-
     }
 
     //- {function} 1 1
@@ -57,23 +57,27 @@ public:
     {
         QMetaObject::invokeMethod(emulatorWorker, "stop", Qt::QueuedConnection);
 
-        thread->quit();   // tell the event loop to exit
+        thread->quit(); // tell the event loop to exit
     }
 
-//-only-file header
+    //-only-file header
 public slots:
-    void start(){
+    void start()
+    {
         emit _start();
     }
 
-    void stop(){
+    void stop()
+    {
         emit _stop();
     }
 
     void writeBtnStatus(int cpuResetn, int btnu, int btnl,
-                        int btnc, int btnr, int btnd, int sw){
+                        int btnc, int btnr, int btnd, int sw)
+    {
         emit _writeBtnStatus(cpuResetn, btnu, btnl,
-                             btnc, btnr, btnd, sw);;
+                             btnc, btnr, btnd, sw);
+        ;
     }
 
 signals:
@@ -83,19 +87,23 @@ signals:
                          int btnc, int btnr, int btnd, int sw);
 
 private slots:
-    void setRunningStatus(bool status){
-        if (status) {
+    void setRunningStatus(bool status)
+    {
+        if (status)
+        {
             setTimeStr("Running");
-        } else {
-           setTimeStr("Stopped");
+        }
+        else
+        {
+            setTimeStr("Stopped");
         }
     }
 
-    void catChanged(int an, int cat){
+    void catChanged(int an, int cat)
+    {
         uint8_t an_inv = ~an & 0xFF;
         qDebug() << "AN:" << QString::number(an_inv, 2).rightJustified(8, '0')
                  << "CAT:" << QString::number(cat, 2).rightJustified(8, '0');
-
     }
 
 private:
@@ -103,23 +111,23 @@ private:
     QThread *thread;
     QTimer timer;
 
-
     template <typename T>
-    void makeAsync(const QJSValue &callback, std::function<T()> func) {
+    void makeAsync(const QJSValue &callback, std::function<T()> func)
+    {
         auto *watcher = new QFutureWatcher<T>(this);
         QObject::connect(watcher, &QFutureWatcher<T>::finished, this,
-                         [this, watcher, callback]() {
-            T returnValue = watcher->result();
-            QJSValue cbCopy(callback);
-            QJSEngine *engine = qjsEngine(this);
-            cbCopy.call(
-                QJSValueList{engine->toScriptValue(returnValue)});
-            watcher->deleteLater();
-        });
-        watcher->setFuture(QtConcurrent::run([=]() { return func(); }));
+                         [this, watcher, callback]()
+                         {
+                             T returnValue = watcher->result();
+                             QJSValue cbCopy(callback);
+                             QJSEngine *engine = qjsEngine(this);
+                             cbCopy.call(
+                                 QJSValueList{engine->toScriptValue(returnValue)});
+                             watcher->deleteLater();
+                         });
+        watcher->setFuture(QtConcurrent::run([=]()
+                                             { return func(); }));
     }
-
-
 
     //-only-file header
 };

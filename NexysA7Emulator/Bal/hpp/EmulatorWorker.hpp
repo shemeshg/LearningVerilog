@@ -19,7 +19,7 @@ class EmulatorWorker : public QObject
     Q_OBJECT
 public:
     //- {function} 1 1
-    explicit EmulatorWorker(QObject *parent= nullptr)
+    explicit EmulatorWorker(QObject *parent = nullptr)
         //-only-file body
         : QObject(parent)
     {
@@ -36,8 +36,8 @@ public slots:
     void start()
     //-only-file body
     {
-        //qDebug() << "DUT started";
-        // Reset
+        // qDebug() << "DUT started";
+        //  Reset
         dut->CPU_RESETN = 0;
         for (int i = 0; i < 5; i++)
         {
@@ -71,11 +71,11 @@ public slots:
     //-only-file body
     {
         isRunning = false;
-        //qDebug() << "DUT stoped";
+        // qDebug() << "DUT stoped";
         emit setRunningStatus(isRunning);
     }
 
-//-only-file header
+    //-only-file header
 signals:
     void setRunningStatus(bool status);
     void catChanged(int an, int cat);
@@ -91,7 +91,7 @@ private:
     uint8_t packSegments()
     //-only-file body
     {
-        return  (dut->CA << 0) |
+        return (dut->CA << 0) |
                (dut->CB << 1) |
                (dut->CC << 2) |
                (dut->CD << 3) |
@@ -100,7 +100,6 @@ private:
                (dut->CG << 6) |
                (dut->DP << 7);
     }
-
 
     //- {fn}
     void tick()
@@ -112,28 +111,29 @@ private:
             dut->eval();
             clockCounter++;
 
-
-
             uint8_t an_raw = dut->AN;
-            uint8_t an = ~an_raw & 0xFF;     // convert active-low AN → active-high
-            uint8_t seg = packSegments();    // already inverted inside
+            uint8_t an = ~an_raw & 0xFF;  // convert active-low AN → active-high
+            uint8_t seg = packSegments(); // already inverted inside
 
             // Decode which digit is active (0–7)
             int digit = -1;
-            for (int i = 0; i < 8; i++) {
-                if (an & (1 << i)) {
+            for (int i = 0; i < 8; i++)
+            {
+                if (an & (1 << i))
+                {
                     digit = i;
                     break;
                 }
             }
 
-            if (digit >= 0) {
-                if (segmentVec[digit] != seg) {
+            if (digit >= 0)
+            {
+                if (segmentVec[digit] != seg)
+                {
                     segmentVec[digit] = seg;
                     emit catChanged(digit, seg);
                 }
             }
-
 
             if (clockCounter >= INTERVAL)
             {
