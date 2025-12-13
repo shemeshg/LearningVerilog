@@ -36,7 +36,7 @@ public slots:
     void start()
     //-only-file body
     {
-        qDebug() << "DUT started";
+        //qDebug() << "DUT started";
         // Reset
         dut->CPU_RESETN = 0;
         for (int i = 0; i < 5; i++)
@@ -48,7 +48,7 @@ public slots:
         }
         dut->CPU_RESETN = 1;
         isRunning = true;
-
+        emit setRunningStatus(isRunning);
         QTimer::singleShot(0, this, &EmulatorWorker::tick);
     }
 
@@ -71,10 +71,15 @@ public slots:
     //-only-file body
     {
         isRunning = false;
-        qDebug() << "DUT staped";
+        //qDebug() << "DUT stoped";
+        emit setRunningStatus(isRunning);
     }
 
-    //-only-file header
+//-only-file header
+signals:
+    void setRunningStatus(bool status);
+
+
 private:
     Vtop *dut;
     bool isRunning = false;

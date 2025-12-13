@@ -37,6 +37,11 @@ public:
         connect(this, &MyType::_start, emulatorWorker, &EmulatorWorker::start);
         connect(this, &MyType::_stop, emulatorWorker, &EmulatorWorker::stop);
         connect(this, &MyType::_writeBtnStatus, emulatorWorker, &EmulatorWorker::writeBtnStatus);
+        connect(emulatorWorker,
+                &EmulatorWorker::setRunningStatus,
+                this,
+                &MyType::setRunningStatus);
+
 
         connect(thread, &QThread::finished, emulatorWorker, &QObject::deleteLater);
         thread->start();
@@ -75,7 +80,13 @@ signals:
                          int btnc, int btnr, int btnd, int sw);
 
 private slots:
-
+    void setRunningStatus(bool status){
+        if (status) {
+            setTimeStr("Running");
+        } else {
+           setTimeStr("Stopped");
+        }
+    }
 private:
     EmulatorWorker *emulatorWorker;
     QThread *thread;
