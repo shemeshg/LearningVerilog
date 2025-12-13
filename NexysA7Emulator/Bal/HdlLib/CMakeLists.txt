@@ -11,19 +11,7 @@ if(NOT verilator_FOUND)
         "Verilator was not found. Either install it, or set the VERILATOR_ROOT environment variable"
     )
 endif()
-
-set(VERILOG_SRC
-    ${CMAKE_CURRENT_SOURCE_DIR}/hdl/types_pkg.sv
-    ${CMAKE_CURRENT_SOURCE_DIR}/hdl/dec_cat_map.sv
-    ${CMAKE_CURRENT_SOURCE_DIR}/hdl/bin_to_bcd.sv
-    ${CMAKE_CURRENT_SOURCE_DIR}/hdl/seg_display_calc.sv
-    ${CMAKE_CURRENT_SOURCE_DIR}/hdl/add_sub_mult.sv
-    ${CMAKE_CURRENT_SOURCE_DIR}/hdl/select_action.sv
-    ${CMAKE_CURRENT_SOURCE_DIR}/hdl/select_btn_action.sv
-    ${CMAKE_CURRENT_SOURCE_DIR}/hdl/unbounce_btn.sv
-    ${CMAKE_CURRENT_SOURCE_DIR}/hdl/unbounce_array.sv
-    ${CMAKE_CURRENT_SOURCE_DIR}/hdl/top.sv
-)
+include(${CMAKE_CURRENT_SOURCE_DIR}/verilog_sources.cmake)
 
 set(TOP_NAME "top")
 message(STATUS "Verilator sources list contains: ${VERILOG_SRC}")

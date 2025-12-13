@@ -1,0 +1,12 @@
+set(VERILOG_SRC
+    ${CMAKE_CURRENT_SOURCE_DIR}/hdl/types_pkg.sv
+    ${CMAKE_CURRENT_SOURCE_DIR}/hdl/dec_cat_map.sv
+    ${CMAKE_CURRENT_SOURCE_DIR}/hdl/bin_to_bcd.sv
+    ${CMAKE_CURRENT_SOURCE_DIR}/hdl/seg_display_calc.sv
+    ${CMAKE_CURRENT_SOURCE_DIR}/hdl/add_sub_mult.sv
+    ${CMAKE_CURRENT_SOURCE_DIR}/hdl/select_action.sv
+    ${CMAKE_CURRENT_SOURCE_DIR}/hdl/select_btn_action.sv
+    ${CMAKE_CURRENT_SOURCE_DIR}/hdl/unbounce_btn.sv
+    ${CMAKE_CURRENT_SOURCE_DIR}/hdl/unbounce_array.sv
+    ${CMAKE_CURRENT_SOURCE_DIR}/hdl/top.sv
+)
