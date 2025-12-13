@@ -25,7 +25,6 @@ class MyTypePrivate : public QObject
     Q_PROPERTY(QString statusText READ statusText WRITE setStatusText NOTIFY statusTextChanged )
     Q_PROPERTY(QString timeStr READ timeStr WRITE setTimeStr NOTIFY timeStrChanged )
     Q_PROPERTY(QString ledStr READ ledStr WRITE setLedStr NOTIFY ledStrChanged )
-    Q_PROPERTY(QString swStr READ swStr WRITE setSwStr NOTIFY swStrChanged )
     Q_PROPERTY(QString segCat READ segCat WRITE setSegCat NOTIFY segCatChanged )
     Q_PROPERTY(QString segAn READ segAn WRITE setSegAn NOTIFY segAnChanged )
     
@@ -76,18 +75,6 @@ void setLedStr(const QString &newLedStr)
 
 
     
-    QString swStr() const{return m_swStr;} 
-    
-void setSwStr(const QString &newSwStr)
-    {
-        if (m_swStr == newSwStr)
-            return;
-        m_swStr = newSwStr;
-        emit swStrChanged();
-    }
-
-
-    
     QString segCat() const{return m_segCat;} 
     
 void setSegCat(const QString &newSegCat)
@@ -118,7 +105,6 @@ signals:
     void statusTextChanged();
     void timeStrChanged();
     void ledStrChanged();
-    void swStrChanged();
     void segCatChanged();
     void segAnChanged();
     
@@ -130,7 +116,6 @@ private:
     QString m_statusText {"Not connected"};
     QString m_timeStr {};
     QString m_ledStr {"0000000000000000"};
-    QString m_swStr {"0000000000000000"};
     QString m_segCat {"00000000"};
     QString m_segAn {"00000000"};
     

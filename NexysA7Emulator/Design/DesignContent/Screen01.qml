@@ -74,8 +74,10 @@ ColumnLayout {
         text: "Led str " + formatBinStr(Constants.mytype.ledStr)
     }
 
+
+    property string swStr: "0000000000000000"
     CoreLabel {
-        text: "Sq str " + formatBinStr(Constants.mytype.swStr)
+        text: "Sq str " + formatBinStr(swStr)
     }
 
 
@@ -88,10 +90,10 @@ ColumnLayout {
                 swEnabled: false
                 name: "SW" + (15 - index)
                 onSwChanged: (val)=>{
-                                 let arr = Constants.mytype.swStr.split("");
+                                 let arr = swStr.split("");
                                  arr[index] = val ? "1" : "0";
-                                 Constants.mytype.swStr = arr.join("");
-                                 Constants.mytype.writeSwStatus();
+                                 swStr = arr.join("");
+                                 writeBtnStatus();
                              }
                 onColor: CoreSystemPalette.isDarkTheme ? "#00ff66" : "#ff2d2d"
                 offColor : CoreSystemPalette.isDarkTheme ?"#003322" : "#CCCCCC"
@@ -119,12 +121,13 @@ ColumnLayout {
 
     function writeBtnStatus(){
         Constants.mytype.writeBtnStatus(
-                    bl2Str(cpuResetn.pressed) ,
-                    bl2Str(btnu.pressed) ,
-                    bl2Str(btnl.pressed) ,
-                    bl2Str(btnc.pressed) ,
-                    bl2Str(btnr.pressed) ,
-                    bl2Str(btnd.pressed)
+                    Number(cpuResetn.pressed) ,
+                    Number(btnu.pressed) ,
+                    Number(btnl.pressed) ,
+                    Number(btnc.pressed) ,
+                    Number(btnr.pressed) ,
+                    Number(btnd.pressed) ,
+                    parseInt(swStr, 2)
                     );
     }
 

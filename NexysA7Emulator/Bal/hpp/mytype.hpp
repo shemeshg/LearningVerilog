@@ -32,11 +32,13 @@ public:
         : MyTypePrivate(parent) {
 
         emulatorWorker = new EmulatorWorker();
-        thread = new QThread(this);
+        thread = new QThread();
         emulatorWorker->moveToThread(thread);
         connect(this, &MyType::_start, emulatorWorker, &EmulatorWorker::start);
         connect(this, &MyType::_stop, emulatorWorker, &EmulatorWorker::stop);
         connect(this, &MyType::_writeBtnStatus, emulatorWorker, &EmulatorWorker::writeBtnStatus);
+
+        connect(thread, &QThread::finished, emulatorWorker, &QObject::deleteLater);
         thread->start();
 
     }
@@ -45,10 +47,9 @@ public:
     virtual ~MyType()
     //-only-file body
     {
-        emit stop();
+        QMetaObject::invokeMethod(emulatorWorker, "stop", Qt::QueuedConnection);
 
-        thread->quit();
-        thread->wait();
+        thread->quit();   // tell the event loop to exit
     }
 
 //-only-file header

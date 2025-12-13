@@ -19,7 +19,7 @@ class EmulatorWorker : public QObject
     Q_OBJECT
 public:
     //- {function} 1 1
-    explicit EmulatorWorker(QObject *parent = nullptr)
+    explicit EmulatorWorker(QObject *parent= nullptr)
         //-only-file body
         : QObject(parent)
     {
@@ -50,12 +50,11 @@ public slots:
         isRunning = true;
 
         QTimer::singleShot(0, this, &EmulatorWorker::tick);
-
     }
 
     //- {fn}
     void writeBtnStatus(int cpuResetn, int btnu, int btnl,
-                   int btnc, int btnr, int btnd, int sw)
+                        int btnc, int btnr, int btnd, int sw)
     //-only-file body
     {
         dut->CPU_RESETN = cpuResetn;
@@ -80,21 +79,24 @@ private:
     Vtop *dut;
     bool isRunning = false;
     const int INTERVAL = 100000;
-    int clockCounter =0;
+    int clockCounter = 0;
 
     //- {fn}
     void tick()
     //-only-file body
     {
-        while (isRunning) {
+        while (isRunning)
+        {
             dut->CLK100MHZ ^= 1;
             dut->eval();
 
             clockCounter++;
-            if (clockCounter >= INTERVAL) {
+            if (clockCounter >= INTERVAL)
+            {
                 clockCounter = 0;
                 QCoreApplication::processEvents();
                 QThread::yieldCurrentThread();
+                qDebug() << dut->CPU_RESETN << dut->BTNU << dut->BTNL << dut->BTNC << dut->BTNR << dut->BTND << dut->SW;
             }
         }
     }
