@@ -1,3 +1,4 @@
+set(CMAKE_OSX_ARCHITECTURES "arm64" CACHE STRING "" FORCE)
 # [[[cog
 # import cog
 # from CMakeCog import getCmake

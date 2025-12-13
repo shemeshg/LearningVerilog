@@ -8,6 +8,7 @@
 #include <QJSEngine>
 #include <QtConcurrent>
 
+#include <verilated.h>
 
 //-only-file body //-
 //- #include "mytype.h"
@@ -29,7 +30,7 @@ public:
         //-only-file body
         : MyTypePrivate(parent) {
 
-
+        VerilatedContext* ctx = new VerilatedContext;
 
 
         QObject::connect(&timer, &QTimer::timeout, [this]() {

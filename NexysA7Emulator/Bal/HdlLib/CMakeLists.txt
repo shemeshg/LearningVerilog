@@ -22,3 +22,7 @@ verilate(
     # Add any extra Verilator flags here as arguments
     VERILATOR_ARGS -cc --trace --trace-structs --timing
 )
+target_link_options(HdlLib PUBLIC
+    "-Wl,-U,__Z15vl_time_stamp64v"
+    "-Wl,-U,__Z13sc_time_stampv"
+)
