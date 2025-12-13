@@ -101,8 +101,7 @@ private slots:
 
     void catChanged(int an, int cat)
     {
-        uint8_t an_inv = ~an & 0xFF;
-        qDebug() << "AN:" << QString::number(an_inv, 2).rightJustified(8, '0')
+        qDebug() << "AN:" << QString::number(an, 2).rightJustified(8, '0')
                  << "CAT:" << QString::number(cat, 2).rightJustified(8, '0');
     }
 
