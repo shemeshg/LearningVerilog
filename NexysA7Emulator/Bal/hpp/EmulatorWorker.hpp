@@ -54,6 +54,20 @@ public slots:
     }
 
     //- {fn}
+    void writeBtnStatus(int cpuResetn, int btnu, int btnl,
+                   int btnc, int btnr, int btnd, int sw)
+    //-only-file body
+    {
+        dut->CPU_RESETN = cpuResetn;
+        dut->BTNU = btnu;
+        dut->BTNL = btnl;
+        dut->BTNC = btnc;
+        dut->BTNR = btnr;
+        dut->BTND = btnd;
+        dut->SW = sw;
+    }
+
+    //- {fn}
     void stop()
     //-only-file body
     {
@@ -79,7 +93,6 @@ private:
             clockCounter++;
             if (clockCounter >= INTERVAL) {
                 clockCounter = 0;
-                qDebug() << "Tick";
                 QCoreApplication::processEvents();
                 QThread::yieldCurrentThread();
             }

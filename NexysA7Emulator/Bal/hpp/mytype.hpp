@@ -36,7 +36,7 @@ public:
         emulatorWorker->moveToThread(thread);
         connect(this, &MyType::_start, emulatorWorker, &EmulatorWorker::start);
         connect(this, &MyType::_stop, emulatorWorker, &EmulatorWorker::stop);
-
+        connect(this, &MyType::_writeBtnStatus, emulatorWorker, &EmulatorWorker::writeBtnStatus);
         thread->start();
 
     }
@@ -61,10 +61,17 @@ public slots:
         emit _stop();
     }
 
+    void writeBtnStatus(int cpuResetn, int btnu, int btnl,
+                        int btnc, int btnr, int btnd, int sw){
+        emit _writeBtnStatus(cpuResetn, btnu, btnl,
+                             btnc, btnr, btnd, sw);;
+    }
 
 signals:
     void _stop();
     void _start();
+    void _writeBtnStatus(int cpuResetn, int btnu, int btnl,
+                         int btnc, int btnr, int btnd, int sw);
 
 private slots:
 
