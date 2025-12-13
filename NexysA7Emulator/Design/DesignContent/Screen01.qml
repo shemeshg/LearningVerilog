@@ -48,6 +48,16 @@ ColumnLayout {
         [false, false, false, false, true,  false, false, true]
     ]
 
+    RowLayout {
+        CoreButton {
+            text: "start"
+            onClicked: Constants.mytype.start();
+        }
+        CoreButton {
+            text: "stop"
+            onClicked: Constants.mytype.stop();
+        }
+    }
 
     CoreLabel {
         text: "Time code: " + Constants.mytype.timeStr

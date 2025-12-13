@@ -13,7 +13,8 @@ make_directory(${CMAKE_CURRENT_BINARY_DIR}/prptHpp)
 
     set(HPP_GEN_FILES
         ${CMAKE_SOURCE_DIR}/scripts/hppTemplates.txt
-        ${CMAKE_CURRENT_SOURCE_DIR}/hpp/mytype.hpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/hpp/EmulatorWorker.hpp
+${CMAKE_CURRENT_SOURCE_DIR}/hpp/mytype.hpp
 ${CMAKE_CURRENT_SOURCE_DIR}/prptHpp/MyTypePrivate.hpp
     )
     add_custom_target(runScript_c7e9047dcad220c49dd24c7e1404b79292ba93d4d1bbef3bb841f56e27c53d60 ALL
@@ -43,7 +44,9 @@ find_package(Qt${QT_VERSION_MAJOR} COMPONENTS Concurrent Gui REQUIRED)
 add_subdirectory(HdlLib)
 
 add_library(Bal STATIC
-  ${CMAKE_CURRENT_BINARY_DIR}/hpp/mytype.cpp
+  ${CMAKE_CURRENT_BINARY_DIR}/hpp/EmulatorWorker.cpp
+${CMAKE_CURRENT_BINARY_DIR}/hpp/EmulatorWorker.h
+${CMAKE_CURRENT_BINARY_DIR}/hpp/mytype.cpp
 ${CMAKE_CURRENT_BINARY_DIR}/hpp/mytype.h
 ${CMAKE_CURRENT_BINARY_DIR}/prptHpp/MyTypePrivate.h
 )        

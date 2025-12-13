@@ -8,7 +8,6 @@
 #include <QJSEngine>
 #include <QtConcurrent>
 
-#include <verilated.h>
 
 //-only-file body //-
 //- #include "mytype.h"
@@ -17,9 +16,11 @@
 
 //- {include-header}
 #include "../prptHpp/MyTypePrivate.hpp" //- #include "../prptHpp/MyTypePrivate.h"
+//- {include-header}
+#include "EmulatorWorker.hpp" //- #include "EmulatorWorker.h"
 
 //-only-file header
-//-var {PRE} "MyType::"mytype
+//-var {PRE} "MyType::"
 class MyType : public MyTypePrivate {
     Q_OBJECT
     QML_ELEMENT
@@ -30,63 +31,48 @@ public:
         //-only-file body
         : MyTypePrivate(parent) {
 
-        VerilatedContext* ctx = new VerilatedContext;
+        emulatorWorker = new EmulatorWorker();
+        thread = new QThread(this);
+        emulatorWorker->moveToThread(thread);
+        connect(this, &MyType::_start, emulatorWorker, &EmulatorWorker::start);
+        connect(this, &MyType::_stop, emulatorWorker, &EmulatorWorker::stop);
 
+        thread->start();
 
-        QObject::connect(&timer, &QTimer::timeout, [this]() {
-            getLedStatus();
-            get7SegStatus();
-        });
-
-        setSettings();
-        writeSwStatus();                
-        timer.start(100);
     }
 
-    //-only-file header
+    //- {function} 1 1
+    virtual ~MyType()
+    //-only-file body
+    {
+        emit stop();
+
+        thread->quit();
+        thread->wait();
+    }
+
+//-only-file header
 public slots:
-
-    //- {fn}
-    void writeSwStatus()
-    //-only-file body
-    {
-        QFile file(mySw);
-
-        if (!file.open(QIODevice::WriteOnly | QIODevice::Text)) {
-            qDebug() << "Could not open file for writing!"<<mySw;
-            return;
-        }
-        QTextStream out(&file);
-        out << swStr() << "\n";
-        file.close();
+    void start(){
+        emit _start();
     }
 
-    //- {fn}
-    void writeBtnStatus(QString cpuResetn, QString btnu, QString btnl,
-                        QString btnc, QString btnr, QString btnd)
-    //-only-file body
-    {
-
-        QFile file(myBtns);
-
-        if (!file.open(QIODevice::WriteOnly | QIODevice::Text)) {
-            qDebug() << "Could not open file for writing!"<<myBtns;
-            return;
-        }
-        QTextStream out(&file);
-        out << cpuResetn << " " << btnu << " " << btnl << " " << btnc << " " << btnr
-            << " " << btnd << "\n";
-        file.close();
+    void stop(){
+        emit _stop();
     }
 
-    //-only-file header
+
 signals:
+    void _stop();
+    void _start();
 
 private slots:
 
 private:
+    EmulatorWorker *emulatorWorker;
+    QThread *thread;
     QTimer timer;
-    QString myLeds, mySegDispllay, mySw, myBtns;
+
 
     template <typename T>
     void makeAsync(const QJSValue &callback, std::function<T()> func) {
@@ -104,85 +90,6 @@ private:
     }
 
 
-    //- {fn}
-    bool get7SegStatus()
-    //-only-file body
-    {
 
-        QFile file(mySegDispllay);
-        if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
-            qDebug() << "Could not open file!"<<mySegDispllay<<QSysInfo::productType() ;
-            return false;
-        }
-
-        QTextStream in(&file);
-        while (!in.atEnd()) {
-            QString line = in.readLine();
-            auto s = line.split(" ");
-            if (s.size() >= 2)  {
-                setSegAn(s.at(0).trimmed());
-                setSegCat(s.at(1).trimmed());
-            } else {
-                qDebug() << "Could not parse file!"<<mySegDispllay<<QSysInfo::productType() ;
-            }
-
-        }
-
-        file.close();
-        return true;
-    }
-
-    //- {fn}
-    bool getLedStatus()
-    //-only-file body
-    {
-
-        QFile file(myLeds);
-        if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
-            qDebug() << "Could not open file!"<<myLeds;
-            return false;
-        }
-
-        QTextStream in(&file);
-        while (!in.atEnd()) {
-            QString line = in.readLine();
-            auto s = line.split("|");
-            if (s.size() >= 2)  {
-                setTimeStr(s.at(0).split(":").at(1).trimmed());
-                setLedStr(s.at(2).split(":").at(1).trimmed());
-            } else {
-                qDebug() << "Could not parse file!"<<myLeds;
-            }
-
-        }
-
-        file.close();
-        return true;
-    }
-
-    //- {fn}
-    void setSettings()
-    //-only-file body
-    {
-        QSettings settings;
-
-        myLeds = QSysInfo::productType() == "macos" ?
-                     "/Volumes/RAM_Disk_4G/tmpFifo/myLeds" : "/dev/shm/myLeds";
-        myLeds = settings.value("myLeds",myLeds).toString();
-
-        mySegDispllay = QSysInfo::productType() == "macos" ?
-                     "/Volumes/RAM_Disk_4G/tmpFifo/my7SegDispllay" : "/dev/shm/my7SegDispllay";
-        mySegDispllay = settings.value("mySegDispllay",myLeds).toString();
-
-
-        mySw = QSysInfo::productType() == "macos" ?
-                            "/Volumes/RAM_Disk_4G/tmpFifo/mySw" : "/dev/shm/mySw";;
-        mySw = settings.value("mySw",mySw).toString();
-
-        myBtns = QSysInfo::productType() == "macos" ?
-                   "/Volumes/RAM_Disk_4G/tmpFifo/myBtns" : "/dev/shm/myBtns";;
-        myBtns = settings.value("myBtns",myBtns).toString();
-
-    }
     //-only-file header
 };
