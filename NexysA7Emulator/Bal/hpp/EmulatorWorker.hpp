@@ -57,7 +57,7 @@ public slots:
                         int btnc, int btnr, int btnd, int sw)
     //-only-file body
     {
-        dut->CPU_RESETN = cpuResetn;
+        dut->CPU_RESETN = !cpuResetn;
         dut->BTNU = btnu;
         dut->BTNL = btnl;
         dut->BTNC = btnc;
@@ -78,13 +78,29 @@ public slots:
 //-only-file header
 signals:
     void setRunningStatus(bool status);
-
+    void catChanged(int an, int cat);
 
 private:
     Vtop *dut;
     bool isRunning = false;
-    const int INTERVAL = 100000;
+    const int INTERVAL = 10000;
     int clockCounter = 0;
+
+    std::map<uint8_t, uint8_t> segmentMap;
+    //- {fn}
+    uint8_t packSegments()
+    //-only-file body
+    {
+        return  (dut->CA << 0) |
+               (dut->CB << 1) |
+               (dut->CC << 2) |
+               (dut->CD << 3) |
+               (dut->CE << 4) |
+               (dut->CF << 5) |
+               (dut->CG << 6) |
+               (dut->DP << 7);
+    }
+
 
     //- {fn}
     void tick()
@@ -94,14 +110,31 @@ private:
         {
             dut->CLK100MHZ ^= 1;
             dut->eval();
-
             clockCounter++;
+
+            uint8_t an = dut->AN;
+            uint8_t seg = packSegments();
+            auto it = segmentMap.find(an);
+            if (it == segmentMap.end()) {
+                // First time seeing this AN
+                segmentMap[an] = seg;
+                emit catChanged(an, seg);
+                continue;
+            }
+
+            if (it->second != seg) {
+                // Value changed
+                it->second = seg;
+                emit catChanged(an, seg);
+                continue;
+            }
+
+
             if (clockCounter >= INTERVAL)
             {
                 clockCounter = 0;
                 QCoreApplication::processEvents();
                 QThread::yieldCurrentThread();
-                qDebug() << dut->CPU_RESETN << dut->BTNU << dut->BTNL << dut->BTNC << dut->BTNR << dut->BTND << dut->SW;
             }
         }
     }

@@ -41,7 +41,10 @@ public:
                 &EmulatorWorker::setRunningStatus,
                 this,
                 &MyType::setRunningStatus);
-
+        connect(emulatorWorker,
+                &EmulatorWorker::catChanged,
+                this,
+                &MyType::catChanged);
 
         connect(thread, &QThread::finished, emulatorWorker, &QObject::deleteLater);
         thread->start();
@@ -87,6 +90,14 @@ private slots:
            setTimeStr("Stopped");
         }
     }
+
+    void catChanged(int an, int cat){
+        uint8_t an_inv = ~an & 0xFF;
+        qDebug() << "AN:" << QString::number(an_inv, 2).rightJustified(8, '0')
+                 << "CAT:" << QString::number(cat, 2).rightJustified(8, '0');
+
+    }
+
 private:
     EmulatorWorker *emulatorWorker;
     QThread *thread;
