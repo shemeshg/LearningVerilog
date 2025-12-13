@@ -86,7 +86,7 @@ private:
     const int INTERVAL = 10000;
     int clockCounter = 0;
 
-    std::map<uint8_t, uint8_t> segmentMap;
+    std::vector<uint8_t> segmentVec{8, 0xFF};
     //- {fn}
     uint8_t packSegments()
     //-only-file body
@@ -112,21 +112,26 @@ private:
             dut->eval();
             clockCounter++;
 
-            uint8_t an = dut->AN;
-            uint8_t seg = packSegments();
-            auto it = segmentMap.find(an);
-            if (it == segmentMap.end()) {
-                // First time seeing this AN
-                segmentMap[an] = seg;
-                emit catChanged(an, seg);
-                continue;
+
+
+            uint8_t an_raw = dut->AN;
+            uint8_t an = ~an_raw & 0xFF;     // convert active-low AN → active-high
+            uint8_t seg = packSegments();    // already inverted inside
+
+            // Decode which digit is active (0–7)
+            int digit = -1;
+            for (int i = 0; i < 8; i++) {
+                if (an & (1 << i)) {
+                    digit = i;
+                    break;
+                }
             }
 
-            if (it->second != seg) {
-                // Value changed
-                it->second = seg;
-                emit catChanged(an, seg);
-                continue;
+            if (digit >= 0) {
+                if (segmentVec[digit] != seg) {
+                    segmentVec[digit] = seg;
+                    emit catChanged(digit, seg);
+                }
             }
 
 
