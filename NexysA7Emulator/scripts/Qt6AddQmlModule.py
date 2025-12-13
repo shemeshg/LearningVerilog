@@ -4,6 +4,7 @@ from GenHpp import GenHpp
 class Qt6AddQmlModule:
     hppFolders = []
     find_package_qt_components =[]
+    subdirectoryItem = []
 
     def getCmake(self):
         s = []
@@ -20,8 +21,11 @@ class Qt6AddQmlModule:
         s.append(genHpp.getStr())
 
         cmc.find_package_qt_components = self.find_package_qt_components
+        cmc.subdirectoryItem = self.subdirectoryItem
         if len(self.find_package_qt_components) != 0:
             s.append(cmc.find_package_qt())
+        if len(self.subdirectoryItem) != 0:
+                s.append(cmc.add_subdirectory())
 
         cmc.libFilesExtendCppAndH([''])
 
