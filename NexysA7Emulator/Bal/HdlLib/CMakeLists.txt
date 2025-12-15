@@ -22,7 +22,17 @@ verilate(
     # Add any extra Verilator flags here as arguments
     VERILATOR_ARGS -cc --trace --trace-structs --timing
 )
-target_link_options(HdlLib PUBLIC
-    "-Wl,-U,__Z15vl_time_stamp64v"
-    "-Wl,-U,__Z13sc_time_stampv"
-)
+
+if(APPLE)
+    target_link_options(HdlLib PUBLIC
+        "-Wl,-U,__Z15vl_time_stamp64v"
+        "-Wl,-U,__Z13sc_time_stampv"
+    )
+    message(STATUS "Link options for HdlLib applied for macOS")
+elseif(UNIX)
+    message(STATUS "Running on Linux, skipping macOS-specific link options")
+else()
+    # Optional: Handle other platforms like Windows if needed
+    message(STATUS "Running on a non-macOS/Linux system, skipping macOS-specific link options")
+endif()
+
