@@ -62,6 +62,7 @@ public:
         QMetaObject::invokeMethod(emulatorWorker, "stop", Qt::QueuedConnection);
 
         thread->quit(); // tell the event loop to exit
+        thread->killTimer(0);
     }
 
     //-only-file header
