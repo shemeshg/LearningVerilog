@@ -42,7 +42,8 @@ export const inFiles: string[] = [
   "../hdl/select_action.sv",
   "../hdl/select_btn_action.sv",
   "../hdl/unbounce_btn.sv",
-  "../hdl/unbounce_array.sv"
+  "../hdl/unbounce_array.sv",
+  "../hdl/seg_display.sv"
 ];
 
 // Append OS‑specific file only for Emulator/Testbench

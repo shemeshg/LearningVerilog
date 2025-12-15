@@ -31,7 +31,7 @@ module top #(
   assign rst = ~CPU_RESETN;
   wire clk;
   assign clk = CLK100MHZ;
-  localparam INTERVAL = int'(100000000 / (CLK_PER * REFR_RATE));
+  
 
   logic  BTNC_DEB;
   logic  BTNU_DEB;
@@ -110,29 +110,19 @@ module top #(
       .BTND(BTND_DEB)
   );
 
+  seg_display seg_display_inst (
+          .display(display),
+      .clk(clk),
+      .rst(rst),
+      .AN(AN),
+      .CA(CA),
+      .CB(CB),
+      .CC(CC),
+      .CD(CD),
+      .CE(CE),
+      .CF(CF),
+      .CG(CG),
+      .DP(DP)
+  );
 
-  logic [7:0] cathode;
-  assign {DP, CG, CF, CE, CD, CC, CB, CA} = cathode;
-
-  logic [    $clog2(INTERVAL)-1:0] refresh_count;
-  logic [$clog2(NUM_SEGMENTS)-1:0] anode_count;
-  initial begin
-    refresh_count = '0;
-    anode_count   = '0;
-  end
-
-  always @(posedge clk) begin
-    if (rst) begin
-      refresh_count <= '0;
-      anode_count   <= '0;
-    end
-    if (refresh_count == 14'(INTERVAL)) begin
-      refresh_count <= '0;
-      anode_count   <= anode_count + 1'b1;
-    end else refresh_count <= refresh_count + 1'b1;
-    AN              <= '1;
-    AN[anode_count] <= '0;
-    cathode            <= display[anode_count*8+:8];
-
-  end
 endmodule
