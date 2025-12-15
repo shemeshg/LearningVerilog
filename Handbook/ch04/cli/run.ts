@@ -34,7 +34,7 @@ clean:
 
   const emulatorHdlCmakeFolder = path.join(__dirname, emulatorHdlCmakeFolderStr)
   const inFileFromHdlCmake = inFiles.map((f) => { return path.relative(emulatorHdlCmakeFolder, f) });
-  console.log(inFileFromHdlCmake)
+  
 
   const EmulatorCMakeText = `
 set(VERILOG_SRC
@@ -46,7 +46,7 @@ set(VERILOG_SRC
 
   if (currentMode === Mode.Deploy) {
     const pathTosaveVerilogSourceCMake = path.join(emulatorHdlCmakeFolder, "verilog_sources.cmake")
-     await writeFile(pathTosaveVerilogSourceCMake, EmulatorCMakeText, { encoding: "utf8" });
+    await writeFile(pathTosaveVerilogSourceCMake, EmulatorCMakeText, { encoding: "utf8" });
   }
 
 
