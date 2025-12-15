@@ -16,22 +16,22 @@ module top #(
     input  wire                    BTNL,
     input  wire                    BTNR,
     input  wire                    BTND,
-    output  logic         [     7:0] AN,
-    output  logic                    CA,
-    output  logic                    CB,
-    output  logic                    CC,
-    output  logic                    CD,
-    output  logic                    CE,
-    output  logic                    CF,
-    output  logic                    CG,
-    output  logic                    DP
+    output logic        [     7:0] AN,
+    output logic                   CA,
+    output logic                   CB,
+    output logic                   CC,
+    output logic                   CD,
+    output logic                   CE,
+    output logic                   CF,
+    output logic                   CG,
+    output logic                   DP
 );
 
   wire rst;
   assign rst = ~CPU_RESETN;
   wire clk;
   assign clk = CLK100MHZ;
-  
+
 
   logic  BTNC_DEB;
   logic  BTNU_DEB;
@@ -111,7 +111,7 @@ module top #(
   );
 
   seg_display seg_display_inst (
-          .display(display),
+      .display(display),
       .clk(clk),
       .rst(rst),
       .AN(AN),
