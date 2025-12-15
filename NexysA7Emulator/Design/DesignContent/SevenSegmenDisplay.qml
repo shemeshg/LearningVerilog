@@ -23,15 +23,14 @@ RowLayout {
         [true,  true,  true,  true,  true,  true,  true, true],
         [true,  true,  true,  true,  true,  true,  true, true]
     ]
-    onAnChanged: {
-        an.forEach(function(currentValue, index, array) {
-            if(currentValue){
-                displayState[7- (index + 1)] = segments
-                displayState = [...displayState]
+    Connections {
+        target: Constants.mytype
+        function onCatChanged(an,cat) {
+            displayState[an] = cat;
+            displayState = [...displayState]
+        }
+    }
 
-            }
-        });
-                 }
 
     Repeater {
         model: displayState

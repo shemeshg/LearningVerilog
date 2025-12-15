@@ -128,10 +128,11 @@ private:
 
             if (digit >= 0)
             {
-                if (segmentVec[digit] != seg)
+                if (segmentVec[digit-1] != seg)
                 {
-                    segmentVec[digit] = seg;
-                    emit catChanged(digit, seg);
+                    segmentVec[digit-1] = seg;
+                    emit catChanged(an, seg);
+
                 }
             }
 

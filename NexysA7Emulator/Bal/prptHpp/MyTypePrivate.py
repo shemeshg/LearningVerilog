@@ -4,31 +4,13 @@ from propertyLib import create_prpt, PrptClass, EnumClass
 
 ary = [
     create_prpt("QString", 'statusText',
-                init_val = '{"Not connected"}',
+                init_val = '{"Not started"}',
                 is_writable  = True,
                 is_notify = True, 
                 is_list = False
                 ),
-    create_prpt("QString", 'timeStr',
-                init_val = '{}',
-                is_writable  = True,
-                is_notify = True,
-                is_list = False
-                ),
     create_prpt("QString", 'ledStr',
                 init_val = '{"0000000000000000"}',
-                is_writable  = True,
-                is_notify = True,
-                is_list = False
-                ),
-    create_prpt("QString", 'segCat',
-                init_val = '{"00000000"}',
-                is_writable  = True,
-                is_notify = True,
-                is_list = False
-                ),
-    create_prpt("QString", 'segAn',
-                init_val = '{"00000000"}',
                 is_writable  = True,
                 is_notify = True,
                 is_list = False

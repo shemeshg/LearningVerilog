@@ -45,7 +45,7 @@ public:
         connect(emulatorWorker,
                 &EmulatorWorker::catChanged,
                 this,
-                &MyType::catChanged);
+                &MyType::_catChanged);
 
         connect(thread, &QThread::finished, emulatorWorker, &QObject::deleteLater);
         thread->start();
@@ -86,23 +86,32 @@ signals:
     void _writeBtnStatus(int cpuResetn, int btnu, int btnl,
                          int btnc, int btnr, int btnd, int sw);
 
+    void catChanged(int an, QJsonArray cat);
+
 private slots:
     void setRunningStatus(bool status)
     {
         if (status)
         {
-            setTimeStr("Running");
+            setStatusText("Running");
         }
         else
         {
-            setTimeStr("Stopped");
+            setStatusText("Stopped");
         }
     }
 
-    void catChanged(int an, int cat)
+    void _catChanged(int an, int cat)
     {
-        qDebug() << "AN:" << QString::number(an, 2).rightJustified(8, '0')
-                 << "CAT:" << QString::number(cat, 2).rightJustified(8, '0');
+        QJsonArray arr;
+
+        for (int i = 0; i < 8; ++i) {
+            bool bit = (cat >> i) & 1;
+            arr.append(bit);
+        }
+
+        emit catChanged(std::log2(an) , arr);
+
     }
 
 private:
