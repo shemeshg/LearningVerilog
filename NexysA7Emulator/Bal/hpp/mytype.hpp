@@ -46,6 +46,10 @@ public:
                 &EmulatorWorker::catChanged,
                 this,
                 &MyType::_catChanged);
+        connect(emulatorWorker,
+                &EmulatorWorker::ledChanged,
+                this,
+                &MyType::_ledChanged);
 
         connect(thread, &QThread::finished, emulatorWorker, &QObject::deleteLater);
         thread->start();
@@ -87,6 +91,7 @@ signals:
                          int btnc, int btnr, int btnd, int sw);
 
     void catChanged(int an, QJsonArray cat);
+    void ledChanged(int led);
 
 private slots:
     void setRunningStatus(bool status)
@@ -112,6 +117,10 @@ private slots:
 
         emit catChanged(std::log2(an) , arr);
 
+    }
+
+    void _ledChanged(int led){
+        emit ledChanged(led);
     }
 
 private:

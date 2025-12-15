@@ -79,6 +79,7 @@ public slots:
 signals:
     void setRunningStatus(bool status);
     void catChanged(int an, int cat);
+    void ledChanged(int led);
 
 private:
     Vtop *dut;
@@ -87,6 +88,7 @@ private:
     int clockCounter = 0;
 
     std::vector<uint8_t> segmentVec{8, 0xFF};
+    int ledStatus;
     //- {fn}
     uint8_t packSegments()
     //-only-file body
@@ -115,6 +117,10 @@ private:
             uint8_t an = ~an_raw & 0xFF;  // convert active-low AN → active-high
             uint8_t seg = packSegments(); // already inverted inside
 
+            if (ledStatus!=dut->LED){
+                ledStatus = dut->LED;
+                emit ledChanged(ledStatus);
+            }
             // Decode which digit is active (0–7)
             int digit = -1;
             for (int i = 0; i < 8; i++)

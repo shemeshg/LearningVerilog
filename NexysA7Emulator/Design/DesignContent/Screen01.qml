@@ -48,6 +48,13 @@ ColumnLayout {
         [false, false, false, false, true,  false, false, true]
     ]
 
+    Connections {
+        target: Constants.mytype
+        function onLedChanged(led) {
+            ledStr = led.toString(2).padStart(16, "0")
+        }
+    }
+
     RowLayout {
         CoreButton {
             text: "start"
@@ -71,10 +78,10 @@ ColumnLayout {
     }
 
     CoreLabel {
-        text: "Led str " + formatBinStr(Constants.mytype.ledStr)
+        text: "Led str " + formatBinStr(ledStr)
     }
 
-
+    property string ledStr: "0000000000000000"
     property string swStr: "0000000000000000"
     CoreLabel {
         text: "Sq str " + formatBinStr(swStr)
@@ -84,9 +91,9 @@ ColumnLayout {
     RowLayout {
 
         Repeater {
-            model: Constants.mytype.ledStr.length
+            model: ledStr.length
             SwItem {
-                ledEnabled: Number( Constants.mytype.ledStr[index])
+                ledEnabled: Number( ledStr[index])
                 swEnabled: false
                 name: "SW" + (15 - index)
                 onSwChanged: (val)=>{
