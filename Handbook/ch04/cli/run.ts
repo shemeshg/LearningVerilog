@@ -1,7 +1,7 @@
 #!/usr/bin/env tsx
 import { exit } from 'process'
 import { $, cd } from 'zx'
-import { topModule, inFiles, use_verilator, verilog_sim_main_cpp } from './params.ts';
+import { topModule, inFiles, use_verilator, verilog_sim_main_cpp, currentMode, Mode, emulatorHdlCmakeFolderStr } from './params.ts';
 
 import { writeFile } from "fs/promises";
 import path from "path";
@@ -31,9 +31,28 @@ clean:
 \trm -rf obj_dir V$(TOP_NAME)
   `;
 
-  const outPath = path.join(__dirname, "..", "verilateWb", "Makefile");
 
-  await writeFile(outPath, makefileText, { encoding: "utf8" });
+  const emulatorHdlCmakeFolder = path.join(__dirname, emulatorHdlCmakeFolderStr)
+  const inFileFromHdlCmake = inFiles.map((f) => { return path.relative(emulatorHdlCmakeFolder, f) });
+  console.log(inFileFromHdlCmake)
+
+  const EmulatorCMakeText = `
+set(VERILOG_SRC
+  ${inFileFromHdlCmake
+      .map(f => `${"${CMAKE_CURRENT_SOURCE_DIR}"}/${f}`)
+      .join("\n  ")}
+)
+`;
+
+  if (currentMode === Mode.Deploy) {
+    const pathTosaveVerilogSourceCMake = path.join(emulatorHdlCmakeFolder, "verilog_sources.cmake")
+     await writeFile(pathTosaveVerilogSourceCMake, EmulatorCMakeText, { encoding: "utf8" });
+  }
+
+
+  const outMakeFilePath = path.join(__dirname, "..", "verilateWb", "Makefile");
+
+  await writeFile(outMakeFilePath, makefileText, { encoding: "utf8" });
   cd('../verilateWb')
   const $$debug = $({ verbose: true, env: process.env })
   await $$debug`make`;

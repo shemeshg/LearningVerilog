@@ -80,8 +80,7 @@ public slots:
                         int btnc, int btnr, int btnd, int sw)
     {
         emit _writeBtnStatus(cpuResetn, btnu, btnl,
-                             btnc, btnr, btnd, sw);
-        ;
+                             btnc, btnr, btnd, sw);        
     }
 
 signals:
@@ -94,7 +93,9 @@ signals:
     void ledChanged(int led);
 
 private slots:
+    //- {fn}
     void setRunningStatus(bool status)
+    //-only-file body
     {
         if (status)
         {
@@ -106,7 +107,9 @@ private slots:
         }
     }
 
+    //- {fn}
     void _catChanged(int an, int cat)
+    //-only-file body
     {
         QJsonArray arr;
 
@@ -119,6 +122,7 @@ private slots:
 
     }
 
+    //-only-file header
     void _ledChanged(int led){
         emit ledChanged(led);
     }

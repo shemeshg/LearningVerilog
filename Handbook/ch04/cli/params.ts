@@ -1,3 +1,6 @@
+
+export const emulatorHdlCmakeFolderStr = "../../../NexysA7Emulator/Bal/HdlLib/"
+
 export enum Mode {
   Emulator = "Emulator",
   Testbench = "Testbench",
@@ -7,7 +10,7 @@ export enum Mode {
 export const use_verilator = true;
 
 
-const currentMode: Mode = Mode.Deploy; // change as needed
+export const currentMode: Mode = Mode.Deploy; // change as needed
 export const verilog_sim_main_cpp = currentMode === Mode.Testbench  ? "sim_main_tb.cpp" : "sim_main_top.cpp";
 
 // Top module selection
