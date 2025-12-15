@@ -38,7 +38,7 @@ package types_pkg;
   function automatic word_log2_t leading_ones_fn(input word_t vec);
     for (int i = $high(vec); i >= $low(vec); i--) begin
       if (vec[i]) begin
-        return word_log2_t'(i);
+        return word_log2_t'(i) + 1;
       end
     end
     return 0;
