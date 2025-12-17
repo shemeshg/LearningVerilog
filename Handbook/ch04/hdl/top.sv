@@ -110,10 +110,20 @@ module top #(
       .BTND(BTND_DEB)
   );
 
+logic tick_seg;   // wire for the refresh pulse
+
+clock_seg_display clock_seg_display_inst (
+    .clk(clk),
+    .rst(rst),
+    .tick(tick_seg)
+);
+
+
   seg_display seg_display_inst (
       .display(display),
       .clk(clk),
       .rst(rst),
+      .tick(tick_seg), 
       .AN(AN),
       .CA(CA),
       .CB(CB),
