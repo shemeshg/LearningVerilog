@@ -32,6 +32,20 @@ module top #(
   wire clk;
   assign clk = CLK100MHZ;
 
+  logic clk_50;
+`ifdef VERILATOR
+  assign clk_50 = clk;
+`elsif ICARUS
+  assign clk_50 = clk;
+`else
+  sys_pll u_sys_pll (
+      .clk_in1 (clk),
+      .clk_out1(clk_50)
+  );
+`endif
+
+
+
 
   logic  BTNC_DEB;
   logic  BTNU_DEB;
@@ -110,20 +124,20 @@ module top #(
       .BTND(BTND_DEB)
   );
 
-logic tick_seg;   // wire for the refresh pulse
+  logic tick_seg;  // wire for the refresh pulse
 
-clock_seg_display clock_seg_display_inst (
-    .clk(clk),
-    .rst(rst),
-    .tick(tick_seg)
-);
+  clock_seg_display clock_seg_display_inst (
+      .clk (clk_50),
+      .rst (rst),
+      .tick(tick_seg)
+  );
 
 
   seg_display seg_display_inst (
       .display(display),
-      .clk(clk),
+      .clk(clk_50),
       .rst(rst),
-      .tick(tick_seg), 
+      .tick(tick_seg),
       .AN(AN),
       .CA(CA),
       .CB(CB),
