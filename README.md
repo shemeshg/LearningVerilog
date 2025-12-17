@@ -1,15 +1,12 @@
 # Learning FPGA
 
-This repository is my personal journey into learning FPGA development, guided by the excellent *FPGA Programming Handbook – Second Edition*.  
+This repository documents my personal journey into FPGA development, inspired by the excellent *FPGA Programming Handbook – Second Edition*.
 
-To support my learning, I built an emulator for the **Nexys A7** board using **Qt/QML**.  
-The emulator helps ease the effort of testing and synthesis by simulating hardware behavior.  
+To support the learning process, I built an emulator for the **Nexys A7** board using **Qt/QML**.  
+The emulator reduces the friction of testing and synthesis by simulating hardware behavior in real time.
 
-- The Verilog code examples are located in the `./Handbook` folder, following the structure of the book.  
-- The `./Youtube` folder contains tutorial material that parallels the examples, serving as an additional learning resource.  
-
-The emulator operates by having the testbench generate temporary files that represent the status of LEDs and the screen buffer.  
-It then provides switch states and button press states for the Verilog code to read, making experimentation smoother and more accessible.
+- Verilog examples are located in the `./Handbook` directory, following the chapter structure of the book.  
+- The `./Youtube` directory contains tutorial material that complements the examples.  
 
 
 <img width="992" height="352" alt="image" src="https://github.com/user-attachments/assets/8ffea46a-af87-4ca0-b3e9-0d8588f6da84" />
@@ -17,30 +14,103 @@ It then provides switch states and button press states for the Verilog code to r
 
 ## Getting Started
 
-This project uses **Google ZX scripts** to manage simulation and testing:
+This project uses **Google ZX scripts** to manage simulation, validation, and build steps.
 
-- **macOS**: Runs with **Icarus Verilog** by default.  
-- **Linux**: Runs with **Vivado xvlog** for testing.
+### Install the CLI Tools
 
-The emulator is implemented in **Qt (C++/QML)** and has no external dependencies.  
-To run it:
+From the project root, run:
 
-1. Open the project with **Qt Creator**.  
-2. Build and run the emulator directly.  
-3. Ensure that the correct paths are set for the status files (LEDs, switches, and button states) in both:
-   - The C++ code (emulator side).  
-   - The Verilog testbench (simulation side).  
+```
+npm install
+```
 
-This setup allows the testbench to write temporary files for LED and screen buffer states, while the emulator provides switch and button states for Verilog to read.
+This installs all required Node‑based tooling, including the ZX environment used by the assignment CLI scripts.
+
+### Required Step Before Building the Emulator
+
+Each assignment under `Handbook/chXX-<assignmentName>` (where **XX** is the chapter number from the book) includes a dedicated **CLI script** located in its `cli/` folder.
+
+**You must run this CLI script before building the emulator.**
+
+Running it will (based on `params.ts` file):
+
+1. Validate the design using **Verilator**, **Icarus**, or **Vivado** .  
+2. Generate a **CMake fragment** containing all required HDL files.  
+3. Place this generated CMake file where the emulator can include it during its build.
+
+Without running this script, the emulator will not have the HDL sources it needs.
+
+### Simulators
+
+The workflow supports multiple Verilog simulators (based on `params.ts` config file):
+
+- **Verilator** — required by the Qt-based emulator and recommended for fast, cycle‑accurate simulation  
+- **Icarus Verilog**  
+- **Vivado xvlog**   
+
+
+## Emulator
+
+The emulator is written in **Qt (C++/QML)**.  
+Its **only external dependency is Verilator**, which is required to compile the HDL into a model that the emulator can load.
+
+To run the emulator:
+
+1. Run the assignment’s CLI script to generate the CMake HDL file.  
+2. Open the emulator project in **Qt Creator**.  
+3. Build and run the emulator.  
+
+## Workflow Overview
+
+The following diagram illustrates how each part of the system works together:
+
+```
+        ┌──────────────────────────┐
+        │  Verilog Source (HDL)    │
+        │  Handbook/chXX-*         │
+        └─────────────┬────────────┘
+                      │
+                      │ 1. Run CLI script
+                      ▼
+        ┌──────────────────────────┐
+        │   CLI Script (ZX)        │
+        │ - Validates HDL          │
+        │ - Runs Verilator/Icarus  │
+        │ - Generates CMake file   │
+        └─────────────┬────────────┘
+                      │
+                      │ 2. Generated CMake fragment
+                      ▼
+        ┌──────────────────────────┐
+        │   Emulator Build (Qt)    │
+        │ - Includes HDL CMake     │
+        │ - Uses Verilator model   │
+        └─────────────┬────────────┘
+                      │
+                      │ 3. Build & Run
+                      ▼
+        ┌──────────────────────────┐
+        │   Emulator Runtime        │
+        └─────────────┬────────────┘
+                      │
+                      │ 4. Interactive simulation loop
+                      ▼
+        ┌──────────────────────────┐
+        │   Verilog Testbench      │
+        │ - Reads emulator inputs  │
+        │ - Writes hardware state  │
+        └──────────────────────────┘
+```
 
 
 ## References
 
 - **The FPGA Programming Handbook – Second Edition**  
-  [GitHub Repository (CH4)](https://github.com/PacktPublishing/The-FPGA-Programming-Handbook-Second-Edition/tree/main)
+  https://github.com/PacktPublishing/The-FPGA-Programming-Handbook-Second-Edition/tree/main
 
 - **Icarus Verilog – Getting Started**  
-  [Official Guide](https://steveicarus.github.io/iverilog/usage/getting_started.html)
+  https://steveicarus.github.io/iverilog/usage/getting_started.html
 
 - **YouTube – Hardware Modeling Using Verilog**  
-  [Video Playlist](https://www.youtube.com/watch?v=9uw25PU5B3k&list=PLJ5C_6qdAvBELELTSPgzYkQg3HgclQh-5&index=3)
+  https://www.youtube.com/watch?v=9uw25PU5B3k&list=PLJ5C_6qdAvBELELTSPgzYkQg3HgclQh-5&index=3
+
