@@ -35,16 +35,13 @@ module top #(
   logic clk_50;
 `ifdef VERILATOR
   assign clk_50 = clk;
-  localparam int CLK_PER_VAL = 10;
 `elsif ICARUS
   assign clk_50 = clk;
-  localparam int CLK_PER_VAL = 10;
 `else
   sys_pll u_sys_pll (
       .clk_in1 (clk),
       .clk_out1(clk_50)
   );
-  localparam int CLK_PER_VAL = 20;
 `endif
 
 
@@ -129,13 +126,11 @@ module top #(
 
   logic tick_seg;  // wire for the refresh pulse
 
-clock_seg_display #(
-    .CLK_PER(CLK_PER_VAL)
-) clock_seg_display_inst (
-    .clk (clk_50),
-    .rst (rst),
-    .tick(tick_seg)
-);
+  clock_seg_display clock_seg_display_inst (
+      .clk (clk_50),
+      .rst (rst),
+      .tick(tick_seg)
+  );
 
 
   seg_display seg_display_inst (
