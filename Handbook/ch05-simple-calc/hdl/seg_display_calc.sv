@@ -14,23 +14,28 @@ module seg_display_calc (
     input  wire                  BTND
 );
 
+int calc_displayed;
+logic isEdit;
+
   // Button action logic
   select_btn_action #() select_btn_action_inst (
       .SW(SW),
       .LED(LED),
-      .CPU_RESETN(rst),
-      .CLOCK(clk),
+      .rst(rst),
+      .clk(clk),
       .BTNU(BTNU),
       .BTNC(BTNC),
       .BTNL(BTNL),
       .BTNR(BTNR),
-      .BTND(BTND)
+      .BTND(BTND),
+      .calc_displayed(calc_displayed),
+      .isEdit(isEdit)
   );
 
   // Convert LED value to BCD digits
   logic [DIGITS*4-1:0] bcd;
   bin_to_bcd bin_to_bcd_module (
-      .bin(LED),
+      .bin(word_t'(calc_displayed)),
       .bcd(bcd)
   );
 

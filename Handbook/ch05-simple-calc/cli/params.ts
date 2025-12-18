@@ -9,7 +9,7 @@ export enum Mode {
 export const use_verilator = true;
 
 
-export const currentMode: Mode = Mode.Testbench; // change as needed
+export const currentMode: Mode = Mode.Deploy; // change as needed
 export const verilog_sim_main_cpp = currentMode === Mode.Testbench  ? "sim_main_tb.cpp" : "sim_main_top.cpp";
 
 // Top module selection
@@ -39,7 +39,6 @@ export const inFiles: string[] = [
   "../hdl/bin_to_bcd.sv",
   "../hdl/seg_display_calc.sv",
   "../hdl/add_sub_mult.sv",
-  "../hdl/select_action.sv",
   "../hdl/select_btn_action.sv",
   "../hdl/unbounce_btn.sv",
   "../hdl/unbounce_array.sv",
