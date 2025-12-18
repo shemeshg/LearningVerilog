@@ -14,8 +14,8 @@ module seg_display_calc (
     input  wire                  BTND
 );
 
-int calc_displayed;
-logic isEdit;
+  int   calc_displayed;
+  logic isEdit;
 
   // Button action logic
   select_btn_action #() select_btn_action_inst (
@@ -59,8 +59,11 @@ logic isEdit;
     // Break BCD into nibbles
     foreach (encoded[i]) encoded[i] = bcd[i*4+:4];
 
-    // Flatten cathode outputs into packed bus
-    foreach (cathode[i]) display[i*8+:8] = cathode[i];
+    // Flatten cathode outputs
+    foreach (cathode[i]) begin
+      if (isEdit && i == DIGITS - 1) display[i*8+:8] = 8'b0000_0110;  // your edit indicator
+      else display[i*8+:8] = cathode[i];
+    end
   end
 
 endmodule
