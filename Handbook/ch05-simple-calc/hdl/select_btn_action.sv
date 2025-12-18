@@ -17,6 +17,7 @@ module select_btn_action (
 
   int total;
   always_comb begin
+    LED = SW;
     if (isEdit) calc_displayed = int'(SW);
     else calc_displayed = total;
   end
