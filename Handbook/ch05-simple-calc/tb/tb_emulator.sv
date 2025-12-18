@@ -1,197 +1,175 @@
-`timescale 1ns / 10ps
- 
+`timescale 1ns / 1ps
+
+
+
+
+
+
 module tb_emulator;
   import types_pkg::*;
-  import tb_os_specific_only::*;
 
-  logic clk = 0;
-  // Clock generator runs forever
-  always #100 clk = ~clk;
-
+  // Testbench signals
   logic rst;
+  logic clk;
+  logic BTNU;
+  logic BTND;
+  logic BTNR;
+  logic BTNL;
+  logic BTNC;
+  word_t SW;
+  int calc_displayed;
+  logic isEdit;
+
+
+  // Instantiate DUT (Device Under Test)
+  // Will be moved to file
+
+  int total;
+  always_comb begin
+    if (isEdit) calc_displayed = int'(SW);
+    else calc_displayed = total;
+  end
+
+  logic rise_u, rise_d, rise_r, rise_l, rise_c;
+
+  edge_detect ed_u (
+      .clk (clk),
+      .rst (rst),
+      .sig (BTNU),
+      .rise(rise_u)
+  );
+
+  edge_detect ed_d (
+      .clk (clk),
+      .rst (rst),
+      .sig (BTND),
+      .rise(rise_d)
+  );
+
+  edge_detect ed_r (
+      .clk (clk),
+      .rst (rst),
+      .sig (BTNR),
+      .rise(rise_r)
+  );
+
+  edge_detect ed_l (
+      .clk (clk),
+      .rst (rst),
+      .sig (BTNL),
+      .rise(rise_l)
+  );
+
+  edge_detect ed_c (
+      .clk (clk),
+      .rst (rst),
+      .sig (BTNC),
+      .rise(rise_c)
+  );
+
+  always_ff @(posedge clk) begin
+    if (rst) begin
+      total  <= '0;
+      isEdit <= '1;
+    end else begin
+      if (rise_u) total <= total + int'(SW);
+      if (rise_d) total <= total - int'(SW);
+      if (rise_r) total <= total * int'(SW);
+      if (rise_l) total <= total * int'(SW);  //for now same as bntr
+      if (rise_c) isEdit <= ~isEdit;
+
+    end
+  end
+
+
+  // Clock generator: 10ns period
   initial begin
-    rst = 1;
-    #1;
-    rst = 0;
+    clk = 0;
+    forever #5 clk = ~clk;  // 100 MHz clock
   end
 
-  localparam BITS = 16;
-
-  word_t LED_TB;
-  word_t SW_TB;
-
-
-  logic  BTNC_TB;
-  logic  BTNU_TB;
-  logic  BTNL_TB;
-  logic  BTNR_TB;
-  logic  BTND_TB;
-
-  logic  BTNC_DEB;
-  logic  BTNU_DEB;
-  logic  BTNL_DEB;
-  logic  BTNR_DEB;
-  logic  BTND_DEB;
-
-
-
-  // START unbounce
-  unbounce_btn #(
-      .WAIT_COUNT(3)
-  ) deb_btnC (
-      .CPU_RESET(rst),
-      .CLOCK(clk),
-      .BTN_IN(BTNC_TB),
-      .BTN_OUT(BTNC_DEB)
-  );
-
-  unbounce_btn #(
-      .WAIT_COUNT(3)
-  ) deb_btnU (
-      .CPU_RESET(rst),
-      .CLOCK(clk),
-      .BTN_IN(BTNU_TB),
-      .BTN_OUT(BTNU_DEB)
-  );
-
-  unbounce_btn #(
-      .WAIT_COUNT(3)
-  ) deb_btnL (
-      .CPU_RESET(rst),
-      .CLOCK(clk),
-      .BTN_IN(BTNL_TB),
-      .BTN_OUT(BTNL_DEB)
-  );
-
-  unbounce_btn #(
-      .WAIT_COUNT(3)
-  ) deb_btnR (
-      .CPU_RESET(rst),
-      .CLOCK(clk),
-      .BTN_IN(BTNR_TB),
-      .BTN_OUT(BTNR_DEB)
-  );
-
-  unbounce_btn #(
-      .WAIT_COUNT(3)
-  ) deb_btnD (
-      .CPU_RESET(rst),
-      .CLOCK(clk),
-      .BTN_IN(BTND_TB),
-      .BTN_OUT(BTND_DEB)
-  );
-
-
-  word_t SW_DEB;
-  unbounce_array debouncer (
-      .CPU_RESET(rst),
-      .CLOCK(clk),
-      .BTN_IN(SW_TB),
-      .BTN_OUT(SW_DEB)
-  );
-  // END of unbounce
-
-  //output logic [7:0] display [DIGITS];
-  logic [DIGITS*8-1:0] display;
-  seg_display_calc seg_display_calc_inst (
-      .display(display),
-      .clk(clk),
-      .rst(rst),
-      .SW(SW_DEB),
-      .LED(LED_TB),
-      .BTNC(BTNC_DEB),
-      .BTNU(BTNU_DEB),
-      .BTNL(BTNL_DEB),
-      .BTNR(BTNR_DEB),
-      .BTND(BTND_DEB)
-  );
-
-
-
-
-
-  int fdw_led;
-  int fdr_sw;
-
-  integer ret;
-
-  integer i;
-  always @(posedge clk) begin
-
-    //#1000000000;
-    //ICARUS // #1000000;
-    #100000; //Verilator
-    #10ns;
-    fdw_led = $fopen(myLeds, "w");
-    if (fdw_led != 0) begin
-      $fwrite(fdw_led, "Time: %0t | SW_TB: %b | LED_TB: %b\n", $time, SW_TB, LED_TB);
-      $fclose(fdw_led);
+  task automatic doExpect(string msg, int actual, int expected);
+    if (actual !== expected) begin
+      $error("FAIL: %s | got %0d expected %0d", msg, actual, expected);
+      $finish;
     end else begin
-      $display("ERROR: Could not open file!");
+      $display("PASS: %s | value %0d", msg, actual);
     end
+  endtask
 
+  task automatic press_with_bounce(ref logic btn);
+    btn = 1;
+    #7;
+    btn = 0;
+    #5;
+    btn = 1;
+    #6;
+    btn = 0;
+    #4;
+    btn = 1;
+    #20;  // final stable high
+  endtask
 
+  task automatic clean_press(ref logic btn);
+    btn = 1;
+    #20;
+    btn = 0;
+    #20;
+  endtask
 
-    fdw_led = $fopen(mySegDispllay, "w");
-    if (fdw_led != 0) begin
-      for (i = 0; i < DIGITS; i++) begin
-        $fwrite(fdw_led, "%08b %b \n", 8'b1 << i, display[i*8+:8]);
-      end
-
-      $fclose(fdw_led);
-    end else begin
-      $display("ERROR: Could not open file!");
-    end
-
-
-
-    fdr_sw = $fopen(mySw, "r");
-    if (fdr_sw == 0) begin
-      $display("ERROR: could not open file");
-    end else begin
-      while (!$feof(
-          fdr_sw
-      )) begin
-        ret = $fscanf(fdr_sw, "%b", SW_TB);
-        if (ret == 1) begin
-        end
-      end
-      $fclose(fdr_sw);
-    end
-
-    fdr_sw = $fopen(myBtns, "r");
-    if (fdr_sw == 0) begin
-      $display("ERROR: could not open file");
-    end else begin
-      while (!$feof(
-          fdr_sw
-      )) begin
-        ret =
-            $fscanf(fdr_sw, "%b %b %b %b %b %b", rst, BTNU_TB, BTNL_TB, BTNC_TB, BTNR_TB, BTND_TB);
-        if (ret == 1) begin
-        end
-      end
-      $fclose(fdr_sw);
-    end
-
-  end
-
-
-
-  
+  // Stimulus
   initial begin
-    rst = 1;
-    repeat (2) @(posedge clk);
-    rst   = 0;
+    // Initialize
+    rst  = 1;
+    BTNU = 0;
+    BTND = 0;
+    BTNR = 0;
+    BTNL = 0;
+    BTNC = 0;
+    SW   = 5;
+    #20 rst = 0;
 
-    SW_TB = 16'd0;
-    #1000 BTNC_TB = 0;
-    BTNU_TB = 0;
-    BTNL_TB = 0;
-    BTNR_TB = 0;
-    BTND_TB = 0;
+    // --- Test 1: Edit mode shows SW ---
+    doExpect("Edit mode shows SW", calc_displayed, 5);
 
+    // --- Test 2: Add operation (BTNU) ---
+    press_with_bounce(BTNU);
+    #20;
+    doExpect("Add 5", total, 5);
+
+    // --- Test 3: Subtract operation (BTND) ---
+    press_with_bounce(BTND);
+    #20;
+    doExpect("Subtract 5", total, 0);
+
+    // --- Test 4: Multiply operation (BTNR) ---
+    SW = 3;
+    press_with_bounce(BTNR);
+    #20;
+    doExpect("Multiply by 3", total, 0);
+
+    // --- Test 5: Toggle mode (BTNC) ---
+    press_with_bounce(BTNC);
+    #20;
+    doExpect("Mode toggled to compute", int'(isEdit), 0);
+
+    // --- Test 6: Display shows total in compute mode ---
+    doExpect("Compute mode shows total", calc_displayed, total);
+
+    // --- Test 7: Clean press (no bounce) ---
+    SW = 2;
+    BTNU = 0;
+#20; 
+    clean_press(BTNU);
+    clean_press(BTNU);
+    clean_press(BTNU);
+    #20;
+    doExpect("Add 3 clean press", total, 6);
+
+    $display("All tests completed");
+    $finish;
   end
+
 
 
 endmodule

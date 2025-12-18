@@ -2,7 +2,6 @@
 export const emulatorHdlCmakeFolderStr = "../../../NexysA7Emulator/Bal/HdlLib/"
 
 export enum Mode {
-  Emulator = "Emulator",
   Testbench = "Testbench",
   Deploy = "Deploy"
 }
@@ -10,7 +9,7 @@ export enum Mode {
 export const use_verilator = true;
 
 
-export const currentMode: Mode = Mode.Deploy; // change as needed
+export const currentMode: Mode = Mode.Testbench; // change as needed
 export const verilog_sim_main_cpp = currentMode === Mode.Testbench  ? "sim_main_tb.cpp" : "sim_main_top.cpp";
 
 // Top module selection
@@ -35,6 +34,7 @@ export { topModule };
 // Base input files (always included)
 export const inFiles: string[] = [
   "../hdl/types_pkg.sv",
+  "../hdl/edge_detect.sv",
   "../hdl/dec_cat_map.sv",
   "../hdl/bin_to_bcd.sv",
   "../hdl/seg_display_calc.sv",
@@ -47,14 +47,6 @@ export const inFiles: string[] = [
   "../hdl/seg_display.sv"
 ];
 
-// Append OS‑specific file only for Emulator/Testbench
-if (currentMode === Mode.Testbench) {
-  inFiles.push(
-    process.platform === "darwin"
-      ? "../tb/tb_macos_only.sv"
-      : "../tb/tb_ubuntu_only.sv"
-  );
-}
 
 // Append mode‑specific file
 if (currentMode === Mode.Testbench) {
