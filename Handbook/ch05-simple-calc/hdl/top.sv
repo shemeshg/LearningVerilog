@@ -33,19 +33,11 @@ module top #(
   assign clk = CLK100MHZ;
 
   logic clk_50;
-`ifdef VERILATOR
-  assign clk_50 = clk;
-`elsif ICARUS
-  assign clk_50 = clk;
-`else
 
   sys_pll u_sys_pll (
       .clk_in1 (clk),
       .clk_out1(clk_50)
   );
-
-`endif
-
 
 
 

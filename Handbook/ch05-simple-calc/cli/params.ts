@@ -33,6 +33,7 @@ export { topModule };
 
 // Base input files (always included)
 export const inFiles: string[] = [
+  "../ip_fake/sys_pll.sv",
   "../hdl/types_pkg.sv",
   "../hdl/edge_detect.sv",
   "../hdl/divider_nr.sv",
