@@ -12,7 +12,7 @@ module divider_nr #(
     output logic unsigned [BITS-1:0] quotient,
     output logic unsigned [BITS-1:0] remainder
 );
-
+    import types_pkg::*;
   localparam BC = $clog2(BITS);
   typedef logic [BC:0] numbits_t;
 
@@ -21,8 +21,9 @@ module divider_nr #(
   numbits_t num_bits;
   logic signed [BITS:0] int_remainder;
 
+
   // One‑line replacement for leading_ones module
-  assign num_bits_w = (dividend != 0) ? numbits_t'($clog2(dividend) + 1) : numbits_t'(0);
+  assign num_bits_w = numbits_t'( leading_ones_fn(dividend) );
 
 
   // FSM state encoding
