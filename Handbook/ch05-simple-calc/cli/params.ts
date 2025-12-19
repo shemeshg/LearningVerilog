@@ -6,7 +6,7 @@ export enum Mode {
   Deploy = "Deploy"
 }
 
-export const use_verilator = false;
+export const use_verilator = true;
 
 
 export const currentMode: Mode = Mode.Deploy; // change as needed

@@ -19,7 +19,7 @@ module select_btn_action (
   always_comb begin
     LED = SW;
     if (isEdit) calc_displayed = int'(SW);
-    else calc_displayed = total;
+    else calc_displayed = int'(total);
   end
 
   logic rise_u, rise_d, rise_r, rise_l, rise_c;
@@ -87,9 +87,9 @@ module select_btn_action (
       div_start <= 0;
 
       // arithmetic buttons
-      if (rise_u) total <= total + int'(SW);
-      if (rise_d) total <= total - int'(SW);
-      if (rise_r) total <= total * int'(SW);
+      if (rise_u) total <= total + SW;
+      if (rise_d) total <= total - SW;
+      if (rise_r) total <= total * SW;
 
       // toggle edit mode
       if (rise_c) isEdit <= ~isEdit;
@@ -102,7 +102,7 @@ module select_btn_action (
 
       // division result
       if (div_done) begin
-        total    <= int'(div_quotient);
+        total    <= div_quotient;
         div_busy <= 0;
       end
     end
