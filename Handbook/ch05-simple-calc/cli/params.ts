@@ -35,6 +35,7 @@ export { topModule };
 export const inFiles: string[] = [
   "../hdl/types_pkg.sv",
   "../hdl/edge_detect.sv",
+  "../hdl/divider_nr.sv",
   "../hdl/dec_cat_map.sv",
   "../hdl/bin_to_bcd.sv",
   "../hdl/seg_display_calc.sv",

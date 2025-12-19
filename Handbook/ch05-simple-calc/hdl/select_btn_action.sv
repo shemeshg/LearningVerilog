@@ -59,6 +59,44 @@ module select_btn_action (
       .rise(rise_c)
   );
 
+
+  logic div_start, div_done;
+  logic [BITS-1:0] div_quotient, div_remainder;
+
+  divider_nr u_divider (
+      .clk(clk),
+      .reset(rst),
+      .start(div_start),
+      .dividend(word_t'(total)),
+      .divisor(SW),
+      .done(div_done),
+      .quotient(div_quotient),
+      .remainder(div_remainder)
+  );
+
+  logic div_busy;
+
+  always_ff @(posedge clk) begin
+    if (rst) begin
+      div_start <= 0;
+      div_busy  <= 0;
+    end else begin
+      div_start <= 0;  // default
+
+      if (rise_l && !div_busy) begin
+        if (SW != 0) begin
+          div_start <= 1;  // pulse start
+          div_busy  <= 1;  // block new operations
+        end
+      end
+
+      if (div_done) begin
+        total    <= int'(div_quotient);  // update result
+        div_busy <= 0;
+      end
+    end
+  end
+
   always_ff @(posedge clk) begin
     if (rst) begin
       total  <= '0;
@@ -67,7 +105,6 @@ module select_btn_action (
       if (rise_u) total <= total + int'(SW);
       if (rise_d) total <= total - int'(SW);
       if (rise_r) total <= total * int'(SW);
-      if (rise_l) total <= total * int'(SW);  //for now same as bntr
       if (rise_c) isEdit <= ~isEdit;
 
     end
