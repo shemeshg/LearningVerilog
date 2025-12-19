@@ -78,37 +78,36 @@ module select_btn_action (
 
   always_ff @(posedge clk) begin
     if (rst) begin
+      total <= '0;
+      isEdit <= 1;
       div_start <= 0;
-      div_busy  <= 0;
+      div_busy <= 0;
     end else begin
-      div_start <= 0;  // default
+      // defaults
+      div_start <= 0;
 
-      if (rise_l && !div_busy) begin
-        if (SW != 0) begin
-          div_start <= 1;  // pulse start
-          div_busy  <= 1;  // block new operations
-        end
+      // arithmetic buttons
+      if (rise_u) total <= total + int'(SW);
+      if (rise_d) total <= total - int'(SW);
+      if (rise_r) total <= total * int'(SW);
+
+      // toggle edit mode
+      if (rise_c) isEdit <= ~isEdit;
+
+      // start division
+      if (rise_l && !div_busy && SW != 0) begin
+        div_start <= 1;
+        div_busy  <= 1;
       end
 
+      // division result
       if (div_done) begin
-        total    <= int'(div_quotient);  // update result
+        total    <= int'(div_quotient);
         div_busy <= 0;
       end
     end
   end
 
-  always_ff @(posedge clk) begin
-    if (rst) begin
-      total  <= '0;
-      isEdit <= '1;
-    end else begin
-      if (rise_u) total <= total + int'(SW);
-      if (rise_d) total <= total - int'(SW);
-      if (rise_r) total <= total * int'(SW);
-      if (rise_c) isEdit <= ~isEdit;
-
-    end
-  end
 
 
 
