@@ -38,13 +38,12 @@ module top #(
 `elsif ICARUS
   assign clk_50 = clk;
 `else
-assign clk_50 = clk;
-/*
+
   sys_pll u_sys_pll (
       .clk_in1 (clk),
       .clk_out1(clk_50)
   );
-  */
+
 `endif
 
 

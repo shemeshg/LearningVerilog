@@ -18,7 +18,7 @@ module seg_display_calc (
   logic isEdit;
 
   // Button action logic
-  select_btn_action #() select_btn_action_inst (
+select_btn_action #() select_btn_action_inst (
       .SW(SW),
       .LED(LED),
       .rst(rst),
@@ -27,10 +27,11 @@ module seg_display_calc (
       .BTNC(BTNC),
       .BTNL(BTNL),
       .BTNR(BTNR),
-      .BTND(BTND),
+      .BTND(BTND),  
       .calc_displayed(calc_displayed),
       .isEdit(isEdit)
   );
+
 
   // Convert LED value to BCD digits
   logic [DIGITS*4-1:0] bcd;

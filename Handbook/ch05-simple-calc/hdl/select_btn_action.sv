@@ -15,7 +15,7 @@ module select_btn_action (
   import types_pkg::*;
 
 
-  int total;
+  word_t total;
   always_comb begin
     LED = SW;
     if (isEdit) calc_displayed = int'(SW);
@@ -67,7 +67,7 @@ module select_btn_action (
       .clk(clk),
       .reset(rst),
       .start(div_start),
-      .dividend(word_t'(total)),
+      .dividend(total),
       .divisor(SW),
       .done(div_done),
       .quotient(div_quotient),
