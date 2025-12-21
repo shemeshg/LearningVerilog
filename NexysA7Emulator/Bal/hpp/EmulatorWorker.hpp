@@ -24,6 +24,15 @@ public:
         : QObject(parent)
     {
         dut = new Vtop;
+        QTimer *tickTimer = new QTimer(this);
+        tickTimer->setInterval(0);
+        connect(tickTimer, &QTimer::timeout, this, &EmulatorWorker::tick);
+        tickTimer->start();
+
+        QTimer *sampleTimer = new QTimer(this);
+        sampleTimer->setInterval(40); // 40 ms GUI update
+        connect(sampleTimer, &QTimer::timeout, this, &EmulatorWorker::sampleOutputs);
+        sampleTimer->start();
     }
     //-only-file header
     virtual ~EmulatorWorker()
@@ -85,10 +94,18 @@ private:
     Vtop *dut;
     bool isRunning = false;
     const int INTERVAL = 10000;
-    int clockCounter = 0;
+    bool isLedHasChanged = false;
 
     std::vector<uint8_t> segmentVec{8, 0xFF};
     int ledStatus;
+
+
+    struct DigitUpdate {
+        int digit;
+        int segments;
+    };
+    std::vector<DigitUpdate> pendingDigitUpdats;
+
     //- {fn}
     uint8_t packSegments()
     //-only-file body
@@ -104,49 +121,66 @@ private:
     }
 
     //- {fn}
+    void sampleOutputs()
+    //-only-file body
+    {
+        if (isLedHasChanged){
+            emit ledChanged(ledStatus);
+            isLedHasChanged = false;
+        }
+
+        if (!pendingDigitUpdats.empty()) {
+            for (const auto& upd : pendingDigitUpdats) {
+                emit catChanged(upd.digit, upd.segments);
+            }
+            pendingDigitUpdats.clear();
+        }
+    }
+
+    //- {fn}
+    void identifyChangesOnTick()
+    //-only-file body
+    {
+        uint8_t an_raw = dut->AN;
+        uint8_t an = ~an_raw & 0xFF;  // convert active-low AN → active-high
+        uint8_t seg = packSegments(); // already inverted inside
+
+        if (ledStatus!=dut->LED){
+            ledStatus = dut->LED;
+            isLedHasChanged = true;
+        }
+        // Decode which digit is active (0–7)
+        int digit = -1;
+        for (int i = 0; i < 8; i++)
+        {
+            if (an & (1 << i))
+            {
+                digit = i;
+                break;
+            }
+        }
+
+        if (digit >= 0)
+        {
+            if (segmentVec[digit-1] != seg)
+            {
+                segmentVec[digit-1] = seg;
+                pendingDigitUpdats.push_back({an, seg});
+            }
+        }
+    }
+
+
+    //- {fn}
     void tick()
     //-only-file body
     {
-        while (isRunning)
+        if (isRunning)
         {
-            dut->CLK100MHZ ^= 1;
-            dut->eval();
-            clockCounter++;
-
-            uint8_t an_raw = dut->AN;
-            uint8_t an = ~an_raw & 0xFF;  // convert active-low AN → active-high
-            uint8_t seg = packSegments(); // already inverted inside
-
-            if (ledStatus!=dut->LED){
-                ledStatus = dut->LED;
-                emit ledChanged(ledStatus);
-            }
-            // Decode which digit is active (0–7)
-            int digit = -1;
-            for (int i = 0; i < 8; i++)
-            {
-                if (an & (1 << i))
-                {
-                    digit = i;
-                    break;
-                }
-            }
-
-            if (digit >= 0)
-            {
-                if (segmentVec[digit-1] != seg)
-                {
-                    segmentVec[digit-1] = seg;
-                    emit catChanged(an, seg);
-
-                }
-            }
-
-            if (clockCounter >= INTERVAL)
-            {
-                clockCounter = 0;
-                QCoreApplication::processEvents();
-                QThread::yieldCurrentThread();
+            for (int clockCounter = 0;clockCounter<=INTERVAL;clockCounter++){
+                dut->CLK100MHZ ^= 1;
+                dut->eval();
+                identifyChangesOnTick();
             }
         }
     }
