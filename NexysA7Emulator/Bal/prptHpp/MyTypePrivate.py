@@ -14,8 +14,13 @@ ary = [
                 is_writable  = False,
                 is_notify = True, 
                 is_list = False                
-                )            
-
+                ),            
+    create_prpt("int", 'simulationSecond',
+                init_val = '= 100000000',
+                is_writable  = False,
+                is_notify = True, 
+                is_list = False
+                )
 ]
 
 enumClasss = []

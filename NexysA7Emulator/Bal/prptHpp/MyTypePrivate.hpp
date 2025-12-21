@@ -24,6 +24,7 @@ class MyTypePrivate : public QObject
     Q_OBJECT
     Q_PROPERTY(QString statusText READ statusText WRITE setStatusText NOTIFY statusTextChanged )
     Q_PROPERTY(QList<QColor> rgbLeds READ rgbLeds  NOTIFY rgbLedsChanged )
+    Q_PROPERTY(int simulationSecond READ simulationSecond  NOTIFY simulationSecondChanged )
     
     QML_ELEMENT
 public:
@@ -52,15 +53,21 @@ void setStatusText(const QString &newStatusText)
     
 
     
+    int simulationSecond() const{return m_simulationSecond;} 
+    
+
+    
     
     
 signals:
     void statusTextChanged();
     void rgbLedsChanged();
+    void simulationSecondChanged();
     
 
 protected:
     QList<QColor> m_rgbLeds { QColor(0,0,0), QColor(0,0,0) };
+    int m_simulationSecond = 100000000;
     
 
 private:

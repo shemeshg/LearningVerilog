@@ -12,7 +12,7 @@ module rgb_test (
 
     // 100 MHz → 1 second = 100,000,000 cycles
     `ifdef VERILATOR
-    localparam integer ONE_SEC = 1_000_000;
+    localparam integer ONE_SEC = 3096309;
     `else
     localparam integer ONE_SEC = 100_000_000;
     `endif

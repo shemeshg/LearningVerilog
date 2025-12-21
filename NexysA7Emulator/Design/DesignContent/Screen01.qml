@@ -64,6 +64,14 @@ ColumnLayout {
             text: "stop"
             onClicked: Constants.mytype.stop();
         }
+        CoreLabel {
+            text: "simulationSecond: "
+        }
+
+        CoreTextField {
+            readOnly: true
+            text: Constants.mytype.simulationSecond
+        }
     }
 
     CoreLabel {

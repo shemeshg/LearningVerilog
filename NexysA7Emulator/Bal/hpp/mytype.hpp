@@ -51,6 +51,23 @@ public:
                 this,
                 &MyType::_ledChanged);
 
+        connect(emulatorWorker,
+                &EmulatorWorker::simulationSecondChanged,
+                this,
+                [=](int ticksPerSec) {
+                    m_simulationSecond = ticksPerSec;
+                    emit simulationSecondChanged();
+                });
+
+
+        connect(emulatorWorker,
+                &EmulatorWorker::rgbChanged,
+                this,
+                [=](int i, int r, int g, int b) {
+                    m_rgbLeds[i].setRgb(r, g, b);
+                    emit rgbLedsChanged();
+                });
+
         connect(thread, &QThread::finished, emulatorWorker, &QObject::deleteLater);
         thread->start();
     }

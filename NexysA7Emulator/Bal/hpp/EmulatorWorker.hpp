@@ -33,6 +33,14 @@ public:
         sampleTimer->setInterval(40); // 40 ms GUI update
         connect(sampleTimer, &QTimer::timeout, this, &EmulatorWorker::sampleOutputs);
         sampleTimer->start();
+
+        QTimer *simulationSecond= new QTimer(this);
+        simulationSecond->setInterval(5000);
+        QObject::connect(simulationSecond, &QTimer::timeout, [=]() {
+            emit simulationSecondChanged((tickCounts- previousTickCounts)/5);
+            previousTickCounts = tickCounts;
+        });
+        simulationSecond->start();
     }
     //-only-file header
     virtual ~EmulatorWorker()
@@ -89,12 +97,15 @@ signals:
     void setRunningStatus(bool status);
     void catChanged(int an, int cat);
     void ledChanged(int led);
+    void simulationSecondChanged(int i);
+    void rgbChanged(int i, int r, int g, int b);
 
 private:
     Vtop *dut;
     bool isRunning = false;
     const int INTERVAL = 10000;
     bool isLedHasChanged = false;
+    int tickCounts = 0, previousTickCounts = 0;
 
     std::vector<uint8_t> segmentVec{8, 0xFF};
     int ledStatus;
@@ -129,10 +140,10 @@ private:
         }
 
         void reset() {
+            total = 0;
             rHiCount = 0;
             gHiCount = 0;
             bHiCount = 0;
-            total = 0;
         }
 
 
@@ -207,8 +218,7 @@ private:
         for (int i=0;i<rgbleds.size() ; i++){
             if (rgbleds.at(i).hasChanged()){
                 rgbleds.at(i).save();
-                //qDebug()<<"Yes RGB CHANGED";
-                //emit rgbChanged(i, rgbLed.r(), rgbLed.g(), rgbLed.b());
+                emit rgbChanged(i, rgbleds.at(i).r(), rgbleds.at(i).g(), rgbleds.at(i).b());
             }
             rgbleds.at(i).reset();
         }
@@ -268,6 +278,7 @@ private:
                 dut->CLK100MHZ ^= 1;
                 dut->eval();
                 identifyChangesOnTick();
+                tickCounts++;
             }
         }
     }
