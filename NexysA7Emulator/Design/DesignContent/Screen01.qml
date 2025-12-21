@@ -112,7 +112,7 @@ ColumnLayout {
 
 
     function stringToBoolArray(str) {
-      return str.split("").map( (c) => c === "1");
+        return str.split("").map( (c) => c === "1");
     }
 
     SevenSegmenDisplay {
@@ -202,6 +202,20 @@ ColumnLayout {
         }
     }
 
+    RowLayout {
+        Repeater {
+            model: Constants.mytype.rgbLeds
+            ColumnLayout {
+                CoreLabel {
+                    text: "rgb " + index
+                }
+                Rectangle {
+                    width: 20; height: 20
+                    color: modelData
+                }
+            }
+        }
+    }
 
     Item {
         Layout.fillWidth: true

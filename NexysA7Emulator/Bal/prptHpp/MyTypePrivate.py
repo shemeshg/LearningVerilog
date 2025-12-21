@@ -9,6 +9,12 @@ ary = [
                 is_notify = True, 
                 is_list = False
                 ),
+    create_prpt("QList<QColor>", 'rgbLeds', 
+                init_val = "{ QColor(0,0,0), QColor(0,0,0) }",
+                is_writable  = False,
+                is_notify = True, 
+                is_list = False                
+                )            
 
 ]
 

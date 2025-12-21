@@ -5,7 +5,7 @@
 #include <QObject>
 #include <QObjectComputedProperty>
 #include <QQmlEngine>
-
+#include <QColor>
 
 
 //-only-file null
@@ -23,7 +23,7 @@ class MyTypePrivate : public QObject
 {
     Q_OBJECT
     Q_PROPERTY(QString statusText READ statusText WRITE setStatusText NOTIFY statusTextChanged )
-    Q_PROPERTY(QString ledStr READ ledStr WRITE setLedStr NOTIFY ledStrChanged )
+    Q_PROPERTY(QList<QColor> rgbLeds READ rgbLeds  NOTIFY rgbLedsChanged )
     
     QML_ELEMENT
 public:
@@ -48,31 +48,23 @@ void setStatusText(const QString &newStatusText)
 
 
     
-    QString ledStr() const{return m_ledStr;} 
+    QList<QColor> rgbLeds() const{return m_rgbLeds;} 
     
-void setLedStr(const QString &newLedStr)
-    {
-        if (m_ledStr == newLedStr)
-            return;
-        m_ledStr = newLedStr;
-        emit ledStrChanged();
-    }
-
 
     
     
     
 signals:
     void statusTextChanged();
-    void ledStrChanged();
+    void rgbLedsChanged();
     
 
 protected:
+    QList<QColor> m_rgbLeds { QColor(0,0,0), QColor(0,0,0) };
     
 
 private:
     QString m_statusText {"Not started"};
-    QString m_ledStr {"0000000000000000"};
     
 };
 //-only-file null
