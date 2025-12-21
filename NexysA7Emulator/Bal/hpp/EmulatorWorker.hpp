@@ -204,6 +204,14 @@ private:
             }
             pendingDigitUpdats.clear();
         }
+        for (int i=0;i<rgbleds.size() ; i++){
+            if (rgbleds.at(i).hasChanged()){
+                rgbleds.at(i).save();
+                //qDebug()<<"Yes RGB CHANGED";
+                //emit rgbChanged(i, rgbLed.r(), rgbLed.g(), rgbLed.b());
+            }
+            rgbleds.at(i).reset();
+        }
     }
 
     //- {fn}
@@ -237,6 +245,16 @@ private:
                 pendingDigitUpdats.push_back({an, seg});
             }
         }
+
+        // has rgb led changed
+        rgbleds.at(0).addR(dut->LED16_R);
+        rgbleds.at(0).addG(dut->LED16_G);
+        rgbleds.at(0).addB(dut->LED16_B);
+        rgbleds.at(1).addR(dut->LED17_R);
+        rgbleds.at(1).addG(dut->LED17_G);
+        rgbleds.at(1).addB(dut->LED17_B);
+
+
     }
 
 
