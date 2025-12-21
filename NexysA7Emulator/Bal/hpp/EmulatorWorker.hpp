@@ -21,7 +21,7 @@ public:
     //- {function} 1 1
     explicit EmulatorWorker(QObject *parent = nullptr)
         //-only-file body
-        : QObject(parent)
+        : QObject(parent), rgbleds(2)
     {
         dut = new Vtop;
         QTimer *tickTimer = new QTimer(this);
@@ -105,6 +105,75 @@ private:
         int segments;
     };
     std::vector<DigitUpdate> pendingDigitUpdats;
+
+    class RgbLed {
+    public:
+        explicit RgbLed(){
+        }
+        int r() const {
+            return colorIn255Scale(rHiCount);
+        }
+
+        int g() const {
+            return colorIn255Scale(gHiCount);
+        }
+
+        int b() const {
+            return colorIn255Scale(bHiCount);
+        }
+
+        void save(){
+            rSaved = r();
+            gSaved = g();
+            bSaved = b();
+        }
+
+        void reset() {
+            rHiCount = 0;
+            gHiCount = 0;
+            bHiCount = 0;
+            total = 0;
+        }
+
+
+        bool hasChanged(){
+            return rSaved != r() ||
+            gSaved != g() ||
+            bSaved != b();
+        }
+
+        void addR(bool level) {
+            if (level) rHiCount++;
+            total++;
+        }
+
+        void addG(bool level) {
+            if (level) gHiCount++;
+            total++;
+        }
+
+        void addB(bool level) {
+            if (level) bHiCount++;
+            total++;
+        }
+
+    private:
+        int rHiCount = 0;
+        int gHiCount = 0;
+        int bHiCount = 0;
+        int rSaved = 0;
+        int gSaved = 0;
+        int bSaved = 0;
+        int total = 0;
+
+        const int colorIn255Scale(int hi) const{
+            if (total == 0)
+                return 0; // avoid division by zero
+            return (hi * 255) / total;
+        }
+    };
+    std::vector<RgbLed> rgbleds;
+
 
     //- {fn}
     uint8_t packSegments()
