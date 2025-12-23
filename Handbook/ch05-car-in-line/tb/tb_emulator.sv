@@ -1,5 +1,5 @@
 `timescale 1ns / 1ps
-
+import car_types_pkg::*;
 module tb_emulator;
   //wires
   logic signal_car_to_cross_if_green_in;
@@ -7,45 +7,19 @@ module tb_emulator;
   logic rst;
   logic clk;
 
- 
-  typedef logic [4:0] car_counter_t;  //limited to 9
+  strafic_light_t strafic_light;
   car_counter_t car_counter;
 
-  typedef enum logic [1:0] {
-    GREEN  = 2'b00,
-    YELLOW = 2'b01,
-    RED    = 2'b10
-  } strafic_light_t;
-  strafic_light_t strafic_light;
 
-  logic signal_car_to_cross_if_green;
-  edge_detect ed_c (
-      .clk (clk),
-      .rst (rst),
-      .sig (signal_car_to_cross_if_green_in),
-      .rise(signal_car_to_cross_if_green)
+
+  car_lane car_lane_inst (
+      .clk(clk),
+      .rst(rst),
+      .signal_car_to_cross_if_green_in(signal_car_to_cross_if_green_in),
+      .car_errived_in_lane_in(car_errived_in_lane_in),
+      .strafic_light(strafic_light),
+      .car_counter(car_counter)
   );
-
-  logic car_errived_in_lane;
-  edge_detect ed_l (
-      .clk (clk),
-      .rst (rst),
-      .sig (car_errived_in_lane_in),
-      .rise(car_errived_in_lane)
-  );
-
-  always_ff @(posedge clk) begin
-    if (rst) begin
-      car_counter <= '0;
-    end else begin
-      if (car_errived_in_lane && car_counter <= car_counter_t'('d9)) 
-                car_counter <= car_counter + car_counter_t'('d1);
-      if (car_counter > 0 && strafic_light == GREEN && signal_car_to_cross_if_green) 
-                car_counter <= car_counter - car_counter_t'('d1);
-
-    end
-  end
-
 
   initial begin
     clk = 0;
