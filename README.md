@@ -1,5 +1,7 @@
 # Learning FPGA
 
+** tested on `macos` and `ubuntu` only **
+
 This repository documents my personal journey into FPGA development, inspired by the excellent *FPGA Programming Handbook – Second Edition*.
 
 To support the learning process, I built an emulator for the **Nexys A7** board using **Qt/QML**.  
