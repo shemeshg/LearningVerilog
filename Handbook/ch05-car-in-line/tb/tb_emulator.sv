@@ -1,88 +1,52 @@
 `timescale 1ns / 1ps
 
-
-
-
-
-
 module tb_emulator;
-  import types_pkg::*;
-
-  // Testbench signals
+  //wires
+  logic signal_car_to_cross_if_green_in;
+  logic car_errived_in_lane_in;
   logic rst;
   logic clk;
-  logic BTNU;
-  logic BTND;
-  logic BTNR;
-  logic BTNL;
-  logic BTNC;
-  word_t SW;
-  int calc_displayed;
-  logic isEdit;
 
+ 
+  typedef logic [4:0] car_counter_t;  //limited to 9
+  car_counter_t car_counter;
 
-  // Instantiate DUT (Device Under Test)
-  // Will be moved to file
+  typedef enum logic [1:0] {
+    GREEN  = 2'b00,
+    YELLOW = 2'b01,
+    RED    = 2'b10
+  } strafic_light_t;
+  strafic_light_t strafic_light;
 
-  int total;
-  always_comb begin
-    if (isEdit) calc_displayed = int'(SW);
-    else calc_displayed = total;
-  end
-
-  logic rise_u, rise_d, rise_r, rise_l, rise_c;
-
-  edge_detect ed_u (
-      .clk (clk),
-      .rst (rst),
-      .sig (BTNU),
-      .rise(rise_u)
-  );
-
-  edge_detect ed_d (
-      .clk (clk),
-      .rst (rst),
-      .sig (BTND),
-      .rise(rise_d)
-  );
-
-  edge_detect ed_r (
-      .clk (clk),
-      .rst (rst),
-      .sig (BTNR),
-      .rise(rise_r)
-  );
-
-  edge_detect ed_l (
-      .clk (clk),
-      .rst (rst),
-      .sig (BTNL),
-      .rise(rise_l)
-  );
-
+  logic signal_car_to_cross_if_green;
   edge_detect ed_c (
       .clk (clk),
       .rst (rst),
-      .sig (BTNC),
-      .rise(rise_c)
+      .sig (signal_car_to_cross_if_green_in),
+      .rise(signal_car_to_cross_if_green)
+  );
+
+  logic car_errived_in_lane;
+  edge_detect ed_l (
+      .clk (clk),
+      .rst (rst),
+      .sig (car_errived_in_lane_in),
+      .rise(car_errived_in_lane)
   );
 
   always_ff @(posedge clk) begin
     if (rst) begin
-      total  <= '0;
-      isEdit <= '1;
+      car_counter <= '0;
     end else begin
-      if (rise_u) total <= total + int'(SW);
-      if (rise_d) total <= total - int'(SW);
-      if (rise_r) total <= total * int'(SW);
-      if (rise_l) total <= total * int'(SW);  //for now same as bntr
-      if (rise_c) isEdit <= ~isEdit;
+      if (car_errived_in_lane && car_counter <= car_counter_t'('d9)) 
+                car_counter <= car_counter + car_counter_t'('d1);
+      if (car_counter > 0 && strafic_light == GREEN && signal_car_to_cross_if_green) 
+                car_counter <= car_counter - car_counter_t'('d1);
 
     end
   end
 
 
-  // Clock generator: 10ns period
   initial begin
     clk = 0;
     forever #5 clk = ~clk;  // 100 MHz clock
@@ -97,79 +61,44 @@ module tb_emulator;
     end
   endtask
 
-  task automatic press_with_bounce(ref logic btn);
-    btn = 1;
-    #7;
-    btn = 0;
-    #5;
-    btn = 1;
-    #6;
-    btn = 0;
-    #4;
-    btn = 1;
-    #20;  // final stable high
-  endtask
-
-  task automatic clean_press(ref logic btn);
-    btn = 1;
-    #20;
-    btn = 0;
-    #20;
-  endtask
-
-  // Stimulus
   initial begin
-    // Initialize
-    rst  = 1;
-    BTNU = 0;
-    BTND = 0;
-    BTNR = 0;
-    BTNL = 0;
-    BTNC = 0;
-    SW   = 5;
+    rst = 1;
+    car_counter = 0;
+    strafic_light = RED;
     #20 rst = 0;
 
-    // --- Test 1: Edit mode shows SW ---
-    doExpect("Edit mode shows SW", calc_displayed, 5);
+    doExpect("Cars inline to cross 0", int'(car_counter), 0);
+    $display("Traffic light is %s", strafic_light.name());
 
-    // --- Test 2: Add operation (BTNU) ---
-    press_with_bounce(BTNU);
-    #20;
-    doExpect("Add 5", total, 5);
+    signal_car_to_cross_if_green_in = '1;
+    #20 signal_car_to_cross_if_green_in = '0;
 
-    // --- Test 3: Subtract operation (BTND) ---
-    press_with_bounce(BTND);
-    #20;
-    doExpect("Subtract 5", total, 0);
+    #20 car_errived_in_lane_in = '1;
+    #20 car_errived_in_lane_in = '0;
 
-    // --- Test 4: Multiply operation (BTNR) ---
-    SW = 3;
-    press_with_bounce(BTNR);
-    #20;
-    doExpect("Multiply by 3", total, 0);
+    #20 car_errived_in_lane_in = '1;
+    #20 car_errived_in_lane_in = '0;
+    doExpect("Cars inline to cross 2", int'(car_counter), 2);
 
-    // --- Test 5: Toggle mode (BTNC) ---
-    press_with_bounce(BTNC);
-    #20;
-    doExpect("Mode toggled to compute", int'(isEdit), 0);
+    $display("Start stream cars");
+    strafic_light = GREEN;
+    #20 signal_car_to_cross_if_green_in = '1;
+    #20 signal_car_to_cross_if_green_in = '0;
+    doExpect("Cars inline to cross 1", int'(car_counter), 1);
 
-    // --- Test 6: Display shows total in compute mode ---
-    doExpect("Compute mode shows total", calc_displayed, total);
+    $display("YELLOW all stop");
+    strafic_light = YELLOW;
+    #20 signal_car_to_cross_if_green_in = '1;
+    #20 signal_car_to_cross_if_green_in = '0;
+    doExpect("Cars inline to cross 1", int'(car_counter), 1);
 
-    // --- Test 7: Clean press (no bounce) ---
-    SW = 2;
-    BTNU = 0;
-#20; 
-    clean_press(BTNU);
-    clean_press(BTNU);
-    clean_press(BTNU);
-    #20;
-    doExpect("Add 3 clean press", total, 6);
+    $display("and last carp");
+    strafic_light = GREEN;
+    #20 signal_car_to_cross_if_green_in = '1;
+    #20 signal_car_to_cross_if_green_in = '0;
+    doExpect("Cars inline to cross 0", int'(car_counter), 0);
 
     $display("All tests completed");
     $finish;
   end
-
-
-
 endmodule

@@ -9,7 +9,7 @@ export enum Mode {
 export const use_verilator = true;
 
 
-export const currentMode: Mode = Mode.Deploy; // change as needed
+export const currentMode: Mode = Mode.Testbench; // change as needed
 export const verilog_sim_main_cpp = currentMode === Mode.Testbench  ? "sim_main_tb.cpp" : "sim_main_top.cpp";
 
 // Top module selection
