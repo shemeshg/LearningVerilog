@@ -1,9 +1,9 @@
 import car_types_pkg::*;
 module car_lane (
+    input logic rst,
+    input logic clk,    
     input logic signal_car_to_cross_if_green_in,
     input logic car_errived_in_lane_in,
-    input logic rst,
-    input logic clk,
     input strafic_light_t strafic_light,
     output car_counter_t car_counter
 );
