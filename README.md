@@ -1,6 +1,6 @@
 # Learning FPGA
 
-** tested on `macos` and `ubuntu` only **
+*tested on `macos` and `ubuntu` only*
 
 This repository documents my personal journey into FPGA development, inspired by the excellent *FPGA Programming Handbook – Second Edition*.
 
