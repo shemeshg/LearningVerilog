@@ -109,34 +109,16 @@ module top #(
   );
   // END of unbounce
 
-  //output logic [7:0] display [DIGITS];
-  logic [DIGITS*8-1:0] display;
-  seg_display_calc seg_display_calc_inst (
-      .display(display),
+  strafic_light_t          strafic_light_a;
+  strafic_light_t          strafic_light_b;
+  car_counter_t            car_counter_a1;
+  car_counter_t            car_counter_a2;
+  car_counter_t            car_counter_b1;
+  car_counter_t            car_counter_b2;
+  crossroad_status_t       crossroad_status;
+    car_crossroad_displays car_crossroad_displays_inst (
+      .rst(rst),
       .clk(clk),
-      .rst(rst),
-      .SW(SW_DEB),
-      .LED(LED),
-      .BTNC(BTNC_DEB),
-      .BTNU(BTNU_DEB),
-      .BTNL(BTNL_DEB),
-      .BTNR(BTNR_DEB),
-      .BTND(BTND_DEB)
-  );
-
-  logic tick_seg;  // wire for the refresh pulse
-  clock_seg_display clock_seg_display_inst (
-      .clk (clk_50),
-      .rst (rst),
-      .tick(tick_seg)
-  );
-
-
-  seg_display seg_display_inst (
-      .display(display),
-      .clk(clk_50),
-      .rst(rst),
-      .tick(tick_seg),
       .AN(AN),
       .CA(CA),
       .CB(CB),
@@ -145,8 +127,24 @@ module top #(
       .CE(CE),
       .CF(CF),
       .CG(CG),
-      .DP(DP)
+      .DP(DP),
+      .crossroad_status_changed_in(BTNR_DEB),
+      .signal_car_to_cross_if_green_in(BTNC_DEB),
+      .car_errived_in_lane_in_a1(BTNU_DEB),
+      .car_errived_in_lane_in_a2(BTNU_DEB),
+      .car_errived_in_lane_in_b1(BTND_DEB),
+      .car_errived_in_lane_in_b2(BTND_DEB),
+
+      .strafic_light_a ( strafic_light_a),
+      .strafic_light_b(  strafic_light_b),
+      .car_counter_a1(       car_counter_a1),
+      .car_counter_a2(       car_counter_a2),
+      .car_counter_b1(car_counter_b1),
+      .car_counter_b2(         car_counter_b2),
+      .crossroad_status (crossroad_status)
   );
+
+
 
 //Loop trough RGB
 /* 

@@ -28,7 +28,7 @@ module car_lane (
     if (rst) begin
       car_counter <= '0;
     end else begin
-      if (car_errived_in_lane && car_counter <= car_counter_t'('d9))
+      if (car_errived_in_lane && car_counter < car_counter_t'('d9))
         car_counter <= car_counter + car_counter_t'('d1);
       if (car_counter > 0 && strafic_light == GREEN && signal_car_to_cross_if_green)
         car_counter <= car_counter - car_counter_t'('d1);
