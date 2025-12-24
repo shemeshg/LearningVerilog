@@ -125,7 +125,6 @@ module top #(
   );
 
   logic tick_seg;  // wire for the refresh pulse
-
   clock_seg_display clock_seg_display_inst (
       .clk (clk_50),
       .rst (rst),

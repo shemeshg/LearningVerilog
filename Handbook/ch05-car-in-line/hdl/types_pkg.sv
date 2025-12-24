@@ -2,6 +2,7 @@
 package types_pkg;
   parameter int BITS = 16;
   parameter int DIGITS = 8;
+  parameter int CATHODS = 8;
 
 
 
