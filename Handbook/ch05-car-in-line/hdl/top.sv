@@ -203,17 +203,5 @@ module top #(
   );
 
 
-  //Loop trough RGB
-  /* 
-rgb_test rgb_test_inst(
-    .CLK100MHZ(clk),
-    .LED16_R(LED16_R),
-    .LED16_G(LED16_G),
-    .LED16_B(LED16_B),
-    .LED17_R(LED17_R),
-    .LED17_G(LED17_G),
-    .LED17_B(LED17_B)
-);
-*/
 
 endmodule
