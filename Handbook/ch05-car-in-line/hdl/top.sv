@@ -146,6 +146,19 @@ module top #(
 
 
 
+led_rgb ledrgb_1(
+    .CLK100MHZ(clk),
+    .LED_R(LED16_R),
+    .LED_G(LED16_G),
+    .LED_B(LED16_B),
+    .r(8'd255),
+    .g(8'd255),
+    .b(8'd255),
+    .brightness(8'd255)
+);
+
+
+
 //Loop trough RGB
 /* 
 rgb_test rgb_test_inst(

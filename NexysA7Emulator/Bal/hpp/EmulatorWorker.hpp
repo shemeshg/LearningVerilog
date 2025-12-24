@@ -119,70 +119,72 @@ private:
 
     class RgbLed {
     public:
-        explicit RgbLed(){
-        }
+        RgbLed() = default;
+
         int r() const {
-            return colorIn255Scale(rHiCount);
+            return colorIn255Scale(rHiCount, rTotal);
         }
 
         int g() const {
-            return colorIn255Scale(gHiCount);
+            return colorIn255Scale(gHiCount, gTotal);
         }
 
         int b() const {
-            return colorIn255Scale(bHiCount);
+            return colorIn255Scale(bHiCount, bTotal);
         }
 
-        void save(){
+        void save() {
             rSaved = r();
             gSaved = g();
             bSaved = b();
         }
 
         void reset() {
-            total = 0;
-            rHiCount = 0;
-            gHiCount = 0;
-            bHiCount = 0;
+            rHiCount = gHiCount = bHiCount = 0;
+            rTotal   = gTotal   = bTotal   = 0;
         }
 
-
-        bool hasChanged(){
+        bool hasChanged() {
             return rSaved != r() ||
-            gSaved != g() ||
-            bSaved != b();
+                   gSaved != g() ||
+                   bSaved != b();
         }
 
         void addR(bool level) {
             if (level) rHiCount++;
-            total++;
+            rTotal++;
         }
 
         void addG(bool level) {
             if (level) gHiCount++;
-            total++;
+            gTotal++;
         }
 
         void addB(bool level) {
             if (level) bHiCount++;
-            total++;
+            bTotal++;
         }
 
     private:
         int rHiCount = 0;
         int gHiCount = 0;
         int bHiCount = 0;
+
+        int rTotal = 0;
+        int gTotal = 0;
+        int bTotal = 0;
+
         int rSaved = 0;
         int gSaved = 0;
         int bSaved = 0;
-        int total = 0;
 
-        const int colorIn255Scale(int hi) const{
+        int colorIn255Scale(int hi, int total) const {
             if (total == 0)
-                return 0; // avoid division by zero
+                return 0;
             return (hi * 255) / total;
         }
     };
+
     std::vector<RgbLed> rgbleds;
 
 
@@ -257,7 +259,7 @@ private:
         }
 
         // has rgb led changed
-        rgbleds.at(0).addR(dut->LED16_R);
+        rgbleds.at(0).addR(dut->LED16_R);        
         rgbleds.at(0).addG(dut->LED16_G);
         rgbleds.at(0).addB(dut->LED16_B);
         rgbleds.at(1).addR(dut->LED17_R);

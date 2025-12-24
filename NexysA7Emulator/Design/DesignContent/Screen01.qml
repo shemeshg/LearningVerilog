@@ -211,6 +211,7 @@ ColumnLayout {
     }
 
     RowLayout {
+
         Repeater {
             model: Constants.mytype.rgbLeds
             ColumnLayout {

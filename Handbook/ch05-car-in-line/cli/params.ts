@@ -51,7 +51,8 @@ export const inFiles: string[] = [
   "../hdl/unbounce_array.sv",
   "../hdl/clock_seg_display.sv",
   "../hdl/seg_display.sv",
-  "../hdl/rgb_test.sv"
+  "../hdl/rgb_test.sv",
+  "../hdl/led_rgb.sv"
 ];
 
 
