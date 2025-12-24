@@ -35,24 +35,19 @@ export { topModule };
 export const inFiles: string[] = [
   "../ip_fake/sys_pll.sv",
   "../hdl/types_pkg.sv",
+  "../hdl/edge_detect.sv",
+  "../hdl/dec_cat_map.sv",
+  "../hdl/bin_to_bcd.sv",
+  "../hdl/unbounce_btn.sv",
+  "../hdl/unbounce_array.sv",
+  "../hdl/clock_seg_display.sv",
+  "../hdl/seg_display.sv", 
+  "../hdl/led_rgb.sv",
   "../hdl/car_types_pkg.sv",
   "../hdl/car_lane.sv",
   "../hdl/car_len_display.sv",
   "../hdl/car_crossroad.sv",
-  "../hdl/car_crossroad_displays.sv",
-  "../hdl/edge_detect.sv",
-  //"../hdl/divider_nr.sv",
-  "../hdl/dec_cat_map.sv",
-  "../hdl/bin_to_bcd.sv",
-  //"../hdl/seg_display_calc.sv",
-  //"../hdl/add_sub_mult.sv",
-  //"../hdl/select_btn_action.sv",
-  "../hdl/unbounce_btn.sv",
-  "../hdl/unbounce_array.sv",
-  "../hdl/clock_seg_display.sv",
-  "../hdl/seg_display.sv",
-  //"../hdl/rgb_test.sv",
-  "../hdl/led_rgb.sv"
+  "../hdl/car_crossroad_displays.sv",  
 ];
 
 
