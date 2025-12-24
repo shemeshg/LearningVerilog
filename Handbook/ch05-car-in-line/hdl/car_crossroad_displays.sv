@@ -53,22 +53,26 @@ module car_crossroad_displays (
   logic [CAR_LEN_DIGITS*CATHODS-1:0] car_lan_seg_display_a1;
   car_len_display car_len_display_inst_a1 (
       car_counter_a1,
-      car_lan_seg_display_a1
+      car_lan_seg_display_a1,
+      strafic_light_a
   );
   logic [CAR_LEN_DIGITS*CATHODS-1:0] car_lan_seg_display_a2;
   car_len_display car_len_display_inst_a2 (
       car_counter_a2,
-      car_lan_seg_display_a2
+      car_lan_seg_display_a2,
+      strafic_light_a
   );
   logic [CAR_LEN_DIGITS*CATHODS-1:0] car_lan_seg_display_b1;
   car_len_display car_len_display_inst_b1 (
       car_counter_b1,
-      car_lan_seg_display_b1
+      car_lan_seg_display_b1,
+      strafic_light_b
   );
   logic [CAR_LEN_DIGITS*CATHODS-1:0] car_lan_seg_display_b2;
   car_len_display car_len_display_inst_b2 (
       car_counter_b1,
-      car_lan_seg_display_b2
+      car_lan_seg_display_b2,
+      strafic_light_b
   );
 
   logic [DIGITS*8-1:0] display;

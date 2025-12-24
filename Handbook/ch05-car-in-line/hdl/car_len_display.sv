@@ -3,7 +3,8 @@ import types_pkg::*;
 import car_types_pkg::*;
 module car_len_display (
     input car_counter_t car_count,
-    output logic [CAR_LEN_DIGITS*CATHODS-1:0] car_lan_seg_display
+    output logic [CAR_LEN_DIGITS*CATHODS-1:0] car_lan_seg_display,
+    output strafic_light_t  strafic_light
 );
 
   logic [4*CAR_LEN_DIGITS-1:0] bcd;
@@ -35,6 +36,8 @@ module car_len_display (
     foreach (encoded[i]) encoded[i] = bcd[i*4+:4];
     foreach (cathode[i]) begin      
        car_lan_seg_display[i*CATHODS+:CATHODS] = cathode[i];
+        if (strafic_light != GREEN)
+            car_lan_seg_display[i*CATHODS + (CATHODS-1)] = 1'b0;       
     end    
    end 
 
