@@ -109,14 +109,14 @@ module top #(
   );
   // END of unbounce
 
-  strafic_light_t          strafic_light_a;
-  strafic_light_t          strafic_light_b;
-  car_counter_t            car_counter_a1;
-  car_counter_t            car_counter_a2;
-  car_counter_t            car_counter_b1;
-  car_counter_t            car_counter_b2;
-  crossroad_status_t       crossroad_status;
-    car_crossroad_displays car_crossroad_displays_inst (
+  strafic_light_t    strafic_light_a;
+  strafic_light_t    strafic_light_b;
+  car_counter_t      car_counter_a1;
+  car_counter_t      car_counter_a2;
+  car_counter_t      car_counter_b1;
+  car_counter_t      car_counter_b2;
+  crossroad_status_t crossroad_status;
+  car_crossroad_displays car_crossroad_displays_inst (
       .rst(rst),
       .clk(clk),
       .AN(AN),
@@ -135,32 +135,76 @@ module top #(
       .car_errived_in_lane_in_b1(BTND_DEB),
       .car_errived_in_lane_in_b2(BTND_DEB),
 
-      .strafic_light_a ( strafic_light_a),
-      .strafic_light_b(  strafic_light_b),
-      .car_counter_a1(       car_counter_a1),
-      .car_counter_a2(       car_counter_a2),
-      .car_counter_b1(car_counter_b1),
-      .car_counter_b2(         car_counter_b2),
-      .crossroad_status (crossroad_status)
+      .strafic_light_a (strafic_light_a),
+      .strafic_light_b (strafic_light_b),
+      .car_counter_a1  (car_counter_a1),
+      .car_counter_a2  (car_counter_a2),
+      .car_counter_b1  (car_counter_b1),
+      .car_counter_b2  (car_counter_b2),
+      .crossroad_status(crossroad_status)
+  );
+
+  reg [7:0] R_target_1, G_target_1, B_target_1;
+  reg [7:0] R_target_2, G_target_2, B_target_2;
+  always @(*) begin
+    case (crossroad_status)
+      LANE_A: begin
+        R_target_1 = '0;
+        G_target_1 = '1;
+        B_target_1 = '0;
+        R_target_2 = '1;
+        G_target_2 = '0;
+        B_target_2 = '0;
+
+      end  // Green
+      LANE_B: begin
+        R_target_1 = '1;
+        G_target_1 = '0;
+        B_target_1 = '0;
+        R_target_2 = '0;
+        G_target_2 = '1;
+        B_target_2 = '0;
+
+      end
+
+      default: begin
+        R_target_1 = '1;
+        G_target_1 = '1;
+        B_target_1 = '0;
+        R_target_2 = '1;
+        G_target_2 = '1;
+        B_target_2 = '0;
+      end
+    endcase
+  end
+
+
+
+  led_rgb ledrgb_1 (
+      .CLK100MHZ(clk),
+      .LED_R(LED17_R),
+      .LED_G(LED17_G),
+      .LED_B(LED17_B),
+      .r(R_target_1),
+      .g(G_target_1),
+      .b(B_target_1),
+      .brightness(8'd255)
+  );
+
+  led_rgb ledrgb_2 (
+      .CLK100MHZ(clk),
+      .LED_R(LED16_R),
+      .LED_G(LED16_G),
+      .LED_B(LED16_B),
+      .r(R_target_2),
+      .g(G_target_2),
+      .b(B_target_2),
+      .brightness(8'd255)
   );
 
 
-
-led_rgb ledrgb_1(
-    .CLK100MHZ(clk),
-    .LED_R(LED16_R),
-    .LED_G(LED16_G),
-    .LED_B(LED16_B),
-    .r(8'd255),
-    .g(8'd255),
-    .b(8'd255),
-    .brightness(8'd255)
-);
-
-
-
-//Loop trough RGB
-/* 
+  //Loop trough RGB
+  /* 
 rgb_test rgb_test_inst(
     .CLK100MHZ(clk),
     .LED16_R(LED16_R),
