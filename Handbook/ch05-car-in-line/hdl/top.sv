@@ -182,24 +182,24 @@ module top #(
 
   led_rgb ledrgb_1 (
       .CLK100MHZ(clk),
-      .LED_R(LED17_R),
-      .LED_G(LED17_G),
-      .LED_B(LED17_B),
+      .LED_R(LED16_R),
+      .LED_G(LED16_G),
+      .LED_B(LED16_B),
       .r(R_target_1),
       .g(G_target_1),
       .b(B_target_1),
-      .brightness(8'd255)
+      .brightness(8'd200)
   );
 
   led_rgb ledrgb_2 (
       .CLK100MHZ(clk),
-      .LED_R(LED16_R),
-      .LED_G(LED16_G),
-      .LED_B(LED16_B),
+      .LED_R(LED17_R),
+      .LED_G(LED17_G),
+      .LED_B(LED17_B),
       .r(R_target_2),
       .g(G_target_2),
       .b(B_target_2),
-      .brightness(8'd255)
+      .brightness(8'd200)
   );
 
 

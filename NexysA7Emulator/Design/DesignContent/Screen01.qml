@@ -220,7 +220,7 @@ ColumnLayout {
                 }
                 Rectangle {
                     width: 20; height: 20
-                    color: modelData
+                    color: Constants.mytype.rgbLeds[Constants.mytype.rgbLeds.length - index -1]
                 }
             }
         }
