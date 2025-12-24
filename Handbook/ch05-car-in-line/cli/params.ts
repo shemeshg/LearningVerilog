@@ -39,6 +39,7 @@ export const inFiles: string[] = [
   "../hdl/car_lane.sv",
   "../hdl/car_len_display.sv",
   "../hdl/car_crossroad.sv",
+  "../hdl/car_crossroad_displays.sv",
   "../hdl/edge_detect.sv",
   "../hdl/divider_nr.sv",
   "../hdl/dec_cat_map.sv",
