@@ -2,113 +2,144 @@
 module divider_nr #(
     parameter BITS = 16
 ) (
-    input wire                     clk,
-    input wire                     reset,
-    input wire                     start,
-    input wire unsigned [BITS-1:0] dividend,
-    input wire unsigned [BITS-1:0] divisor,
+    input  wire                     clk,
+    input  wire                     reset,
+    input  wire                     start,
+    input  wire unsigned [BITS-1:0] dividend,
+    input  wire unsigned [BITS-1:0] divisor,
 
     output logic                     done,
     output logic unsigned [BITS-1:0] quotient,
     output logic unsigned [BITS-1:0] remainder
 );
     import types_pkg::*;
-  localparam BC = $clog2(BITS);
-  typedef logic [BC:0] numbits_t;
 
+    // ------------------------------------------------------------
+    // Internal signed versions (CRITICAL FIX)
+    // ------------------------------------------------------------
+    logic signed [BITS-1:0] divisor_s;
+    logic signed [BITS:0]   int_remainder;
 
-  numbits_t num_bits_w;
-  numbits_t num_bits;
-  logic signed [BITS:0] int_remainder;
+    assign divisor_s = signed'(divisor);
 
+    // ------------------------------------------------------------
+    // Leading‑ones result
+    // ------------------------------------------------------------
+    localparam BC = $clog2(BITS);
+    typedef logic [BC:0] numbits_t;
 
-  // One‑line replacement for leading_ones module
-  assign num_bits_w = numbits_t'( leading_ones_fn(dividend) );
+    numbits_t num_bits_w;
+    numbits_t num_bits;
 
+    assign num_bits_w = numbits_t'( leading_ones_fn(dividend) );
 
-  // FSM state encoding
-  enum bit [3:0] {
-    IDLE,
-    INIT,
-    LEFT_SHIFT,
-    TEST_REMAINDER0,
-    ADJ_REMAINDER0,
-    ADJ_REMAINDER1,
-    UPDATE_QUOTIENT,
-    TEST_N,
-    TEST_REMAINDER1,
-    ADJ_REMAINDER2,
-    DIV_DONE
-  } state;
+    // ------------------------------------------------------------
+    // FSM
+    // ------------------------------------------------------------
+    enum logic [3:0] {
+        IDLE,
+        INIT,
+        LEFT_SHIFT,
+        ADJ_REMAINDER0,
+        ADJ_REMAINDER1,
+        UPDATE_QUOTIENT,
+        TEST_N,
+        TEST_REMAINDER1,
+        ADJ_REMAINDER2,
+        DIV_DONE
+    } state;
 
-  initial begin
-    state = IDLE;
-  end
+    initial state = IDLE;
 
-  always @(posedge clk) begin
-    done <= '0;
+    // ------------------------------------------------------------
+    // Sequential logic
+    // ------------------------------------------------------------
+    always_ff @(posedge clk) begin
+        if (reset) begin
+            state         <= IDLE;
+            done          <= 0;
+            quotient      <= 0;
+            int_remainder <= 0;
+            num_bits      <= 0;
+        end else begin
+            done <= 0;
 
-    case (state)
+            case (state)
 
-      IDLE: begin
-        if (start) state <= INIT;
-      end
+                IDLE: begin
+                    if (start)
+                        state <= INIT;
+                end
 
-      INIT: begin
-        state         <= LEFT_SHIFT;
-        quotient      <= dividend << (BITS - num_bits_w);
-        int_remainder <= '0;
-        num_bits      <= num_bits_w;
-      end
+                INIT: begin
+                    // Align quotient with MSB of dividend
+                    quotient      <= dividend << (BITS - num_bits_w);
+                    int_remainder <= '0;
+                    num_bits      <= num_bits_w;
+                    state         <= LEFT_SHIFT;
+                end
 
-      LEFT_SHIFT: begin
-        {int_remainder, quotient} <= {int_remainder, quotient} << 1;
-        if (int_remainder[$left(int_remainder)]) state <= ADJ_REMAINDER0;
-        else state <= ADJ_REMAINDER1;
-      end
+                LEFT_SHIFT: begin
+                    // Shift remainder:quotient left by 1
+                    {int_remainder, quotient} <= {int_remainder, quotient} << 1;
 
-      ADJ_REMAINDER0: begin
-        state         <= UPDATE_QUOTIENT;
-        int_remainder <= int_remainder + divisor;
-      end
+                    // Decide add or subtract based on sign
+                    if (int_remainder[BITS])
+                        state <= ADJ_REMAINDER0;  // negative → add divisor
+                    else
+                        state <= ADJ_REMAINDER1;  // positive → subtract divisor
+                end
 
-      ADJ_REMAINDER1: begin
-        state         <= UPDATE_QUOTIENT;
-        int_remainder <= int_remainder - divisor;
-      end
+                ADJ_REMAINDER0: begin
+                    int_remainder <= int_remainder + divisor_s;
+                    state         <= UPDATE_QUOTIENT;
+                end
 
-      UPDATE_QUOTIENT: begin
-        state       <= TEST_N;
-        quotient[0] <= ~int_remainder[$left(int_remainder)];
-        num_bits    <= num_bits - 1'b1;
-      end
+                ADJ_REMAINDER1: begin
+                    int_remainder <= int_remainder - divisor_s;
+                    state         <= UPDATE_QUOTIENT;
+                end
 
-      TEST_N: begin
-        if (|num_bits) state <= LEFT_SHIFT;
-        else state <= TEST_REMAINDER1;
-      end
+                UPDATE_QUOTIENT: begin
+                    // Set LSB of quotient based on sign of remainder
+                    quotient[0] <= ~int_remainder[BITS];
+                    num_bits    <= num_bits - 1;
+                    state       <= TEST_N;
+                end
 
-      TEST_REMAINDER1: begin
-        if (int_remainder[$left(int_remainder)]) state <= ADJ_REMAINDER2;
-        else state <= DIV_DONE;
-      end
+                TEST_N: begin
+                    if (num_bits != 0)
+                        state <= LEFT_SHIFT;
+                    else
+                        state <= TEST_REMAINDER1;
+                end
 
-      ADJ_REMAINDER2: begin
-        state         <= DIV_DONE;
-        int_remainder <= int_remainder + divisor;
-      end
+                TEST_REMAINDER1: begin
+                    if (int_remainder[BITS])
+                        state <= ADJ_REMAINDER2;  // negative → final correction
+                    else
+                        state <= DIV_DONE;
+                end
 
-      DIV_DONE: begin
-        done  <= '1;
-        state <= IDLE;
-      end
+                ADJ_REMAINDER2: begin
+                    int_remainder <= int_remainder + divisor_s;
+                    state         <= DIV_DONE;
+                end
 
-      default: state <= IDLE;
-    endcase
+                DIV_DONE: begin
+                    done  <= 1;
+                    state <= IDLE;
+                end
 
-    if (reset) state <= IDLE;
-  end
+                default: state <= IDLE;
 
-  assign remainder = int_remainder[BITS-1:0];
+            endcase
+        end
+    end
+
+    // ------------------------------------------------------------
+    // Final remainder (unsigned)
+    // ------------------------------------------------------------
+    assign remainder = int_remainder[BITS-1:0];
 
 endmodule
