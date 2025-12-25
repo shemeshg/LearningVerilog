@@ -24,7 +24,13 @@ module top #(
     output logic                   CE,
     output logic                   CF,
     output logic                   CG,
-    output logic                   DP
+    output logic                   DP,
+    output logic                   LED16_B,
+    output logic                   LED16_G,
+    output logic                   LED16_R,
+    output logic                   LED17_B,
+    output logic                   LED17_G,
+    output logic                   LED17_R
 );
 
   wire rst;
