@@ -14,11 +14,12 @@ module seg_display_calc (
     input  wire                  BTND
 );
 
-  int   calc_displayed;
+  // Value coming from the button logic
+  int calc_displayed;
   logic isEdit;
 
   // Button action logic
-select_btn_action #() select_btn_action_inst (
+  select_btn_action select_btn_action_inst (
       .SW(SW),
       .LED(LED),
       .rst(rst),
@@ -27,22 +28,21 @@ select_btn_action #() select_btn_action_inst (
       .BTNC(BTNC),
       .BTNL(BTNL),
       .BTNR(BTNR),
-      .BTND(BTND),  
+      .BTND(BTND),
       .calc_displayed(calc_displayed),
       .isEdit(isEdit)
   );
 
+  // Signed interpretation + absolute value
+  int signed calc_displayed_signed;
+  int signed calc_displayed_abs;
 
-  // Convert LED value to BCD digits
+  // BCD output
   logic [DIGITS*4-1:0] bcd;
-  bin_to_bcd bin_to_bcd_module (
-      .bin(word_t'(calc_displayed)),
-      .bcd(bcd)
-  );
 
   // Per-digit encoded nibble and cathode pattern
-  logic  [3:0] encoded[DIGITS];
-  byte_t       cathode[DIGITS];
+  logic [3:0] encoded[DIGITS];
+  byte_t      cathode[DIGITS];
 
   // Instantiate a decoder per digit
   genvar i;
@@ -55,16 +55,33 @@ select_btn_action #() select_btn_action_inst (
     end
   endgenerate
 
-  // Combinational mapping
+  // Combinational logic
   always_comb begin
+    // Interpret incoming value as signed
+    calc_displayed_signed = signed'(calc_displayed);
+
+    // Absolute value
+    calc_displayed_abs = (calc_displayed_signed < 0)
+                         ? -calc_displayed_signed
+                         :  calc_displayed_signed;
+
     // Break BCD into nibbles
-    foreach (encoded[i]) encoded[i] = bcd[i*4+:4];
+    foreach (encoded[i])
+      encoded[i] = bcd[i*4 +: 4];
 
     // Flatten cathode outputs
     foreach (cathode[i]) begin
-      if (isEdit && i == DIGITS - 1) display[i*8+:8] = 8'b0000_0110;  // your edit indicator
-      else display[i*8+:8] = cathode[i];
+      if (isEdit && i == DIGITS - 1)
+        display[i*8 +: 8] = 8'b0000_0110;  // edit indicator
+      else
+        display[i*8 +: 8] = cathode[i];
     end
   end
+
+  // Convert absolute value to BCD
+  bin_to_bcd bin_to_bcd_module (
+      .bin(word_t'(calc_displayed_abs)),
+      .bcd(bcd)
+  );
 
 endmodule

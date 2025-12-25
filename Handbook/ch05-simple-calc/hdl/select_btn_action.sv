@@ -1,66 +1,41 @@
 `timescale 1ns / 10ps
 module select_btn_action (
-    input word_t SW,
+    input  word_t SW,
     output word_t LED,
-    input wire rst,
-    input wire clk,
-    input wire BTNC,
-    input wire BTNU,
-    input wire BTNL,
-    input wire BTNR,
-    input wire BTND,
-    output int calc_displayed,
-    output logic isEdit
+    input  wire   rst,
+    input  wire   clk,
+    input  wire   BTNC,
+    input  wire   BTNU,
+    input  wire   BTNL,
+    input  wire   BTNR,
+    input  wire   BTND,
+    output int    calc_displayed,
+    output logic  isEdit
 );
   import types_pkg::*;
 
+  // *** IMPORTANT FIX ***
+  // total must be SIGNED or subtraction will wrap around
+  logic signed [BITS-1:0] total;
 
-  word_t total;
+  // LED mirrors switches
   always_comb begin
     LED = SW;
-    if (isEdit) calc_displayed = int'(SW);
-    else calc_displayed = int'(total);
+    calc_displayed = isEdit ? int'(SW) : int'(total);
   end
 
+  // Edge detectors
   logic rise_u, rise_d, rise_r, rise_l, rise_c;
 
-  edge_detect ed_u (
-      .clk (clk),
-      .rst (rst),
-      .sig (BTNU),
-      .rise(rise_u)
-  );
+  edge_detect ed_u (.clk(clk), .rst(rst), .sig(BTNU), .rise(rise_u));
+  edge_detect ed_d (.clk(clk), .rst(rst), .sig(BTND), .rise(rise_d));
+  edge_detect ed_r (.clk(clk), .rst(rst), .sig(BTNR), .rise(rise_r));
+  edge_detect ed_l (.clk(clk), .rst(rst), .sig(BTNL), .rise(rise_l));
+  edge_detect ed_c (.clk(clk), .rst(rst), .sig(BTNC), .rise(rise_c));
 
-  edge_detect ed_d (
-      .clk (clk),
-      .rst (rst),
-      .sig (BTND),
-      .rise(rise_d)
-  );
-
-  edge_detect ed_r (
-      .clk (clk),
-      .rst (rst),
-      .sig (BTNR),
-      .rise(rise_r)
-  );
-
-  edge_detect ed_l (
-      .clk (clk),
-      .rst (rst),
-      .sig (BTNL),
-      .rise(rise_l)
-  );
-
-  edge_detect ed_c (
-      .clk (clk),
-      .rst (rst),
-      .sig (BTNC),
-      .rise(rise_c)
-  );
-
-
-  logic div_start, div_done;
+  // Divider
+  logic        div_start, div_done;
+  logic        div_busy;
   logic [BITS-1:0] div_quotient, div_remainder;
 
   divider_nr u_divider (
@@ -74,22 +49,21 @@ module select_btn_action (
       .remainder(div_remainder)
   );
 
-  logic div_busy;
-
+  // Main state logic
   always_ff @(posedge clk) begin
     if (rst) begin
-      total <= '0;
-      isEdit <= 1;
+      total     <= '0;
+      isEdit    <= 1;
       div_start <= 0;
-      div_busy <= 0;
+      div_busy  <= 0;
     end else begin
       // defaults
       div_start <= 0;
 
-      // arithmetic buttons
-      if (rise_u) total <= total + SW;
-      if (rise_d) total <= total - SW;
-      if (rise_r) total <= total * SW;
+      // arithmetic operations
+      if (rise_u) total <= total + $signed(SW);
+      if (rise_d) total <= total - $signed(SW);
+      if (rise_r) total <= total * $signed(SW);
 
       // toggle edit mode
       if (rise_c) isEdit <= ~isEdit;
@@ -102,13 +76,10 @@ module select_btn_action (
 
       // division result
       if (div_done) begin
-        total    <= div_quotient;
+        total    <= $signed(div_quotient);
         div_busy <= 0;
       end
     end
   end
-
-
-
 
 endmodule
