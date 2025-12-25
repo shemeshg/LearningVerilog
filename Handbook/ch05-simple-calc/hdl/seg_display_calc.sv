@@ -15,7 +15,7 @@ module seg_display_calc (
 );
 
   // Value coming from the button logic
-  int calc_displayed;
+  int   calc_displayed;
   logic isEdit;
 
   // Button action logic
@@ -55,33 +55,48 @@ module seg_display_calc (
     end
   endgenerate
 
-  // Combinational logic
+  // ------------------------------------------------------------
+  // 1) Compute signed + absolute value
+  // ------------------------------------------------------------
   always_comb begin
-    // Interpret incoming value as signed
     calc_displayed_signed = signed'(calc_displayed);
 
-    // Absolute value
-    calc_displayed_abs = (calc_displayed_signed < 0)
-                         ? -calc_displayed_signed
-                         :  calc_displayed_signed;
-
-    // Break BCD into nibbles
-    foreach (encoded[i])
-      encoded[i] = bcd[i*4 +: 4];
-
-    // Flatten cathode outputs
-    foreach (cathode[i]) begin
-      if (isEdit && i == DIGITS - 1)
-        display[i*8 +: 8] = 8'b0000_0110;  // edit indicator
-      else
-        display[i*8 +: 8] = cathode[i];
-    end
+    calc_displayed_abs =
+        (calc_displayed_signed < 0)
+        ? -calc_displayed_signed
+        :  calc_displayed_signed;
   end
 
-  // Convert absolute value to BCD
+  // ------------------------------------------------------------
+  // 2) Convert absolute value to BCD
+  // ------------------------------------------------------------
   bin_to_bcd bin_to_bcd_module (
       .bin(word_t'(calc_displayed_abs)),
       .bcd(bcd)
   );
+
+  // ------------------------------------------------------------
+  // 3) Break BCD into encoded nibbles
+  //    (separate block to avoid combinational loops)
+  // ------------------------------------------------------------
+  always_comb begin
+    foreach (encoded[i])
+      encoded[i] = bcd[i*4 +: 4];
+  end
+
+  // ------------------------------------------------------------
+  // 4) Build final display output
+  //    (separate block to avoid encoded → cathode → display → encoded loops)
+  // ------------------------------------------------------------
+  always_comb begin
+    foreach (cathode[i]) begin
+      if (isEdit && i == DIGITS - 1)
+        display[i*8 +: 8] = 8'b0000_0110;  // edit indicator
+      else if (!isEdit && i == DIGITS - 1 && calc_displayed_signed < 0)
+        display[i*8 +: 8] = 8'b1011_1111;  // minus indicator
+      else
+        display[i*8 +: 8] = cathode[i];
+    end
+  end
 
 endmodule
